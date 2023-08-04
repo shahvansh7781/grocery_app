@@ -14,11 +14,20 @@ export default function HomeScreen () {
     navigation.push('OnBoarding')
 
   }
+  const handleAdmin=async()=>{
+   
+
+    navigation.push('Admin')
+
+  }
     return (
       <SafeAreaView style={{padding:100,alignItems:'center'}}>
             <Text style={{fontSize:30,padding:20}}>Home</Text>
             <TouchableOpacity style={{backgroundColor:'#06FF00',width:200,height:50,alignItems:'center',}} onPress={handleReset}>
               <Text style={{fontSize:30}}>Reset</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{backgroundColor:'#06FF00',width:200,height:50,alignItems:'center',marginTop:20}} onPress={handleAdmin}>
+              <Text style={{fontSize:30}}>Admin</Text>
             </TouchableOpacity>
       </SafeAreaView>
     )
