@@ -1,5 +1,6 @@
 {
   "expo": {
+    "plugins": ["@react-native-firebase/app"],
     "name": "grocery-app-react-native",
     "slug": "grocery-app-react-native",
     "version": "1.0.0",
@@ -15,13 +16,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "googleServicesFile": "./google-services.json",
+      "package": "com.anonymous.groceryappreactnative"
     },
     "web": {
       "favicon": "./assets/favicon.png"

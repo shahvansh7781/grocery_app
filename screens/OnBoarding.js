@@ -1,10 +1,11 @@
 import React, { Component, useEffect } from "react";
 import { Text, View, StyleSheet, Dimensions, Image } from "react-native";
 import Onboarding from "react-native-onboarding-swiper";
-
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { setItem } from "../utils/asyncStorage";
+import Lottie from "lottie-react-native";
+import cart from "../assets/cart.json";
 
 const { width, height } = Dimensions.get("window");
 
@@ -51,11 +52,12 @@ export default function OnBoarding() {
           {
             backgroundColor: "#fff",
             image: (
-              <View>
-                <Image
-                  style={styles.lottie}
-                  source={require("../assets/grocery1.gif")}
-                ></Image>
+              <View style={styles.lottie}>
+                <Lottie
+                  source={require("../assets/bag.json")}
+                  autoPlay
+                  loop
+                />
               </View>
             ),
 
@@ -65,12 +67,15 @@ export default function OnBoarding() {
           {
             backgroundColor: "#fff",
             image: (
-              <View>
-                <Image
-                  style={styles.lottie}
-                  source={require("../assets/fresh.gif")}
-                ></Image>
+              <View style={styles.lottie}>
+                <Lottie source={require("../assets/cart1.json")} autoPlay loop />
               </View>
+              // <View>
+              //   <Image
+              //     style={styles.lottie}
+              //     source={require("../assets/fresh.gif")}
+              //   ></Image>
+              // </View>
             ),
 
             title: '"Freshness Guaranteed"',
@@ -79,32 +84,32 @@ export default function OnBoarding() {
           {
             backgroundColor: "#fff",
             image: (
-              <View>
-                <Image
-                  style={styles.lottie}
-                  source={require("../assets/grocery3.gif")}
-                ></Image>
+              <View style={styles.lottie}>
+                <Lottie source={require("../assets/time.json")} autoPlay loop />
               </View>
+              // <View>
+              //   <Image
+              //     style={styles.lottie}
+              //     source={require("../assets/grocery3.gif")}
+              //   ></Image>
+              // </View>
             ),
 
             title: '"Save Time, Skip the Lines" ',
             subtitle:
               "Order from the comfort of your home, and we'll deliver it to your doorstep",
           },
-          {
-            backgroundColor: "#fff",
-            image: (
-              <View>
-                <Image
-                  style={styles.lottie}
-                  source={require("../assets/cart.gif")}
-                ></Image>
-              </View>
-            ),
+          // {
+          //   backgroundColor: "#fff",
+          //   image: (
+          //     <View style={styles.lottie}>
+          //       <Lottie source={require("../assets/cart1.json")} autoPlay loop />
+          //     </View>
+          //   ),
 
-            title: '"Effortless Grocery Shopping"',
-            subtitle: "From Cart to Kitchen in No Time.",
-          },
+          //   title: '"Effortless Grocery Shopping"',
+          //   subtitle: "From Cart to Kitchen in No Time.",
+          // },
           {
             backgroundColor: "#fff",
             image: <View></View>,
@@ -118,13 +123,14 @@ export default function OnBoarding() {
     </View>
   );
 }
-
+// "expo": "~49.0.5",
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
   },
   lottie: {
+    // flex:1,
     width: width * 0.9,
     height: width,
   },
@@ -141,6 +147,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   btn_font: {
-    color:"white"
+    color: "white",
   },
 });

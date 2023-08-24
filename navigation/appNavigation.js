@@ -8,10 +8,14 @@ import { getItem } from "../utils/asyncStorage";
 import SignUp from "../screens/SignUp";
 import Login from "../screens/Login";
 
+import DashBoard from "../Admin/Screens/DashBoard";
+
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigation() {
   const [showOnboarding, setShowOnboarding] = useState(null);
+
+  // const [showOnboarding,setShowOnboarding]=useState(null)
 
   useEffect(() => {
     isOnBoarded();
@@ -39,11 +43,26 @@ export default function AppNavigation() {
             options={{ headerShown: false }}
             component={OnBoarding}
           ></Stack.Screen>
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Home"
             options={{ headerShown: false }}
             component={HomeScreen}
-          ></Stack.Screen> */}
+          ></Stack.Screen>
+           <Stack.Screen
+            name="SignUp"
+            options={{ headerShown: false }}
+            component={SignUp}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Login"
+            options={{ headerShown: false }}
+            component={Login}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Admin"
+            options={{ headerShown: false }}
+            component={DashBoard}
+          ></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     );
@@ -56,11 +75,11 @@ export default function AppNavigation() {
             options={{ headerShown: false }}
             component={OnBoarding}
           ></Stack.Screen>
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Home"
             options={{ headerShown: false }}
             component={HomeScreen}
-          ></Stack.Screen> */}
+          ></Stack.Screen>
           <Stack.Screen
             name="SignUp"
             options={{ headerShown: false }}
@@ -70,6 +89,12 @@ export default function AppNavigation() {
             name="Login"
             options={{ headerShown: false }}
             component={Login}
+          ></Stack.Screen>
+
+          <Stack.Screen
+            name="Admin"
+            options={{ headerShown: false }}
+            component={DashBoard}
           ></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
