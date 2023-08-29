@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { Component } from "react";
-import { TouchableOpacity } from "react-native";
+import { StatusBar, TouchableOpacity } from "react-native";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { removeItem } from "../utils/asyncStorage";
