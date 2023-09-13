@@ -7,6 +7,7 @@ import OnBoarding from '../screens/OnBoarding'
 import { getItem } from '../utils/asyncStorage'
 
 import DashBoard from '../Admin/Screens/DashBoard'
+import { EditGrocery } from '../Admin/Screens/EditGrocery'
 
 const Stack=createNativeStackNavigator()
 
@@ -47,6 +48,8 @@ export default function AppNavigation () {
             <Stack.Screen name='Home' options={{headerShown:false}} component={HomeScreen}></Stack.Screen>
            
             <Stack.Screen name='Admin' options={{headerShown:false}} component={DashBoard}></Stack.Screen>
+            <Stack.Screen name='EditGrocery' options={{headerShown:false}} component={EditGrocery}></Stack.Screen>
+
         </Stack.Navigator>
         
       </NavigationContainer>
@@ -60,6 +63,7 @@ export default function AppNavigation () {
             <Stack.Screen name='Home' options={{headerShown:false}} component={HomeScreen}></Stack.Screen>
             
             <Stack.Screen name='Admin'   options={{headerShown:false}} component={DashBoard}></Stack.Screen>
+            <Stack.Screen name='EditGrocery' options={{headerShown:false}} component={EditGrocery}></Stack.Screen>
         </Stack.Navigator>
         
       </NavigationContainer>
