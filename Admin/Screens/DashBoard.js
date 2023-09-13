@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native'
 import { Groceries } from './Groceries'
 import { AddGrocery } from './AddGrocery'
 import { Transactions } from './Transactions'
+import Stats from './Stats'
 
 export default function DashBoard () {
 

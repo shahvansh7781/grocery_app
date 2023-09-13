@@ -8,21 +8,40 @@ import * as FileSystem from 'expo-file-system';
 
 import { db } from '../config'
 import {ref,set} from 'firebase/database'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
+import firebase from 'firebase/compat';
 
-
-
-export function AddGrocery () {
-
+// Define a function to update data
+const editGrocery = (itemKey, newData) => {
+    const db = firebase.database();
+    const ref = db.ref(`Grocery/${itemKey}`); 
   
-    const navigation=useNavigation()
-    const [imageData,setImageData]= useState(null)
+    // Update the data
+    ref
+      .update(newData)
+      .then(() => {
+        console.log('Data updated successfully.');
+      })
+      .catch((error) => {
+        console.error('Error updating data:', error);
+      });
+  };
+  
 
-    const [name,setName]=useState('')
-    const [price,setPrice]=useState('')
-    const [discount,setDiscount]=useState('')
-    const [description,setDescription]=useState('')
+
+export function EditGrocery () {
+
+    const route=useRoute()
+    const navigation=useNavigation()
+  
+
+    const [imageData,setImageData]= useState(route.params.data.imageData)
+
+    const [name,setName]=useState(route.params.data.name)
+    const [price,setPrice]=useState(route.params.data.price)
+    const [discount,setDiscount]=useState(route.params.data.discount)
+    const [description,setDescription]=useState(route.params.data.description)
 
 
     const getImageSize = async (uri) => {
@@ -33,33 +52,7 @@ export function AddGrocery () {
 
 
 
-    const dataAddOn = ()=>{
-
-      console.log("I am in AddOn")
-      set(ref(db,'Grocery/'+name), {
-        name:name,
-        price:price,
-        discount:discount,
-        description:description,
-        imageData:imageData
-      })
-      .then(() => {
-        console.log('Data added successfully');
-        setName('');
-        setDescription('');
-        setDiscount('');
-        setPrice('');
-        setImageData(null);
-      })
-      .catch((error) => {
-        console.error('Error adding data: ', error);
-        // Handle the error here (e.g., display an alert)
-      });
-
-      navigation.navigate('Admin')
-
-      
-    }
+    
 
 
  //to take Permission to access gallery
@@ -117,12 +110,27 @@ export function AddGrocery () {
       
     }
 
+    const handleEdit=()=>{
+
+        const newData={
+            name:name,
+            price:price,
+            discount:discount,
+            description:description,
+            imageData:imageData
+
+
+        }
+        editGrocery(route.params.id,newData)
+        navigation.navigate('Admin')
+    }
+
     
     return (
       <ScrollView style={styles.container}>
       <View style={styles.container}>
         <View style={styles.header}>
-            <Text style={styles.headerText}>Add Grocery</Text>
+            <Text style={styles.headerText}>Edit Grocery</Text>
         </View>
 
         {imageData !== null?(
@@ -148,8 +156,8 @@ export function AddGrocery () {
         <TouchableOpacity style={styles.pickImg} onPress={()=>{premit()}}>
             <Text>Pick Image From Gallery</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.uploadBtn} onPress={dataAddOn}>
-            <Text>Upload Grocery</Text>
+        <TouchableOpacity style={styles.uploadBtn} onPress={handleEdit}>
+            <Text>Edit Grocery</Text>
         </TouchableOpacity>
 
 
@@ -164,7 +172,8 @@ export function AddGrocery () {
 
 const styles=StyleSheet.create({
     container:{
-        flex:1
+        flex:1,
+        marginTop:15
     },
     header:{
         height:60,
