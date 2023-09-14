@@ -17,16 +17,7 @@ import {
 } from "react-native-responsive-dimensions";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { app } from "../config/firebase";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendEmailVerification,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
-} from "firebase/auth";
+
 // import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
 const signUpFormSchema = Yup.object().shape({
@@ -43,13 +34,23 @@ const SignUp = ({ navigation }) => {
    
   // }, [])
   
-  const auth = getAuth();
+ 
   const onSignUp = async (values) => {
     const { email, password } = values;
+    const payload = {
+      email,
+      password,
+    };
     try {
-      await createUserWithEmailAndPassword(auth,email, password);
-      ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
-      await sendEmailVerification(auth.currentUser);
+      // await createUserWithEmailAndPassword(auth,email, password);
+      // ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
+      // await sendEmailVerification(auth.currentUser);
+      const data = await fetch(`http://192.168.1.10:5000/myapp/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      console.log(await data.json());
       ToastAndroid.show("Email Verification link has been send to your Email. Kindly Verify It.",ToastAndroid.LONG);
       navigation.navigate("Login");
     } catch (error) {
@@ -57,13 +58,15 @@ const SignUp = ({ navigation }) => {
     }
   };
   const googleSignUp = async()=>{
-    // try {
-    //   await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    //   const { idToken } = await GoogleSignin.signIn();
-    //   // console.log(userInfo);
-    // } catch (error) {
+    try {
+      const data = await fetch(`http://192.168.1.10:5000/myapp/googleSignUp`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log(await data.json());
+    } catch (error) {
       
-    // }
+    }
   }
   return (
     <View style={styles.container}>

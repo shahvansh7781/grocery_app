@@ -1,6 +1,5 @@
 {
   "expo": {
-    "plugins": ["@react-native-firebase/app"],
     "name": "grocery-app-react-native",
     "slug": "grocery-app-react-native",
     "version": "1.0.0",

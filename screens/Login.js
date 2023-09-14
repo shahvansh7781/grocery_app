@@ -6,152 +6,166 @@ import {
   TouchableOpacity,
   Button,
   Alert,
-  ToastAndroid
+  ToastAndroid,
 } from "react-native";
-import React from 'react'
+import React from "react";
 import {
   responsiveHeight,
   responsiveWidth,
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendEmailVerification,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
-} from "firebase/auth";
-import { Formik } from 'formik';
+import { Formik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 
 const loginFormSchema = Yup.object().shape({
   email: Yup.string().required("Email should not be empty"),
   password: Yup.string().required("Password should not be empty"),
 });
-const Login = ({navigation}) => {
-  const auth = getAuth();
+const Login = ({ navigation }) => {
   const onSignIn = async (values) => {
     const { email, password } = values;
+    const payload = {
+      email,
+      password,
+    };
     try {
-     const data = await signInWithEmailAndPassword(auth,email, password);
-     console.log(data._tokenResponse.email);
+      const data = await fetch(`http://192.168.1.10:5000/myapp/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      // const {data} = await axios.post(
+      //   "http://198.168.1.10:5000/myapp/login",
+      //   {
+      //     email,
+      //     password,
+      //   },
+      //   { headers: { "Content-Type": "application/json" } }
+      // );
+      // const response = await data.json();
+      console.log(await data.json());
       ToastAndroid.show("SignIn successfull",ToastAndroid.LONG);
       navigation.navigate("Home");
     } catch (error) {
-      Alert.alert('Invalid Credentials', 'Please Try Again', [
+      Alert.alert("Invalid Credentials", "Pls try again", [
         {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
         },
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
-      ])
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
     }
   };
-  const googleSignUp = async()=>{
+  const googleSignUp = async () => {
     // try {
     //   await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
     //   const { idToken } = await GoogleSignin.signIn();
     //   // console.log(userInfo);
     // } catch (error) {
-      
     // }
-  }
+  };
   return (
     <View style={styles.container}>
-    <Text style={styles.createAccountText}>Login</Text>
-    <Text style={styles.createAccountText}>Hello, Welcome Back</Text>
-    <Formik
-      initialValues={{email: "", password: ""}}
-      onSubmit={onSignIn}
-      validationSchema={loginFormSchema}
-      validateOnMount={true}
-    >
-      {({
-        handleBlur,
-        handleChange,
-        handleSubmit,
-        values,
-        errors,
-        isValid,
-        /* and other goodies */
-      }) => (
-        <>
-          <View style={{ gap: responsiveHeight(4.5) }}>
-            <View style={{ gap: responsiveHeight(1.3) }}>
-              <Text style={styles.labelFont}>Email</Text>
-              <TextInput
-                style={errors.email && errors.email?styles.inputNotValid:styles.input}
-                keyboardType="email-address"
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                value={values.email}
-                placeholder={`${errors.email && errors.email?errors.email:""}`}
-              />
-              
-            </View>
-            <View style={{ gap: responsiveHeight(1.3) }}>
-              <Text style={styles.labelFont}>Password</Text>
-              <TextInput
-                style={errors.password && errors.password?styles.inputNotValid:styles.input}
-                secureTextEntry={true}
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                value={values.password}
-                placeholder={`${errors.password && errors.password?errors.password:""}`}
-              />
-              
-            </View>
-            
-            <View style={{ marginTop: responsiveHeight(2) }}>
-              <TouchableOpacity
-                style={styles.createAccountBtn}
-                onPress={handleSubmit}
-                disabled={!isValid}
-                title="Login"
-              >
-                <Text style={styles.createAccountBtnText}>
-                  Login
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </>
-      )}
-    </Formik>
-
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
-      <View>
-        <Text style={styles.ORText}>OR LOGIN WITH</Text>
-      </View>
-      <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
-    </View>
-    <View style={{flexDirection:"row",gap:responsiveWidth(3)}}>
-      <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
-        <Text style={styles.googleTxt}>Google</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
-        <Text style={styles.googleTxt}>Phone</Text>
-      </TouchableOpacity>
-      {/* <GoogleSigninButton size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={googleSignUp}/> */}
-    </View>
-    <View style={styles.alreadyAccountContainer}>
-      
-      <Text style={styles.alreadyAccountText}>Don't Have an Account?</Text>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("SignUp");
-        }}
+      <Text style={styles.createAccountText}>Login</Text>
+      <Text style={styles.createAccountText}>Hello, Welcome Back</Text>
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        onSubmit={onSignIn}
+        validationSchema={loginFormSchema}
+        validateOnMount={true}
       >
-        <Text style={styles.loginText}>SignUp</Text>
-      </TouchableOpacity>
+        {({
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          values,
+          errors,
+          isValid,
+          /* and other goodies */
+        }) => (
+          <>
+            <View style={{ gap: responsiveHeight(4.5) }}>
+              <View style={{ gap: responsiveHeight(1.3) }}>
+                <Text style={styles.labelFont}>Email</Text>
+                <TextInput
+                  style={
+                    errors.email && errors.email
+                      ? styles.inputNotValid
+                      : styles.input
+                  }
+                  keyboardType="email-address"
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  value={values.email}
+                  placeholder={`${
+                    errors.email && errors.email ? errors.email : ""
+                  }`}
+                />
+              </View>
+              <View style={{ gap: responsiveHeight(1.3) }}>
+                <Text style={styles.labelFont}>Password</Text>
+                <TextInput
+                  style={
+                    errors.password && errors.password
+                      ? styles.inputNotValid
+                      : styles.input
+                  }
+                  secureTextEntry={true}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  value={values.password}
+                  placeholder={`${
+                    errors.password && errors.password ? errors.password : ""
+                  }`}
+                />
+              </View>
+
+              <View style={{ marginTop: responsiveHeight(2) }}>
+                <TouchableOpacity
+                  style={styles.createAccountBtn}
+                  onPress={handleSubmit}
+                  disabled={!isValid}
+                  title="Login"
+                >
+                  <Text style={styles.createAccountBtnText}>Login</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </>
+        )}
+      </Formik>
+
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
+        <View>
+          <Text style={styles.ORText}>OR LOGIN WITH</Text>
+        </View>
+        <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
+      </View>
+      <View style={{ flexDirection: "row", gap: responsiveWidth(3) }}>
+        <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
+          <Text style={styles.googleTxt}>Google</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
+          <Text style={styles.googleTxt}>Phone</Text>
+        </TouchableOpacity>
+        {/* <GoogleSigninButton size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={googleSignUp}/> */}
+      </View>
+      <View style={styles.alreadyAccountContainer}>
+        <Text style={styles.alreadyAccountText}>Don't Have an Account?</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("SignUp");
+          }}
+        >
+          <Text style={styles.loginText}>SignUp</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-  )
-}
+  );
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -183,8 +197,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#EDEDED",
     paddingHorizontal: 10,
     paddingVertical: 12,
-    borderColor:"red",
-    borderWidth:1
+    borderColor: "red",
+    borderWidth: 1,
   },
   createAccountBtn: {
     backgroundColor: "#2DDC4A",
@@ -234,4 +248,4 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2.3),
   },
 });
-export default Login
+export default Login;
