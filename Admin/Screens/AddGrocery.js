@@ -4,16 +4,62 @@ import * as ImagePicker from 'expo-image-picker'
 import Constants from 'expo-constants'
 
 
+import * as FileSystem from 'expo-file-system';
+
+import { db } from '../config'
+import {ref,set} from 'firebase/database'
+import { useNavigation } from '@react-navigation/native';
+
+
+
+
 export function AddGrocery () {
 
-  
 
+    const navigation=useNavigation()
     const [imageData,setImageData]= useState(null)
 
     const [name,setName]=useState('')
     const [price,setPrice]=useState('')
     const [discount,setDiscount]=useState('')
     const [description,setDescription]=useState('')
+
+
+    const getImageSize = async (uri) => {
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      const sizeInBytes = fileInfo.size;
+      return sizeInBytes;
+    };
+
+
+
+    const dataAddOn = ()=>{
+
+      console.log("I am in AddOn")
+      set(ref(db,'Grocery/'+name), {
+        name:name,
+        price:price,
+        discount:discount,
+        description:description,
+        imageData:imageData
+      })
+      .then(() => {
+        console.log('Data added successfully');
+        setName('');
+        setDescription('');
+        setDiscount('');
+        setPrice('');
+        setImageData(null);
+      })
+      .catch((error) => {
+        console.error('Error adding data: ', error);
+        // Handle the error here (e.g., display an alert)
+      });
+
+      navigation.navigate('Admin')
+
+
+    }
 
 
  //to take Permission to access gallery
@@ -44,16 +90,34 @@ export function AddGrocery () {
         // allowsEditing:true,
         // aspect:[4,3],
         // quality:1
-       
+
       })
       console.log(result)
       if(!result.canceled)
       {
-        setImageData(result.assets[0].uri)
+        // setImageData(result.assets[0].uri)
+        // console.log(imageData)
+
+        const imageUri = result.assets[0].uri;
+        const imageSize = await getImageSize(imageUri);
+
+        if (imageSize <= 200 * 1024) { // 50 KB in bytes
+          // Image is smaller than 50 KB, you can use it
+          // Your logic to use the image here
+
+          setImageData(result.assets[0].uri)
+          console.log(imageData)
+
+        } else {
+          // Image is too large, display an error message
+          console.log('Image size exceeds 50 KB');
+        }
       }
+
+
     }
 
-    
+
     return (
       <ScrollView style={styles.container}>
       <View style={styles.container}>
@@ -84,18 +148,18 @@ export function AddGrocery () {
         <TouchableOpacity style={styles.pickImg} onPress={()=>{premit()}}>
             <Text>Pick Image From Gallery</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.uploadBtn} >
+        <TouchableOpacity style={styles.uploadBtn} onPress={dataAddOn}>
             <Text>Upload Grocery</Text>
         </TouchableOpacity>
 
 
 
-       
-        
+
+
       </View>
       </ScrollView>
     )
-  
+
 }
 
 const styles=StyleSheet.create({
@@ -109,7 +173,7 @@ const styles=StyleSheet.create({
         elevation:5,
         paddingLeft:20,
         justifyContent:'center'
-    
+
     },
     headerText:{
         fontSize:20,
@@ -135,7 +199,7 @@ const styles=StyleSheet.create({
         alignItems:'center',
         marginTop:20,
         backgroundColor:'#06FF00',
-        
+
 
     },
     uploadBtn:{
@@ -150,7 +214,7 @@ const styles=StyleSheet.create({
       backgroundColor:'#06FF00',
 
       marginBottom:75
-      
+
 
   },
     img:{

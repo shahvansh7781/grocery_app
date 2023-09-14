@@ -4,11 +4,12 @@ import { TouchableOpacity } from 'react-native'
 import { Groceries } from './Groceries'
 import { AddGrocery } from './AddGrocery'
 import { Transactions } from './Transactions'
+import Stats from './Stats'
 
 export default function DashBoard () {
 
   const [selectedTab,SetSelectedTab]= useState(0)
-  
+
     return (
       <View style={styles.container}>
         {selectedTab==0?(<Groceries></Groceries>):selectedTab==1?(<AddGrocery/>):(<Transactions></Transactions>)}
