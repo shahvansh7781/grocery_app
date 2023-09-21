@@ -9,6 +9,8 @@ import * as FileSystem from 'expo-file-system';
 import { db } from '../config'
 import {ref,set} from 'firebase/database'
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { addGroceries, fetchGroceries } from '../../Reducers/GroceryReducer';
 
 
 
@@ -30,30 +32,47 @@ export function AddGrocery () {
       const sizeInBytes = fileInfo.size;
       return sizeInBytes;
     };
-
+    const dispatch=useDispatch()
     const dataAddOn = async()=>{
+
+      console.log("data add on")
+
       const payload = {
-          name,
-        price,
-        discount,
-        description,
-        imageData
-      }
-      try {
+            name,
+          price,
+          discount,
+          description,
+          imageData
+        }
+
+      dispatch(addGroceries(payload))
+      console.log('done')
+      dispatch(fetchGroceries())
+      console.log('done')
+      navigation.push('Admin')
+    }
+      // const payload = {
+      //     name,
+      //   price,
+      //   discount,
+      //   description,
+      //   imageData
+      // }
+      // try {
        
-        const data = await fetch(`http://192.168.1.10:8082/myapp/addGrocery`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        // console.log(await data.json());
+      //   const data = await fetch(`http://192.168.1.3:8082/myapp/addGrocery`, {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(payload),
+      //   });
+      //   // console.log(await data.json());
         
-        ToastAndroid.show("Data added successfully",ToastAndroid.LONG);
-        navigation.push("Admin");
-      } catch (error) {
+      //   ToastAndroid.show("Data added successfully",ToastAndroid.LONG);
+      //   navigation.push("Admin");
+      // } catch (error) {
       //  Alert.alert("Data not added");
-      console.log(error);
-      }
+      // console.log(error);
+      // }
       // console.log("I am in AddOn")
       // set(ref(db,'Grocery/'+name), {
       //   name:name,
@@ -78,7 +97,7 @@ export function AddGrocery () {
       // navigation.navigate('Admin')
 
       
-    }
+    
 
 
  //to take Permission to access gallery

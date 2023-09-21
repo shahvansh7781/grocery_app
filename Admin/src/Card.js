@@ -2,27 +2,30 @@ import React from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import firebase from 'firebase/compat';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteGroceries, fetchGroceries } from '../../Reducers/GroceryReducer';
+import { useEffect } from 'react';
 
 // import StarRating from './StarRating';
 
-const deleteGrocery = async(itemKey) => {
+// const deleteGrocery = async(itemKey) => {
 
-  // console.log("i am in deleteGrocery")
-  // console.log(itemKey);
-  const id = {itemKey};
-  console.log(id);
-  try {
-    const data = await fetch(`http://192.168.1.10:8082/myapp/deleteGrocery`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body:JSON.stringify(id)
-    });
-    const resp = await data.json();
-    // console.log(await data.json());
-    console.log(resp);
-  } catch (error) {
-    Alert.alert("Not deleted");
-  }
+//   // console.log("i am in deleteGrocery")
+//   // console.log(itemKey);
+//   const id = {itemKey};
+//   console.log(id);
+//   try {
+//     const data = await fetch(`http://192.168.1.10:8082/myapp/deleteGrocery`, {
+//       method: "DELETE",
+//       headers: { "Content-Type": "application/json" },
+//       body:JSON.stringify(id)
+//     });
+//     const resp = await data.json();
+//     // console.log(await data.json());
+//     console.log(resp);
+//   } catch (error) {
+//     Alert.alert("Not deleted");
+//   }
   // const db = firebase.database();
   // const ref = db.ref(`Grocery/${itemKey}`); 
 
@@ -34,23 +37,48 @@ const deleteGrocery = async(itemKey) => {
   //   .catch((error) => {
   //     console.error('Error deleting data:', error);
   //   });
-};
+// };
 
 
 
 const Card = ({itemData}) => {
 
   const navigation=useNavigation()
+  const dispatch=useDispatch()
+
+  const isLoading = useSelector((state) => state.groceries.isLoading);
+  const error = useSelector((state) => state.groceries.error);
+
 
   // Define a function to delete data
-  const handleDelete = () => {
+  const handleDelete = (itemKey) => {
     console.log("I am in Handle Delete")
-    console.log(itemData);
-    deleteGrocery(itemData.id);
-  };
+    // console.log(itemData);
+    // deleteGrocery(itemData.id);
+    // console.log(itemData.id)
+    // dispatch(deleteGroceries(itemData.id))
 
+    // console.log('Done')
+    // dispatch(fetchGroceries())
+    // Dispatch the deleteGroceries action
+    dispatch(deleteGroceries(itemKey))
+      .then(() => {
+        // If successful, refresh data by fetching groceries again
+        dispatch(fetchGroceries());
+      })
+      .catch((error) => {
+        // Handle error, show an alert, or log it
+        console.error('Error deleting grocery:', error);
+      });
+    
+    console.log('Done')
+  };
+ 
   return (
+   
     <View  style={styles.container}>
+       {isLoading && <p>Loading...</p>}
+       {error && <p>Error: {error}</p>}
     <TouchableOpacity    >
       <View style={styles.card} >
         <View >
@@ -83,7 +111,7 @@ const Card = ({itemData}) => {
               <Image source={require('../Images/edit.png')} style={styles.icon}></Image>
              
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{handleDelete()}}>
+          <TouchableOpacity onPress={()=>{handleDelete(itemData.id)}}>
               <Image source={require('../Images/delete.png')} style={styles.icon} ></Image>
               
           </TouchableOpacity>
