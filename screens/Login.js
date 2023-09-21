@@ -30,7 +30,7 @@ const Login = ({ navigation }) => {
       password,
     };
     try {
-      const data = await fetch(`http://192.168.1.10:5000/myapp/login`, {
+      const data = await fetch(`http://192.168.1.10:8082/myapp/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -44,7 +44,7 @@ const Login = ({ navigation }) => {
       //   { headers: { "Content-Type": "application/json" } }
       // );
       // const response = await data.json();
-      console.log(await data.json());
+      // console.log(await data.json());
       ToastAndroid.show("SignIn successfull",ToastAndroid.LONG);
       navigation.navigate("Home");
     } catch (error) {

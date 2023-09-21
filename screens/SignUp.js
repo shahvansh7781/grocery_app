@@ -21,7 +21,7 @@ import { Formik } from "formik";
 // import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
 const signUpFormSchema = Yup.object().shape({
-  name: Yup.string().max(30, "Name should be less than 30 chars").required("Name should not be empty"),
+  Name: Yup.string().max(30, "Name should be less than 30 chars").required("Name should not be empty"),
   email: Yup.string().email().required("Email should not be empty"),
   password: Yup.string().min(8, "Password should be of 8 chars").required("Password should not be empty"),
   phone: Yup.string().length(10, "Phone should be of 10 chars").required("Phone No. should not be empty"),
@@ -36,16 +36,18 @@ const SignUp = ({ navigation }) => {
   
  
   const onSignUp = async (values) => {
-    const { email, password } = values;
+    const { email, password,Name,phone } = values;
     const payload = {
       email,
       password,
+      Name,
+      phone
     };
     try {
       // await createUserWithEmailAndPassword(auth,email, password);
       // ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
       // await sendEmailVerification(auth.currentUser);
-      const data = await fetch(`http://192.168.1.10:5000/myapp/register`, {
+      const data = await fetch(`http://192.168.1.10:8082/myapp/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -59,7 +61,7 @@ const SignUp = ({ navigation }) => {
   };
   const googleSignUp = async()=>{
     try {
-      const data = await fetch(`http://192.168.1.10:5000/myapp/googleSignUp`, {
+      const data = await fetch(`http://192.168.1.10:8082/myapp/googleSignUp`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -72,7 +74,7 @@ const SignUp = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.createAccountText}>Create an Account</Text>
       <Formik
-        initialValues={{ name: "", email: "", password: "", phone: "" }}
+        initialValues={{ Name: "", email: "", password: "", phone: "" }}
         onSubmit={onSignUp}
         validationSchema={signUpFormSchema}
         validateOnMount={true}
@@ -91,11 +93,11 @@ const SignUp = ({ navigation }) => {
               <View style={{ gap: responsiveHeight(1.3) }}>
                 <Text style={styles.labelFont}>Name</Text>
                 <TextInput
-                  style={errors.name && errors.name?styles.inputNotValid:styles.input}
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  value={values.name}
-                  placeholder={`${errors.name && errors.name?errors.name:""}`}
+                  style={errors.Name && errors.Name?styles.inputNotValid:styles.input}
+                  onChangeText={handleChange("Name")}
+                  onBlur={handleBlur("Name")}
+                  value={values.Name}
+                  placeholder={`${errors.Name && errors.Name?errors.Name:""}`}
                 />
               </View>
               <View style={{ gap: responsiveHeight(1.3) }}>
