@@ -9,7 +9,7 @@ export const fetchGroceries = createAsyncThunk("groceries/fetchGroceries", async
     });
     const data = response.data.grocery;
 
-    console.log(data);
+    // console.log(data);
 
     return data;
    

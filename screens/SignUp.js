@@ -47,7 +47,7 @@ const SignUp = ({ navigation }) => {
       // await createUserWithEmailAndPassword(auth,email, password);
       // ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
       // await sendEmailVerification(auth.currentUser);
-      const data = await fetch(`http://192.168.1.10:8082/myapp/register`, {
+      const data = await fetch(`http://192.168.1.3:8082/myapp/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

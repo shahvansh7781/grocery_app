@@ -12,7 +12,7 @@ export function Cart () {
 
 
     const data=useSelector((state)=>state.Cart)
-    // console.log(data)
+    
 
     const navigation=useNavigation()
 
