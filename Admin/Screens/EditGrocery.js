@@ -11,6 +11,8 @@ import {ref,set} from 'firebase/database'
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import firebase from 'firebase/compat';
+import { useDispatch } from 'react-redux';
+import { editGroceries, fetchGroceries } from '../../Reducers/GroceryReducer';
 
 // Define a function to update data
 const editGrocery = async(itemKey, newData) => {
@@ -19,7 +21,7 @@ const editGrocery = async(itemKey, newData) => {
     newData
   }
   try {
-    const data = await fetch(`http://192.168.1.10:8082/myapp/editGrocery`, {
+    const data = await fetch(`http://192.168.1.3:8082/myapp/editGrocery`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body:JSON.stringify(payload)
@@ -51,14 +53,30 @@ export function EditGrocery () {
 
     const route=useRoute()
     const navigation=useNavigation()
+    const dispatch=useDispatch()
   
+     console.log(route.params.data)
 
-    const [imageData,setImageData]= useState(route.params.data.imageData)
+     const {data,id}=route.params
+    const [imageData,setImageData]= useState(data.imageData)
 
-    const [name,setName]=useState(route.params.data.name)
-    const [price,setPrice]=useState(route.params.data.price)
-    const [discount,setDiscount]=useState(route.params.data.discount)
-    const [description,setDescription]=useState(route.params.data.description)
+    const [name,setName]=useState('')
+    const [price,setPrice]=useState('')
+    const [discount,setDiscount]=useState('')
+    const [description,setDescription]=useState('')
+
+
+
+    useEffect(()=>{
+      setImageData(data.imageData)
+      setName(data.name)
+      setPrice(data.price)
+      setDiscount(data.discount)
+      setDescription(data.description)
+
+
+    },[data])
+    
 
 
     const getImageSize = async (uri) => {
@@ -128,7 +146,9 @@ export function EditGrocery () {
     }
 
     const handleEdit=()=>{
-console.log(route.params.id);
+
+        console.log("I am in ....")
+        console.log(route.params.id);
         const newData={
             name:name,
             price:price,
@@ -138,7 +158,13 @@ console.log(route.params.id);
 
 
         }
-        editGrocery(route.params.id,newData)
+        const payload={
+          itemKey:route.params.id,
+          newData
+        }
+        // editGrocery(route.params.id,newData)
+        dispatch(editGroceries(payload))
+        dispatch(fetchGroceries())
         navigation.push('Admin')
     }
 
@@ -173,7 +199,7 @@ console.log(route.params.id);
         <TouchableOpacity style={styles.pickImg} onPress={()=>{premit()}}>
             <Text>Pick Image From Gallery</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.uploadBtn} onPress={handleEdit}>
+        <TouchableOpacity style={styles.uploadBtn} onPress={()=>{handleEdit()}}>
             <Text>Edit Grocery</Text>
         </TouchableOpacity>
 
