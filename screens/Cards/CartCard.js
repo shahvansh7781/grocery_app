@@ -62,7 +62,8 @@ export function CartCard ({itemData}){
                 <View style={styles.card} >
                     <View >
                     <Image
-                        source={itemData.image}
+                        
+                        source={ {uri:""+itemData.image} }
                         resizeMode="cover"
                         style={styles.cardImg}
                     

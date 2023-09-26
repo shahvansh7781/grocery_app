@@ -55,7 +55,7 @@ export function EditGrocery () {
     const navigation=useNavigation()
     const dispatch=useDispatch()
   
-     console.log(route.params.data)
+    //  console.log(route.params.data)
 
      const {data,id}=route.params
     const [imageData,setImageData]= useState(data.imageData)

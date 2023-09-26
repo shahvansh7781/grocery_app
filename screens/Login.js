@@ -30,7 +30,7 @@ const Login = ({ navigation }) => {
       password,
     };
     try {
-      const data = await fetch(`http://192.168.1.10:8082/myapp/login`, {
+      const data = await fetch(`http://192.168.1.3:8082/myapp/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

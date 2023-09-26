@@ -48,18 +48,18 @@ const CartSlice= createSlice({
       ],
     reducers:{
 
-        // add:(state,action)=>{
-        //     state.push(action.payload)
-        // },
-        update:(state,action)=>{
-            const {id,title,desc}=action.payload
-            const tf=state.find(todo=>todo.id==id)
-
-            if(tf){
-                tf.title=title
-                tf.desc=desc
-            }
+        add:(state,action)=>{
+            state.push(action.payload)
         },
+        // update:(state,action)=>{
+        //     const {id,title,desc}=action.payload
+        //     const tf=state.find(todo=>todo.id==id)
+
+        //     if(tf){
+        //         tf.title=title
+        //         tf.desc=desc
+        //     }
+        // },
 
         updateCount:(state,action)=>{
             const {id,count}=action.payload
