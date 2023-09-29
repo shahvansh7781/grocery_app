@@ -30,6 +30,7 @@ const Login = ({ navigation }) => {
       email,
       password,
     };
+    
     try {
       const data = await fetch(`${api_url}:8082/myapp/login`, {
         method: "POST",
