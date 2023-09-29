@@ -17,6 +17,7 @@ import {
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { api_url } from "../utils/api_url";
 
 const loginFormSchema = Yup.object().shape({
   email: Yup.string().required("Email should not be empty"),
@@ -29,8 +30,9 @@ const Login = ({ navigation }) => {
       email,
       password,
     };
+    
     try {
-      const data = await fetch(`http://192.168.1.3:8082/myapp/login`, {
+      const data = await fetch(`${api_url}:8082/myapp/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -45,7 +47,7 @@ const Login = ({ navigation }) => {
       // );
       // const response = await data.json();
       // console.log(await data.json());
-      ToastAndroid.show("SignIn successfull",ToastAndroid.LONG);
+      ToastAndroid.show("SignIn successfull",ToastAndroid.SHORT);
       navigation.navigate("Home");
     } catch (error) {
       Alert.alert("Invalid Credentials", "Pls try again", [
