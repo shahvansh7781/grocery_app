@@ -54,7 +54,7 @@ const SignUp = ({ navigation }) => {
         body: JSON.stringify(payload),
       });
       console.log(await data.json());
-      ToastAndroid.show("Email Verification link has been send to your Email. Kindly Verify It.",ToastAndroid.LONG);
+      // ToastAndroid.show("Email Verification link has been send to your Email. Kindly Verify It.",ToastAndroid.LONG);
       navigation.navigate("Login");
     } catch (error) {
      Alert.alert("SignUp Failed");

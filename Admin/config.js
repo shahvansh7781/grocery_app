@@ -1,6 +1,6 @@
-import firebase from 'firebase/compat/app'
-import  {getDatabase} from 'firebase/database'
-
+import { initializeApp } from "firebase/app";
+import  {getFirestore} from 'firebase/firestore'
+import {getStorage} from "firebase/storage"
 
 const firebaseConfig = {
     apiKey: "AIzaSyAjPgs8TWlv8g76ahyCn9IJIRn748_WRPE",
@@ -14,12 +14,11 @@ const firebaseConfig = {
   };
 
 
-  if (firebase.apps.length === 0)
-  {
-    firebase.initializeApp(firebaseConfig)
-  }
+  // Initialize Firebase
+export const app = initializeApp(firebaseConfig);
 
+// Initialize Cloud Firestore and get a reference to the service
+export const db = getFirestore(app);
 
-  const db= getDatabase()
-
-  export {db}
+// Initialize Cloud Storage and get a reference to the service
+export const storage = getStorage(app);

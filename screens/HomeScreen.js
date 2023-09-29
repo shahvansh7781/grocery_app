@@ -9,6 +9,7 @@ import { fetchGroceries } from "../Reducers/GroceryReducer";
 
 import { Card, Title, Paragraph } from 'react-native-paper';
 import { add } from "../Reducers/CartReducers";
+// import { Icon } from "react-native-vector-icons/icon";
 
 
 // import Card from '@mui/material/Card';
@@ -85,6 +86,7 @@ export default function HomeScreen() {
           
          {!isDrawerOpen && ( <TouchableOpacity onPress={toggleDrawer} style={styles.drawerButton}>
           <Text style={{fontSize:40}}>X</Text>
+          
         </TouchableOpacity>)}
 
 

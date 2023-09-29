@@ -37,6 +37,22 @@ const Login = ({ navigation }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      const resp = await data.json();
+      // console.log(resp);
+      if (resp.success) {
+        ToastAndroid.show("SignIn successfull",ToastAndroid.LONG);
+        navigation.navigate("Home");
+      }
+      else{
+        Alert.alert("Invalid Credentials", "Pls try again", [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") },
+        ]);
+      }
       // const {data} = await axios.post(
       //   "http://198.168.1.10:5000/myapp/login",
       //   {
@@ -47,8 +63,7 @@ const Login = ({ navigation }) => {
       // );
       // const response = await data.json();
       // console.log(await data.json());
-      ToastAndroid.show("SignIn successfull",ToastAndroid.LONG);
-      navigation.navigate("Home");
+     
     } catch (error) {
       Alert.alert("Invalid Credentials", "Pls try again", [
         {
