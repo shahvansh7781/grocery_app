@@ -1,16 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from 'axios'; // Import Axios
+import { api_url } from "../utils/api_url";
 
 // Define an async thunk for fetching groceries using Axios
 export const fetchGroceries = createAsyncThunk("groceries/fetchGroceries", async () => {
   try {
-    const response = await axios.get(`http://192.168.1.10:8082/myapp/getGrocery`, {
+    const response = await axios.get(`${api_url}:8082/myapp/getGrocery`, {
       headers: { "Content-Type": "application/json" },
     });
     const data = response.data.grocery;
 
-    console.log(data);
-    console.log(process.env.API_URL);
+    // console.log(data);
 
     return data;
    
@@ -22,7 +22,7 @@ export const fetchGroceries = createAsyncThunk("groceries/fetchGroceries", async
 // Define an async thunk for deleting groceries using Axios
 export const deleteGroceries = createAsyncThunk("groceries/deleteGroceries", async (itemKey) => {
   try {
-    const response = await axios.delete(`http://192.168.1.10:8082/myapp/deleteGrocery`, {
+    const response = await axios.delete(`${api_url}:8082/myapp/deleteGrocery`, {
       headers: { "Content-Type": "application/json" },
       data: { itemKey }, // Use 'data' for DELETE requests in Axios
     });
@@ -40,7 +40,7 @@ export const deleteGroceries = createAsyncThunk("groceries/deleteGroceries", asy
 // Define an async thunk for editing groceries using Axios
 export const editGroceries = createAsyncThunk("groceries/editGroceries", async (payload) => {
   try {
-    const response = await axios.patch(`http://192.168.1.10:8082/myapp/editGrocery`, JSON.stringify(payload), {
+    const response = await axios.patch(`${api_url}:8082/myapp/editGrocery`, JSON.stringify(payload), {
       headers: { "Content-Type": "application/json" },
     });
     const items = response.data;
@@ -53,7 +53,7 @@ export const editGroceries = createAsyncThunk("groceries/editGroceries", async (
 // Define an async thunk for adding groceries using Axios
 export const addGroceries = createAsyncThunk("groceries/addGroceries", async (payload) => {
   try {
-    const response = await axios.post(`http://192.168.1.10:8082/myapp/addGrocery`, JSON.stringify(payload), {
+    const response = await axios.post(`${api_url}:8082/myapp/addGrocery`, JSON.stringify(payload), {
       headers: { "Content-Type": "application/json" },
     });
     console.log(await response.data);
