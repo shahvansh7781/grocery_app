@@ -47,7 +47,7 @@ const Login = ({ navigation }) => {
       // );
       // const response = await data.json();
       // console.log(await data.json());
-      ToastAndroid.show("SignIn successfull",ToastAndroid.SHORT);
+      ToastAndroid.show("SignIn successfull",ToastAndroid.LONG);
       navigation.navigate("Home");
     } catch (error) {
       Alert.alert("Invalid Credentials", "Pls try again", [
