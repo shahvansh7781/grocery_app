@@ -1,7 +1,7 @@
 // const { set, ref, getDatabase } = require("firebase/database");
 const app = require("../config/firebaseConfig");
 // const {db} = require("../config/firebaseConfig");
-const {dbF} = require("../config/firebaseConfig");
+const { dbF } = require("../config/firebaseConfig");
 const {
   getAuth,
   createUserWithEmailAndPassword,
@@ -10,42 +10,49 @@ const {
   GoogleAuthProvider,
   signInWithPopup,
 } = require("firebase/auth");
-const { collection, doc, setDoc, addDoc, query, where, getDoc } = require("firebase/firestore");
+const {
+  collection,
+  doc,
+  setDoc,
+  addDoc,
+  query,
+  where,
+  getDoc,
+} = require("firebase/firestore");
 const auth = getAuth();
-const dbRef = collection(dbF,"Users");
+const dbRef = collection(dbF, "Users");
 exports.registerUser = async (req, res) => {
-  const { email,Name,password,phone } = req.body;
+  const { email, Name, password, phone } = req.body;
   const payload = {
     email,
     Name,
     phone,
-    role:"User"
-  }
-  
+    role: "User",
+  };
+
   try {
     // const queryF = query(dbRef,where("email","==",`${email}`));
-  // if (queryF) {
-  //   res.status(404).send({
-  //     success: false,
-  //     error: "User already Exists",
-  //   });
-  // }
+    // if (queryF) {
+    //   res.status(404).send({
+    //     success: false,
+    //     error: "User already Exists",
+    //   });
+    // }
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
-   const resp = await addDoc(dbRef,payload);
-   
+    const resp = await addDoc(dbRef, payload);
+
     // await sendEmailVerification(auth.currentUser);
     if (userCredential) {
       res.status(201).send({
         success: true,
         message: "Successfully registered",
-        user:resp.id
+        user: resp.id,
       });
     }
-
   } catch (error) {
     res.status(404).send({
       success: false,
@@ -59,12 +66,16 @@ exports.loginUser = async (req, res) => {
   try {
     const user = await signInWithEmailAndPassword(auth, email, password);
     // console.log(user._tokenResponse.idToken);
-
-    res.status(200).send({
-      success: true,
-      message: "Login Success",
-      user
-    });
+    // console.log(user);
+    // if (user) {
+      res.status(200).send({
+        // data: {
+          success: true,
+          message: "Login Success",
+          user,
+        // },
+      });
+    // }
   } catch (error) {
     res.status(400).send({
       success: false,

@@ -17,6 +17,7 @@ import {
 } from "react-native-responsive-dimensions";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import { api_url } from "../utils/api_url";
 
 // import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
@@ -47,13 +48,13 @@ const SignUp = ({ navigation }) => {
       // await createUserWithEmailAndPassword(auth,email, password);
       // ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
       // await sendEmailVerification(auth.currentUser);
-      const data = await fetch(`http://192.168.1.3:8082/myapp/register`, {
+      const data = await fetch(`${api_url}:8082/myapp/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       console.log(await data.json());
-      ToastAndroid.show("Email Verification link has been send to your Email. Kindly Verify It.",ToastAndroid.LONG);
+      // ToastAndroid.show("Email Verification link has been send to your Email. Kindly Verify It.",ToastAndroid.LONG);
       navigation.navigate("Login");
     } catch (error) {
      Alert.alert("SignUp Failed");
@@ -61,7 +62,7 @@ const SignUp = ({ navigation }) => {
   };
   const googleSignUp = async()=>{
     try {
-      const data = await fetch(`http://192.168.1.10:8082/myapp/googleSignUp`, {
+      const data = await fetch(`${api_url}:8082/myapp/googleSignUp`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });

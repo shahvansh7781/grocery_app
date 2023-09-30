@@ -21,7 +21,7 @@ const editGrocery = async(itemKey, newData) => {
     newData
   }
   try {
-    const data = await fetch(`http://192.168.1.3:8082/myapp/editGrocery`, {
+    const data = await fetch(`http://192.168.1.10:8082/myapp/editGrocery`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body:JSON.stringify(payload)
