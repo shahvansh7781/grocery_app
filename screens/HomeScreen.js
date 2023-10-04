@@ -37,7 +37,7 @@ import axios from 'axios'
 export default function HomeScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  
+  const user = useSelector((state)=>state.users.user)
   const [isLoading, setIsLoading] = useState(true); // Add a loading state
 
   const [firstLoad,setFirstLoad]=useState(true)
@@ -213,6 +213,10 @@ export default function HomeScreen() {
     
   };
 
+  const handleUserDetails = async()=>{
+    navigation.push("UserDetails");
+    setIsDrawerOpen(false);
+  }
   const handleCart = async () => {
     navigation.push("Cart");
     setIsDrawerOpen(false)
@@ -312,8 +316,8 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
           <Text style={{fontSize:40}}>X</Text>
           
         </TouchableOpacity>)}
-
-
+        <Text style={{fontSize:responsiveFontSize(2),fontWeight:"bold"}} > Welcome! {user && user.userData.Name}</Text>
+       {/* {user ? <View style={{marginVertical:15}}> <Text> Welcome! </Text> </View> :  <></>} */}
         {/* Location */}
 
         <View style={styles.locationContainer}>
@@ -425,8 +429,7 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
 
           
     {/* //Drawer */}
-
-    <View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
+{user && user.userData.role==="Admin" ? <View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
         <TouchableOpacity onPress={toggleDrawer} style={styles.drawerItem}>
           <Text>Close Drawer</Text>
         </TouchableOpacity>
@@ -439,7 +442,24 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
         <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
           <Text>Cart</Text>
         </TouchableOpacity>
-      </View>
+        <TouchableOpacity onPress={handleUserDetails} style={styles.drawerItem}>
+          <Text>My Profile</Text>
+        </TouchableOpacity>
+      </View>:<View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
+        <TouchableOpacity onPress={toggleDrawer} style={styles.drawerItem}>
+          <Text>Close Drawer</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleReset} style={styles.drawerItem}>
+          <Text>Reset</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
+          <Text>Cart</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleUserDetails} style={styles.drawerItem}>
+          <Text>My Profile</Text>
+        </TouchableOpacity>
+      </View>}
+    
 
 
 
