@@ -7,8 +7,9 @@ import {
   Button,
   Alert,
   ToastAndroid,
+  ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import {
   responsiveHeight,
   responsiveWidth,
@@ -18,62 +19,73 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { api_url } from "../utils/api_url";
+import { auth } from "../Admin/config";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const loginFormSchema = Yup.object().shape({
   email: Yup.string().required("Email should not be empty"),
   password: Yup.string().required("Password should not be empty"),
 });
 const Login = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const onSignIn = async (values) => {
     const { email, password } = values;
     const payload = {
       email,
       password,
     };
-    
+    setLoading(true);
     try {
-      const data = await fetch(`${api_url}:8082/myapp/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const resp = await data.json();
+      const resp = await signInWithEmailAndPassword(auth, email, password);
       // console.log(resp);
-      if (resp.success) {
-        ToastAndroid.show("SignIn successfull",ToastAndroid.LONG);
-        navigation.navigate("Home");
-      }
-      else{
-        Alert.alert("Invalid Credentials", "Pls try again", [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "OK", onPress: () => console.log("OK Pressed") },
-        ]);
-      }
-      // const {data} = await axios.post(
-      //   "http://198.168.1.10:5000/myapp/login",
-      //   {
-      //     email,
-      //     password,
-      //   },
-      //   { headers: { "Content-Type": "application/json" } }
-      // );
-      // const response = await data.json();
-      // console.log(await data.json());
-     
     } catch (error) {
-      Alert.alert("Invalid Credentials", "Pls try again", [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "OK", onPress: () => console.log("OK Pressed") },
-      ]);
+      alert("Invalid Credentials");
+    } finally {
+      setLoading(false);
     }
+    // try {
+    //   const data = await fetch(`${api_url}:8082/myapp/login`, {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(payload),
+    //   });
+    //   const resp = await data.json();
+    //   // console.log(resp);
+    //   if (resp.success) {
+    //     ToastAndroid.show("SignIn successfull",ToastAndroid.LONG);
+    //     // navigation.navigate("UserDetails");
+    //   }
+    //   else{
+    //     Alert.alert("Invalid Credentials", "Pls try again", [
+    //       {
+    //         text: "Cancel",
+    //         onPress: () => console.log("Cancel Pressed"),
+    //         style: "cancel",
+    //       },
+    //       { text: "OK", onPress: () => console.log("OK Pressed") },
+    //     ]);
+    //   }
+    //   // const {data} = await axios.post(
+    //   //   "http://198.168.1.10:5000/myapp/login",
+    //   //   {
+    //   //     email,
+    //   //     password,
+    //   //   },
+    //   //   { headers: { "Content-Type": "application/json" } }
+    //   // );
+    //   // const response = await data.json();
+    //   // console.log(await data.json());
+
+    // } catch (error) {
+    //   Alert.alert("Invalid Credentials", "Pls try again", [
+    //     {
+    //       text: "Cancel",
+    //       onPress: () => console.log("Cancel Pressed"),
+    //       style: "cancel",
+    //     },
+    //     { text: "OK", onPress: () => console.log("OK Pressed") },
+    //   ]);
+    // }
   };
   const googleSignUp = async () => {
     // try {
@@ -85,7 +97,7 @@ const Login = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.createAccountText}>Login</Text>
+      {/* <Text style={styles.createAccountText}>Login</Text> */}
       <Text style={styles.createAccountText}>Hello, Welcome Back</Text>
       <Formik
         initialValues={{ email: "", password: "" }}
@@ -153,33 +165,34 @@ const Login = ({ navigation }) => {
           </>
         )}
       </Formik>
-
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
-        <View>
-          <Text style={styles.ORText}>OR LOGIN WITH</Text>
-        </View>
-        <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
-      </View>
-      <View style={{ flexDirection: "row", gap: responsiveWidth(3) }}>
-        <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
-          <Text style={styles.googleTxt}>Google</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
-          <Text style={styles.googleTxt}>Phone</Text>
-        </TouchableOpacity>
-        {/* <GoogleSigninButton size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={googleSignUp}/> */}
-      </View>
-      <View style={styles.alreadyAccountContainer}>
-        <Text style={styles.alreadyAccountText}>Don't Have an Account?</Text>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("SignUp");
-          }}
-        >
-          <Text style={styles.loginText}>SignUp</Text>
-        </TouchableOpacity>
-      </View>
+            <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
+            <View>
+              <Text style={styles.ORText}>OR LOGIN WITH</Text>
+            </View>
+            <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
+          </View>
+          <View style={{ flexDirection: "row", gap: responsiveWidth(3) }}>
+            <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
+              <Text style={styles.googleTxt}>Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
+              <Text style={styles.googleTxt}>Phone</Text>
+            </TouchableOpacity>
+            {/* <GoogleSigninButton size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={googleSignUp}/> */}
+          </View>
+          <View style={styles.alreadyAccountContainer}>
+            <Text style={styles.alreadyAccountText}>
+              Don't Have an Account?
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("SignUp");
+              }}
+            >
+              <Text style={styles.loginText}>SignUp</Text>
+            </TouchableOpacity>
+          </View>
     </View>
   );
 };

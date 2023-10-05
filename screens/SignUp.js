@@ -8,7 +8,7 @@ import {
   Alert,
   ToastAndroid
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   responsiveHeight,
@@ -18,6 +18,9 @@ import {
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { api_url } from "../utils/api_url";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../Admin/config";
+import { addDoc, collection, getDocs, query } from "firebase/firestore";
 
 // import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
@@ -30,7 +33,7 @@ const signUpFormSchema = Yup.object().shape({
 
 const SignUp = ({ navigation }) => {
   // useEffect(() => {
-    
+    const [userD,setUserD] = useState(null);
   // GoogleSignin.configure({webClientId:"11139080005-ktk42659aqapvu153r4bkfbkj1gifpgu.apps.googleusercontent.com"});
    
   // }, [])
@@ -38,27 +41,42 @@ const SignUp = ({ navigation }) => {
  
   const onSignUp = async (values) => {
     const { email, password,Name,phone } = values;
+    const dbRef = collection(db,"Users");
     const payload = {
       email,
-      password,
       Name,
-      phone
+      phone,
+      role:"User"
     };
     try {
-      // await createUserWithEmailAndPassword(auth,email, password);
-      // ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
-      // await sendEmailVerification(auth.currentUser);
-      const data = await fetch(`${api_url}:8082/myapp/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      console.log(await data.json());
-      // ToastAndroid.show("Email Verification link has been send to your Email. Kindly Verify It.",ToastAndroid.LONG);
-      navigation.navigate("Login");
+      await createUserWithEmailAndPassword(auth,email,password);
+      await addDoc(dbRef,payload);
+      const q = query(dbRef,where("email", "==", `${email}`));
+      const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log(doc.id, " => ", doc.data());
+      setUserD(doc.data())
+      ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
+    });
     } catch (error) {
-     Alert.alert("SignUp Failed");
+      alert("SignUp Failed")
     }
+    // try {
+    //   // await createUserWithEmailAndPassword(auth,email, password);
+    //   // ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
+    //   // await sendEmailVerification(auth.currentUser);
+    //   const data = await fetch(`${api_url}:8082/myapp/register`, {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(payload),
+    //   });
+    //   console.log(await data.json());
+    //   // ToastAndroid.show("Email Verification link has been send to your Email. Kindly Verify It.",ToastAndroid.LONG);
+    //   navigation.navigate("Login");
+    // } catch (error) {
+    //  Alert.alert("SignUp Failed");
+    // }
   };
   const googleSignUp = async()=>{
     try {
@@ -73,7 +91,7 @@ const SignUp = ({ navigation }) => {
   }
   return (
     <View style={styles.container}>
-      <Text style={styles.createAccountText}>Create an Account</Text>
+      {/* <Text style={styles.createAccountText}>Create an Account</Text> */}
       <Formik
         initialValues={{ Name: "", email: "", password: "", phone: "" }}
         onSubmit={onSignUp}
@@ -182,7 +200,7 @@ const SignUp = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: responsiveHeight(4),
+    marginTop: responsiveHeight(2),
     marginLeft: responsiveWidth(10),
     marginRight: responsiveWidth(10),
     gap: responsiveHeight(2.5),

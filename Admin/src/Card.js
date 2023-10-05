@@ -64,7 +64,9 @@ const Card = ({itemData}) => {
     dispatch(deleteGroceries(itemKey))
       .then(() => {
         // If successful, refresh data by fetching groceries again
-        dispatch(fetchGroceries());
+        // dispatch(fetchGroceries());
+
+        // navigation.dispatch(StackActions.replace('Admin'));
       })
       .catch((error) => {
         // Handle error, show an alert, or log it
@@ -72,13 +74,16 @@ const Card = ({itemData}) => {
       });
     
     console.log('Done')
+    navigation.navigate('Home')
+    navigation.navigate('Admin')
+    console.log("Navigation done")
   };
  
   return (
    
     <View  style={styles.container}>
-       {isLoading && <p>Loading...</p>}
-       {error && <p>Error: {error}</p>}
+       {/* {isLoading && <p>Loading...</p>}
+       {error && <p>Error: {error}</p>} */}
     <TouchableOpacity    >
       <View style={styles.card} >
         <View >
@@ -111,7 +116,30 @@ const Card = ({itemData}) => {
               <Image source={require('../Images/edit.png')} style={styles.icon}></Image>
              
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{handleDelete(itemData.id)}}>
+          <TouchableOpacity onPress={()=>{Alert.alert(
+                      'Confirm Title',
+                      'Do you want to proceed?',
+                      [
+                        {
+                          text: 'Cancel',
+                          onPress: () => {
+                            // Handle Cancel button press
+                            console.log('Confirm Cancel pressed');
+                          },
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'OK',
+                          onPress: () => {
+                            // Handle OK button press
+                            console.log('Confirm OK pressed');
+                            handleDelete(itemData.id)
+                          },
+                        },
+                      ],
+                      { cancelable: false }
+                    );
+                          }}>
               <Image source={require('../Images/delete.png')} style={styles.icon} ></Image>
               
           </TouchableOpacity>
