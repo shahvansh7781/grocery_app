@@ -37,7 +37,7 @@ import axios from 'axios'
 export default function HomeScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  
+  const user = useSelector((state)=>state.users.user)
   const [isLoading, setIsLoading] = useState(true); // Add a loading state
 
   const [firstLoad,setFirstLoad]=useState(true)
@@ -213,6 +213,10 @@ export default function HomeScreen() {
     
   };
 
+  const handleUserDetails = async()=>{
+    navigation.push("UserDetails");
+    setIsDrawerOpen(false);
+  }
   const handleCart = async () => {
     navigation.push("Cart");
     setIsDrawerOpen(false)
@@ -312,8 +316,8 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
           <Text style={{fontSize:40}}>X</Text>
           
         </TouchableOpacity>)}
-
-
+        <Text style={{fontSize:responsiveFontSize(2),fontWeight:"bold"}} > Welcome! {user && user.userData.Name}</Text>
+       {/* {user ? <View style={{marginVertical:15}}> <Text> Welcome! </Text> </View> :  <></>} */}
         {/* Location */}
 
         <View style={styles.locationContainer}>
@@ -403,12 +407,12 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
 
         {filterData.map((item,index) => (
             <Card key={index} style={styles.card}>
-              <Card.Cover source={{ uri: item.imageData }} />
+              <Card.Cover source={{ uri: item.imageData }} style={{height:responsiveHeight(20)}} />
               <Card.Content>
-                <Title style={{fontSize:20,fontWeight:400}}>{item.name}</Title>
+                <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400}}>{item.name}</Title>
 
                 {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
-                <Title style={{color:'green'}}>${item.price}</Title>
+                <Title style={{color:'green',fontSize:responsiveFontSize(2)}}>${item.price}</Title>
 
                 <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
                     <Text >Add to Cart</Text>
@@ -425,8 +429,7 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
 
           
     {/* //Drawer */}
-
-    <View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
+{user && user.userData.role==="Admin" ? <View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
         <TouchableOpacity onPress={toggleDrawer} style={styles.drawerItem}>
           <Text>Close Drawer</Text>
         </TouchableOpacity>
@@ -439,7 +442,24 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
         <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
           <Text>Cart</Text>
         </TouchableOpacity>
-      </View>
+        <TouchableOpacity onPress={handleUserDetails} style={styles.drawerItem}>
+          <Text>My Profile</Text>
+        </TouchableOpacity>
+      </View>:<View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
+        <TouchableOpacity onPress={toggleDrawer} style={styles.drawerItem}>
+          <Text>Close Drawer</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleReset} style={styles.drawerItem}>
+          <Text>Reset</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
+          <Text>Cart</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleUserDetails} style={styles.drawerItem}>
+          <Text>My Profile</Text>
+        </TouchableOpacity>
+      </View>}
+    
 
 
 
@@ -508,7 +528,7 @@ const styles = StyleSheet.create({
 
     width: responsiveWidth(45), // Adjust the width as needed
     marginHorizontal: responsiveWidth(2),
-    height:responsiveHeight(40)
+    height:responsiveHeight(36)
    
     
   },
@@ -595,18 +615,22 @@ buttonList: {
 },
 button: {
   backgroundColor: 'white',
-  padding: responsiveWidth(3),
+  padding: responsiveWidth(2.5),
   borderRadius: 5,
   marginRight: responsiveWidth(2),
   width:responsiveWidth(25),
+  display:"flex",
+  justifyContent:"center",
   alignItems:'center'
 },
 activebutton: {
   backgroundColor: 'green',
-  padding: responsiveWidth(3),
+  padding: responsiveWidth(2.5),
   borderRadius: 5,
   marginRight: responsiveWidth(2),
   width:responsiveWidth(25),
+  display:"flex",
+  justifyContent:"center",
   alignItems:'center'
 },
 buttonText: {

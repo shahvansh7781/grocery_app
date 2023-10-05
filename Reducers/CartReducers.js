@@ -21,24 +21,6 @@ const CartSlice = createSlice({
       count: 1,
       stock: 5,
     },
-    {
-      id: 3,
-      image: require("../Admin/Images/shopping-bag.png"),
-      price: 20,
-
-      title: "Dairy Milk",
-      count: 1,
-      stock: 8,
-    },
-    {
-      id: 4,
-      image: require("../Admin/Images/shopping-bag.png"),
-
-      price: 90,
-      title: "Pepsi",
-      count: 1,
-      stock: 5,
-    },
   ],
   reducers: {
     add: (state, action) => {

@@ -116,6 +116,7 @@ import { EditGrocery } from '../Admin/Screens/EditGrocery'
 import SignUp from '../screens/SignUp'
 import Login from '../screens/Login'
 import {Cart} from '../screens/Cart'
+import UserDetails from '../screens/UserDetails'
 
 const Stack=createNativeStackNavigator()
 
@@ -160,6 +161,7 @@ export default function AppNavigation () {
             <Stack.Screen name='Admin' options={{headerShown:false}} component={DashBoard}></Stack.Screen>
             <Stack.Screen name='EditGrocery' options={{headerShown:false}} component={EditGrocery}></Stack.Screen>
             <Stack.Screen name='Cart' options={{headerShown:false}} component={Cart}></Stack.Screen>
+            <Stack.Screen name='UserDetails' component={UserDetails}></Stack.Screen>
         </Stack.Navigator>
 
       </NavigationContainer>
@@ -185,6 +187,7 @@ export default function AppNavigation () {
             <Stack.Screen name='Admin'   options={{headerShown:false}} component={DashBoard}></Stack.Screen>
             <Stack.Screen name='EditGrocery' options={{headerShown:false}} component={EditGrocery}></Stack.Screen>
             <Stack.Screen name='Cart' options={{headerShown:false}} component={Cart}></Stack.Screen>
+            <Stack.Screen name='UserDetails' component={UserDetails}></Stack.Screen>
         </Stack.Navigator>
 
       </NavigationContainer>
