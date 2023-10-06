@@ -2,6 +2,7 @@
 const app = require("../config/firebaseConfig");
 // const {db} = require("../config/firebaseConfig");
 const { dbF } = require("../config/firebaseConfig");
+// const {User} = require("firebase/auth")
 const {
   getAuth,
   createUserWithEmailAndPassword,
@@ -9,6 +10,8 @@ const {
   sendEmailVerification,
   GoogleAuthProvider,
   signInWithPopup,
+  onAuthStateChanged,
+  signOut,
 } = require("firebase/auth");
 const {
   collection,
@@ -18,6 +21,7 @@ const {
   query,
   where,
   getDoc,
+  getDocs,
 } = require("firebase/firestore");
 const auth = getAuth();
 const dbRef = collection(dbF, "Users");
@@ -63,19 +67,30 @@ exports.registerUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
+  let userArr = {};
   try {
     const user = await signInWithEmailAndPassword(auth, email, password);
-    // console.log(user._tokenResponse.idToken);
+    // console.log(user._tokenResponse.email);
+    const q = query(
+      dbRef,
+      where("email", "==", `${user._tokenResponse.email}`)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log(doc.id, " => ", doc.data());
+      userArr = doc.data();
+    });
     // console.log(user);
-    // if (user) {
+    if (user) {
       res.status(200).send({
         // data: {
-          success: true,
-          message: "Login Success",
-          user,
+        success: true,
+        message: "Login Success",
+        userDetails: userArr,
         // },
       });
-    // }
+    }
   } catch (error) {
     res.status(400).send({
       success: false,
@@ -100,3 +115,43 @@ exports.loginUser = async (req, res) => {
 //     })
 //   }
 // };
+
+exports.loadUser = (req, res) => {
+  try {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        res.status(200).send({
+          success: true,
+          user,
+        });
+      } else {
+        res.status(404).send({
+          success: false,
+          user: null,
+        });
+      }
+    });
+  } catch (error) {
+    res.status(404).send({
+      success: false,
+      error,
+    });
+  }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    await signOut(auth).then(()=>{
+      res.status(200).send({
+        success:true,
+        message:"Logout Success"
+      })
+
+    });
+  } catch (error) {
+    res.status(200).send({
+      success: false,
+      error,
+    });
+  }
+};
