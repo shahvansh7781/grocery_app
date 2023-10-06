@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar, TouchableOpacity, ActivityIndicator,StyleSheet,FlatList, ScrollView } from "react-native";
-import { Text, View ,Image,TextInput} from "react-native";
+import { Text, View ,Image} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { removeItem } from "../utils/asyncStorage";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,21 +10,6 @@ import { fetchGroceries } from "../Reducers/GroceryReducer";
 import { Card, Title, Paragraph } from 'react-native-paper';
 import { add } from "../Reducers/CartReducers";
 // import { Icon } from "react-native-vector-icons/icon";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
-
-import * as Updates from 'expo-updates';
-
-import * as Location from 'expo-location';
-// import Geocoding from 'react-native-geocoding';
-import axios from 'axios'
-
-// Geocoding.init({
-//   baseUrl: 'https://nominatim.openstreetmap.org/',
-//   // osmUsername: 'Rushit', // Set your OSM username here (required by Nominatim)
-//   // osmPassword: 'Rushit2002', // Set your OSM password here (required by Nominatim)
-// });
-
 
 
 // import Card from '@mui/material/Card';
@@ -37,169 +22,24 @@ import axios from 'axios'
 export default function HomeScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const user = useSelector((state)=>state.users.user)
+  
   const [isLoading, setIsLoading] = useState(true); // Add a loading state
 
-  const [firstLoad,setFirstLoad]=useState(true)
-
-  const [address,setAddress]=useState('')
-  const [location,setLocation]=useState('')
-  const [searchQuery,setSearchQuery]=useState('')
-  
   const data=useSelector((state) => state.groceries.data)
-  
-
- 
-  
-
-  const [filterData, setFilterData] = useState(data);
-
- 
-
-  
-  
-  // const [data,setData]=useState([])
-
   const cartData=useSelector((state)=>state.Cart)
+  // r
 
-
-
-  const buttonList = [
-    { id: 1, label: 'All' },
-    { id: 2, label: 'Fruits' },
-    { id: 3, label: 'Vegetables' },
-    { id: 4, label: 'Dairy' },
-  ];
-
-  const [activeCategory,setActiveCategory]=useState(1)
-
-  const renderButton=({item})=>{
-    
-    if (item.id === activeCategory){
-      return(
-        
-        <TouchableOpacity style={styles.activebutton}>
-            <Text style={styles.activebuttonText} onPress={() =>setActiveCategory(item.id)}>{item.label} </Text>
-        </TouchableOpacity>
-      )
-    }
-    else{
-      return(
-        
-        <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText} onPress={() =>setActiveCategory(item.id)}>{item.label} </Text>
-        </TouchableOpacity>
-      )
-    }
-
-  
-
-  }
-  
-  // const filterByCategory=()=>{
-
-  //   console.log('I am in filterBy Category')
-  //    if (activeCategory===3){
-
-  //     const results = filterData.filter((grocery) => {
-        
-  //       return grocery.price==='10'
-  //     });
-  //     console.log("filterByCAt",results)
-  //     setFilterData(results)
-  //    }
-  //    else{
-  //     setFilterData(data)
-  //    }
-  // }
-
-  // useEffect(()=>{
-
-  //   filterByCategory()
-
-  // },[activeCategory])
-  useEffect(() => {
-    // Whenever the 'data' state changes, update 'filterData'
-    setFilterData(data);
-  }, [data]);
-  
   useEffect(() => {
     // Fetch data and set isLoading accordingly
-    
-    (dispatch(fetchGroceries())
-      .then(() => {setIsLoading(false);setActiveCategory(2);setActiveCategory(1);setFilterData(data);}) // Data fetched, set isLoading to false
+    dispatch(fetchGroceries())
+      .then(() => setIsLoading(false)) // Data fetched, set isLoading to false
       .catch((error) => {
         console.error("Error fetching data:", error);
         setIsLoading(false); // In case of an error, also set isLoading to false
 
-         
         
-      }));
-    
-    
-    setFilterData(data)
-    
-    
-      
-    
-    getLocationAsync()
-    setFirstLoad(false)
+      });
   }, [dispatch]);
-
-  useEffect(() => {
-     setFilterData(data)
-    // Debounce the handleSearch function
-
-    const debounceSearch = setTimeout(() => {
-      filterDataByCategoryAndSearch(searchQuery);
-    }, 1000); // Adjust the delay time as needed
-
-    // Cleanup the timeout when the component unmounts or when searchQuery changes
-    return () => clearTimeout(debounceSearch);
-  }, [searchQuery,activeCategory]);
-
-
-
-  async function getLocationAsync() {
-
-    setActiveCategory(1)
-
-    const { status } = await Location.requestForegroundPermissionsAsync();
-
-    if (status !== 'granted') {
-      console.error('Location permission not granted');
-      return;
-    }
-
-    // Get the current location
-    const { coords } = await Location.getCurrentPositionAsync({});
-     
-     // Reverse geocode the coordinates
-     try {
-      const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}`
-      );
-
-      console.log(response.data)
-
-      if (response.data && response.data.display_name) {
-        // setAddress(response.data.display_name);
-        const temp_addr=response.data.address.city+','+response.data.address.state +','+response.data.address.country//+','+response.data.address.postcode
-        setAddress(temp_addr)
-      } else {
-        setAddress('Address not found');
-      }
-    } catch (error) {
-      console.error('Error fetching address:', error);
-      setAddress('Address not found');
-    }
-
-    setLocation(coords);
-    
-  }
-  
-
-  
 
   const handleReset = async () => {
     await removeItem("onboarded");
@@ -208,19 +48,10 @@ export default function HomeScreen() {
 
   const handleAdmin = async () => {
     navigation.push("Admin");
-    setIsDrawerOpen(false)
-    
-    
   };
 
-  const handleUserDetails = async()=>{
-    navigation.push("UserDetails");
-    setIsDrawerOpen(false);
-  }
   const handleCart = async () => {
     navigation.push("Cart");
-    setIsDrawerOpen(false)
-    
   };
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -245,65 +76,6 @@ export default function HomeScreen() {
     
     navigation.push('Cart')
   }
-
-
-//   const handleSearch=useCallback((searchQuery)=>{
-
-    
-
-//     // Use the filter method to find groceries by name
-//   const searchResults = filterData.filter((grocery) => {
-//     // Convert both the search query and grocery name to lowercase for case-insensitive search
-//     const query = searchQuery.toLowerCase();
-//     const name = grocery.name.toLowerCase();
-
-//     // Check if the grocery name contains the search query
-//     return (
-//       name.startsWith(query) &&
-//       (activeCategory === 1 || grocery.description === buttonList[activeCategory-1]['label'])
-//     );
-//   });
-
-//   // Now, searchResults contains an array of matching groceries
-//   console.log('Search results:', searchResults);
-//   setFilterData(searchResults)
-//   // You can update the state or perform any other actions with the search results here
-
-// })
-
-const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
-  if (activeCategory === 2) {
-    // Filter by category if "Vegetables" is selected
-    const results = data.filter((grocery) => grocery.description === 'Fruit');
-    setFilterData(results.filter((grocery) =>
-    grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
-    );
-  } 
-  else if (activeCategory === 3){
-
-    const results = data.filter((grocery) => grocery.description === 'Vegetable');
-    setFilterData(results.filter((grocery) =>
-    grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
-    );
-
-  }
-  else if (activeCategory === 4){
-    const results = data.filter((grocery) => grocery.description === 'Dairy');
-    setFilterData(results.filter((grocery) =>
-    grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
-    );
-
-  }
-  else {
-    // Filter by search query for other categories
-    setFilterData((data.filter((grocery) =>
-    grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
-    ))
-  }
-});
-
-
-
   return (
     <SafeAreaView >
       
@@ -316,60 +88,10 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
           <Text style={{fontSize:40}}>X</Text>
           
         </TouchableOpacity>)}
-        <Text style={{fontSize:responsiveFontSize(2),fontWeight:"bold"}} > Welcome! {user && user.userData.Name}</Text>
-       {/* {user ? <View style={{marginVertical:15}}> <Text> Welcome! </Text> </View> :  <></>} */}
-        {/* Location */}
-
-        <View style={styles.locationContainer}>
-          <Icon name="map-marker" size={30} color="green"></Icon>
-          <Text style={styles.text}>{address}</Text>
-        </View>
-        
-        {/* search */}
-
-        <View style={styles.searchcartContainer}>
-
-            
-            <View style={styles.searchContainer}>
-                  <Icon name="search" size={20} color="green"  />
-                  <TextInput
-                    // style={{flex:1}}
-                    placeholder="   Search Grocery"
-                    value={searchQuery}
-                    onChangeText={(text) => setSearchQuery(text)}
-                  />
-
-            </View>
-
-            <TouchableOpacity style={styles.cartContainer}>
-                <Icon name="shopping-cart" size={30} color="green" onPress={handleCart} />
-            </TouchableOpacity>
 
 
-       
-        </View>
-        
-        
-       
-
-        {/* categories */}
-        <Text style={styles.groceryHeader}>Categories </Text>
-
-        <View >
-            <FlatList
-              data={buttonList}
-              renderItem={renderButton}
-              keyExtractor={(item) => item.id}
-              horizontal 
-              showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
-              contentContainerStyle={styles.buttonList} // Adjust container style
-            />
-        </View>
-
-
-
-        {data && filterData.length === 0 && activeCategory===1 && firstLoad?( <View style={styles.scrollContainer}>
-          <ScrollView contentContainerStyle={styles.cardContainer} horizontal>
+        {data && data.length > 0 ?( <View style={styles.scrollContainer}>
+          <ScrollView contentContainerStyle={styles.cardContainer}>
         {/* <Card style={styles.card}>
         <Card.Cover source={{ uri: data[0].imageData }} />
           <Card.Content >
@@ -378,14 +100,14 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
           </Card.Content>
       </Card> */}
 
-        {filterData.map((item,index) => (
+        {data.map((item,index) => (
             <Card key={index} style={styles.card}>
               <Card.Cover source={{ uri: item.imageData }} />
               <Card.Content>
                 <Title style={{fontSize:20,fontWeight:400}}>{item.name}</Title>
 
-                {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
-                <Title style={{color:'green'}}>${item.price}</Title>
+                <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph>
+                <Title style={{color:'green'}}>{item.price}</Title>
 
                 <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
                     <Text >Add to Cart</Text>
@@ -395,41 +117,15 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
           
 ))}
 
-      </ScrollView></View>):<View style={styles.scrollContainer}>
-          <ScrollView contentContainerStyle={styles.cardContainer} horizontal>
-        {/* <Card style={styles.card}>
-        <Card.Cover source={{ uri: data[0].imageData }} />
-          <Card.Content >
-            <Title >{data[0].name}</Title>
-            <Paragraph>{data[0].desc}</Paragraph>
-          </Card.Content>
-      </Card> */}
-
-        {filterData.map((item,index) => (
-            <Card key={index} style={styles.card}>
-              <Card.Cover source={{ uri: item.imageData }} style={{height:responsiveHeight(20)}} />
-              <Card.Content>
-                <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400}}>{item.name}</Title>
-
-                {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
-                <Title style={{color:'green',fontSize:responsiveFontSize(2)}}>${item.price}</Title>
-
-                <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
-                    <Text >Add to Cart</Text>
-                </TouchableOpacity>
-              </Card.Content>
-            </Card>
-          
-))}
-
-      </ScrollView></View>}
+      </ScrollView></View>):<Text>Empty</Text>}
       
      
 
 
           
     {/* //Drawer */}
-{user && user.userData.role==="Admin" ? <View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
+
+    <View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
         <TouchableOpacity onPress={toggleDrawer} style={styles.drawerItem}>
           <Text>Close Drawer</Text>
         </TouchableOpacity>
@@ -442,24 +138,7 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
         <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
           <Text>Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleUserDetails} style={styles.drawerItem}>
-          <Text>My Profile</Text>
-        </TouchableOpacity>
-      </View>:<View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
-        <TouchableOpacity onPress={toggleDrawer} style={styles.drawerItem}>
-          <Text>Close Drawer</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleReset} style={styles.drawerItem}>
-          <Text>Reset</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
-          <Text>Cart</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleUserDetails} style={styles.drawerItem}>
-          <Text>My Profile</Text>
-        </TouchableOpacity>
-      </View>}
-    
+      </View>
 
 
 
@@ -479,12 +158,11 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // alignItems: 'center',
     height:'100%',
-    marginBottom:responsiveHeight(10)
     
    
   },
   scrollContainer: {
-    height: '90%', // 80% of the screen height
+    height: '95%', // 80% of the screen height
   },
   drawerButton: {
    
@@ -523,12 +201,8 @@ const styles = StyleSheet.create({
 
   card:{
     
-    // margin:'1%',
-    // flexBasis: "48%",
-
-    width: responsiveWidth(45), // Adjust the width as needed
-    marginHorizontal: responsiveWidth(2),
-    height:responsiveHeight(36)
+    margin:'1%',
+    flexBasis: "48%",
    
     
   },
@@ -536,17 +210,14 @@ const styles = StyleSheet.create({
 
   
 
-  // // marginTop:230,
-  // flexDirection: "row",
-  // flexWrap: "wrap",
-  // justifyContent: "space-between",
-  // padding: '5%',
-  // // marginBottom:250,
-  // // bottom:250
-  // marginBottom:responsiveHeight(10)
-
-  flexDirection: 'row',
-    paddingVertical: '5%',
+  // marginTop:230,
+  flexDirection: "row",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  padding: '5%',
+  // marginBottom:250,
+  // bottom:250
+  
  
  },
 
@@ -567,115 +238,8 @@ const styles = StyleSheet.create({
   justifyContent:'center',
   borderRadius:10
 
- },
- locationContainer:{
-  flexDirection: 'row',
-  alignItems: 'center',
-  padding:responsiveWidth(3),
-  // paddingRight:responsiveWidth(10),
-  // paddingBottom:responsiveWidth(1),
-  // paddingTop:responsiveWidth(5),
-  backgroundColor:'white',
-  borderRadius:10,
- marginLeft:responsiveWidth(5),
- marginRight:responsiveWidth(5),
- marginTop:responsiveWidth(3),
- marginBottom:responsiveWidth(0),
- elevation:5
- },
- text: {
-  marginLeft: responsiveWidth(3), // Add spacing between the icon and text
-  fontSize: responsiveFontSize(2),
-  color: 'black',
-},
-searchContainer: {
-  width: responsiveWidth(70),
-  height:responsiveHeight(6),
-  borderRadius: 10,
-  borderWidth: 0.5,
-  marginLeft:responsiveWidth(5),
-  padding:responsiveWidth(3),
-  marginTop:responsiveHeight(2),
-  // alignSelf: "center",
-  backgroundColor:'white',
-  elevation:5,
-  flexDirection:"row",
-  
-
- 
-  borderColor: 'green',
-  borderWidth: 1,
- 
-  
-  
-},
-buttonList: {
-  padding: 10,
- 
-},
-button: {
-  backgroundColor: 'white',
-  padding: responsiveWidth(2.5),
-  borderRadius: 5,
-  marginRight: responsiveWidth(2),
-  width:responsiveWidth(25),
-  display:"flex",
-  justifyContent:"center",
-  alignItems:'center'
-},
-activebutton: {
-  backgroundColor: 'green',
-  padding: responsiveWidth(2.5),
-  borderRadius: 5,
-  marginRight: responsiveWidth(2),
-  width:responsiveWidth(25),
-  display:"flex",
-  justifyContent:"center",
-  alignItems:'center'
-},
-buttonText: {
-  fontSize: responsiveFontSize(1.8),
-  fontWeight: 'bold',
- 
-},
-activebuttonText: {
-  fontSize: responsiveFontSize(1.8),
-  fontWeight: 'bold',
-  color:'white'
-},
-groceryHeader:{
-  padding:responsiveWidth(4),
-  // marginLeft:responsiveWidth(5),
-  fontSize:responsiveFontSize(2.5),
-  fontWeight:'bold',
- 
-
-},
-cartContainer: {
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems:'center',
-  marginRight:responsiveWidth(5),
-  backgroundColor:'white',
-  width:responsiveWidth(15),
-  height:responsiveHeight(6),
-  padding:responsiveWidth(3),
-  marginTop:responsiveHeight(2),
-  marginLeft:responsiveWidth(4),
-  borderRadius:10,
-  borderWidth:0.3,
-  borderColor:'green'
- 
-},
-searchcartContainer:{
-  flexDirection: 'row', // Use flexDirection: 'row' for a horizontal layout
-  alignItems: 'center',
-}
+ }
 });
-
-
-
-
 
 
 

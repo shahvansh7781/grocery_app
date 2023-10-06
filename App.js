@@ -1,115 +1,34 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, LogBox } from "react-native";
-import AppNavigation from "./navigation/appNavigation";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View ,LogBox} from 'react-native';
+import AppNavigation from './navigation/appNavigation';
 import { configureStore } from "@reduxjs/toolkit";
-import GroceryReducer from "./Reducers/GroceryReducer";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import CartReducer from "./Reducers/CartReducers";
-import React, { useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { useEffect } from "react";
-import "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
-import { auth, db } from "./Admin/config";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import UserDetails from "./screens/UserDetails";
-import Login from "./screens/Login";
-import SignUp from "./screens/SignUp";
-import UserReducer, { getUser } from "./Reducers/UserReducer";
-import { store } from "./store";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import HomeScreen from "./screens/HomeScreen";
-import { Cart } from "./screens/Cart";
-import DashBoard from "./Admin/Screens/DashBoard";
-import { EditGrocery } from "./Admin/Screens/EditGrocery";
-import NewNavigation from "./navigation/newNavigation";
-LogBox.ignoreAllLogs();
-const Stack = createNativeStackNavigator();
-const UnregisteredStack = createNativeStackNavigator();
-const InsideStack = createNativeStackNavigator();
-const AdminStack = createNativeStackNavigator();
-function Authentication() {
-  return (
-    <UnregisteredStack.Navigator initialRouteName="Login">
-      <UnregisteredStack.Screen name="Login" component={Login} />
-      <UnregisteredStack.Screen
-        name="SignUp"
-        component={SignUp}
-        // options={{ headerShown: false }}
-      />
-    </UnregisteredStack.Navigator>
-  );
-}
-function InsideLayout(params) {
+import GroceryReducer from './Reducers/GroceryReducer';
+import { Provider } from 'react-redux';
+import CartReducer from './Reducers/CartReducers';
 
-  return (
-    
-    <InsideStack.Navigator initialRouteName="Home">
-      <InsideStack.Screen name="Home" component={HomeScreen} />
-      <InsideStack.Screen name="Cart" component={Cart} />
-      <InsideStack.Screen name="UserDetails" component={UserDetails} />
-    </InsideStack.Navigator>
-  );
-}
-function AdminSide() {
-  return (
-    <AdminStack.Navigator initialRouteName="Admin">
-      <AdminStack.Screen name="Admin" component={DashBoard} options={{headerShown:false}} />
-      <AdminStack.Screen name="EditGrocery" component={EditGrocery} />
-      <InsideStack.Screen name="UserDetails" component={UserDetails} />
-    </AdminStack.Navigator>
-  );
-}
-const dbRef = collection(db, "Users");
+import 'react-native-gesture-handler';
+
+LogBox.ignoreLogs(['Key "cancelled" in the image picker result is deprecated and will be removed in SDK 48, use "canceled" instead'])
 export default function App() {
-  const [user, setUser] = useState(null);
-  let v = null;
-  const dispatch = useDispatch();
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      // console.log(user.email);
-      // if (user) {
-      setUser(user);
-      if (user) {
-        const q = query(dbRef, where("email", "==", `${user.email}`));
-        getDocs(q)
-          .then((d) => {
-            d.forEach((doc) => {
-              // console.log("doc:",doc.data());
-              v = { ...doc.data() };
-              // console.log("v:",v);
-            });
-          })
-          .then(() => {
-            dispatch(getUser({ userData: v }));
-          })
-          .catch((e) => {});
-      }
-    });
-  }, []);
-
+ 
+  const store = configureStore({
+    reducer: {
+      groceries: GroceryReducer,
+      Cart:CartReducer
+      // Add other reducers as needed
+    },
+  });
+  
+ 
+  
+  
+  
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {user ? (
-         
-            <Stack.Screen
-              name="Inside"
-              component={NewNavigation}
-              options={{ headerShown: false }}
-            />
-         
-        ) : (
-          // <Stack.Screen name="Login" component={Login}/>
-
-          <Stack.Screen
-            name="Auth"
-            component={Authentication}
-            options={{ headerShown: false }}
-          />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
-    // {/* <AppNavigation></AppNavigation>  */}
-  );
+    <Provider store={store}>
+       <AppNavigation ></AppNavigation> 
+    </Provider>
+     
+    
+   
+  )
 }
