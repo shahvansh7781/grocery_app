@@ -316,7 +316,7 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
           <Text style={{fontSize:40}}>X</Text>
           
         </TouchableOpacity>)}
-        <Text style={{fontSize:responsiveFontSize(2),fontWeight:"bold"}} > Welcome! {user && user.userData.Name}</Text>
+        <Text style={{fontSize:responsiveFontSize(2),fontWeight:"bold"}} > Welcome! {user?user.userData.Name:""}</Text>
        {/* {user ? <View style={{marginVertical:15}}> <Text> Welcome! </Text> </View> :  <></>} */}
         {/* Location */}
 

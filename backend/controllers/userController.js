@@ -47,14 +47,14 @@ exports.registerUser = async (req, res) => {
       email,
       password
     );
-    const resp = await addDoc(dbRef, payload);
-
+    // const resp = await addDoc(dbRef, payload);
+    console.log(userCredential.user);
     // await sendEmailVerification(auth.currentUser);
     if (userCredential) {
       res.status(201).send({
         success: true,
         message: "Successfully registered",
-        user: resp.id,
+        user: userCredential.user.uid
       });
     }
   } catch (error) {
