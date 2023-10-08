@@ -23,8 +23,15 @@ import { Cart } from "./screens/Cart";
 import DashBoard from "./Admin/Screens/DashBoard";
 import { EditGrocery } from "./Admin/Screens/EditGrocery";
 import NewNavigation from "./navigation/newNavigation";
+
+import CheckOut from "./screens/CheckOut";
+import ChangeAddress from "./screens/ChangeAddress";
+
+
+
 import BottomNavigation from "./navigation/bottomNavigation";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 LogBox.ignoreAllLogs();
 const Stack = createNativeStackNavigator();
 const UnregisteredStack = createNativeStackNavigator();
@@ -45,6 +52,33 @@ function Authentication() {
 }
 // function InsideLayout(params) {
 
+
+  return (
+    
+    <InsideStack.Navigator initialRouteName="Home">
+      <InsideStack.Screen name="Home" component={HomeScreen} />
+      <InsideStack.Screen name="Cart" component={Cart} />
+      <InsideStack.Screen name="UserDetails" component={UserDetails} />
+      <InsideStack.Screen name="Checkout" component={CheckOut} />
+      <InsideStack.Screen name="Map" component={ChangeAddress} />
+      <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
+
+    </InsideStack.Navigator>
+  );
+}
+function AdminSide() {
+  return (
+    <AdminStack.Navigator initialRouteName="Admin">
+      <AdminStack.Screen name="Admin" component={DashBoard} options={{headerShown:false}} />
+      <AdminStack.Screen name="EditGrocery" component={EditGrocery} />
+      <InsideStack.Screen name="UserDetails" component={UserDetails} />
+      <InsideStack.Screen name="Checkout" component={CheckOut} />
+      <InsideStack.Screen name="Map" component={ChangeAddress} />
+      <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
+    </AdminStack.Navigator>
+  );
+}
+
 //   return (
 
 //     <InsideStack.Navigator initialRouteName="Home">
@@ -63,6 +97,7 @@ function Authentication() {
 //     </AdminStack.Navigator>
 //   );
 // }
+
 const dbRef = collection(db, "Users");
 export default function App() {
   const [user, setUser] = useState(null);

@@ -117,6 +117,9 @@ import SignUp from '../screens/SignUp'
 import Login from '../screens/Login'
 import {Cart} from '../screens/Cart'
 import UserDetails from '../screens/UserDetails'
+import CheckOut from '../screens/CheckOut'
+import ChangeAddress from '../screens/ChangeAddress'
+
 
 const Stack=createNativeStackNavigator()
 
@@ -162,6 +165,8 @@ export default function AppNavigation () {
             <Stack.Screen name='EditGrocery' options={{headerShown:false}} component={EditGrocery}></Stack.Screen>
             <Stack.Screen name='Cart' options={{headerShown:false}} component={Cart}></Stack.Screen>
             <Stack.Screen name='UserDetails' component={UserDetails}></Stack.Screen>
+            <Stack.Screen name='Checkout' component={CheckOut}></Stack.Screen>
+            <Stack.Screen name='Map' component={ChangeAddress}></Stack.Screen>
         </Stack.Navigator>
 
       </NavigationContainer>
@@ -188,6 +193,8 @@ export default function AppNavigation () {
             <Stack.Screen name='EditGrocery' options={{headerShown:false}} component={EditGrocery}></Stack.Screen>
             <Stack.Screen name='Cart' options={{headerShown:false}} component={Cart}></Stack.Screen>
             <Stack.Screen name='UserDetails' component={UserDetails}></Stack.Screen>
+            <Stack.Screen name='Checkout' component={CheckOut}></Stack.Screen>
+            <Stack.Screen name='Map' component={ChangeAddress}></Stack.Screen>
         </Stack.Navigator>
 
       </NavigationContainer>

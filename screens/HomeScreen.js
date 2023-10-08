@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Text, View, Image, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { removeItem } from "../utils/asyncStorage";
+import { getItem, removeItem, setItem } from "../utils/asyncStorage";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGroceries } from "../Reducers/GroceryReducer";
 
@@ -28,7 +28,10 @@ import * as Updates from "expo-updates";
 
 import * as Location from "expo-location";
 // import Geocoding from 'react-native-geocoding';
-import axios from "axios";
+
+import axios from 'axios'
+import { addAddress, deleteAllAddress, updateAddress, updateCoor } from "../Reducers/AddressReducer";
+
 
 // Geocoding.init({
 //   baseUrl: 'https://nominatim.openstreetmap.org/',
@@ -140,10 +143,24 @@ export default function HomeScreen({ navigation }) {
         setIsLoading(false); // In case of an error, also set isLoading to false
       });
 
-    setFilterData(data);
 
-    getLocationAsync();
-    setFirstLoad(false);
+         
+        
+      }));
+    
+    
+    setFilterData(data)
+    
+    
+      
+    
+    getLocationAsync()
+
+    // console.log(location,address)
+    
+
+    setFirstLoad(false)
+
   }, [dispatch]);
 
   useEffect(() => {
@@ -181,13 +198,12 @@ export default function HomeScreen({ navigation }) {
 
       if (response.data && response.data.display_name) {
         // setAddress(response.data.display_name);
-        const temp_addr =
-          response.data.address.city +
-          "," +
-          response.data.address.state +
-          "," +
-          response.data.address.country; //+','+response.data.address.postcode
-        setAddress(temp_addr);
+
+        const temp_addr=response.data.address.city+','+response.data.address.state +','+response.data.address.country//+','+response.data.address.postcode
+        setAddress(temp_addr)
+        const addr=response.data.display_name
+        dispatch(updateAddress({address:{addr}}))
+
       } else {
         setAddress("Address not found");
       }
@@ -197,6 +213,16 @@ export default function HomeScreen({ navigation }) {
     }
 
     setLocation(coords);
+
+    // dispatch(deleteAllAddress())
+    // dispatch(addAddress({coords:location,address:address}))
+
+    dispatch(updateCoor({ coords}));
+    
+
+    // dispatch(updateAddress({coords:location,address:address}))
+    
+
   }
 
   const handleReset = async () => {
@@ -223,29 +249,126 @@ export default function HomeScreen({ navigation }) {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
+  const setAsynccart=async()=>{
+    console.log('called')
+    const stringValue = JSON.stringify(cartData);
+    await removeItem("cart")
+    await setItem('cart',stringValue)
+    const storedValue = await getItem("cart");
+    console.log(storedValue)
 
-  const handleAddToCart = (item) => {
+
+  }
+  const handleAddToCart=(item)=>{
     // console.log(item.id)
 
-    if (!cartData.some((cd) => cd.id === item.id)) {
-      dispatch(
-        add({
-          id: item.id,
-          image: item.imageData,
-          price: item.price,
-          count: 1,
-          stock: 10,
-          title: item.name,
-        })
-      );
+
+   
+
+    if (cartData && !cartData.some(cd => cd.id === item.id)) {
+
+      
+      dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: 10, title: item.name }))
       console.log("Item added to the cart");
-    } else {
-      console.log("Item is already in the cart.");
+      // setAsynccart()
+     
+    } else if(!cartData){
+      dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: 10, title: item.name }))
+      console.log("Item added to the cart");
+      // setAsynccart()
+  
     }
+      
+  
+    
+     
+   
+    
+    navigation.push('Cart')
+  }
 
-    navigation.navigate("Cart");
-  };
 
+//   const handleSearch=useCallback((searchQuery)=>{
+
+    
+
+//     // Use the filter method to find groceries by name
+//   const searchResults = filterData.filter((grocery) => {
+//     // Convert both the search query and grocery name to lowercase for case-insensitive search
+//     const query = searchQuery.toLowerCase();
+//     const name = grocery.name.toLowerCase();
+
+//     // Check if the grocery name contains the search query
+//     return (
+//       name.startsWith(query) &&
+//       (activeCategory === 1 || grocery.description === buttonList[activeCategory-1]['label'])
+//     );
+//   });
+
+//   // Now, searchResults contains an array of matching groceries
+//   console.log('Search results:', searchResults);
+//   setFilterData(searchResults)
+//   // You can update the state or perform any other actions with the search results here
+
+// })
+// Rushit_New - Start
+// const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
+//   if (activeCategory === 2) {
+//     // Filter by category if "Vegetables" is selected
+//     const results = data.filter((grocery) => grocery.description === 'Fruit');
+//     setFilterData(results.filter((grocery) =>
+//     grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+//     );
+//   } 
+//   else if (activeCategory === 3){
+
+//     const results = data.filter((grocery) => grocery.description === 'Vegetable');
+//     setFilterData(results.filter((grocery) =>
+//     grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+//     );
+
+//   }
+//   else if (activeCategory === 4){
+//     const results = data.filter((grocery) => grocery.description === 'Dairy');
+//     setFilterData(results.filter((grocery) =>
+//     grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+//     );
+
+//   }
+//   else {
+//     // Filter by search query for other categories
+//     setFilterData((data.filter((grocery) =>
+//     grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+//     ))
+//   }
+// });
+//Rushit_New - Finish
+
+  // Vansh_New - Start
+//   const handleAddToCart = (item) => {
+//     // console.log(item.id)
+
+//     if (!cartData.some((cd) => cd.id === item.id)) {
+//       dispatch(
+//         add({
+//           id: item.id,
+//           image: item.imageData,
+//           price: item.price,
+//           count: 1,
+//           stock: 10,
+//           title: item.name,
+//         })
+//       );
+//       console.log("Item added to the cart");
+//     } else {
+//       console.log("Item is already in the cart.");
+//     }
+
+
+//     navigation.navigate("Cart");
+//   };
+//Vansh_New - Finish
+  
   //   const handleSearch=useCallback((searchQuery)=>{
 
   //     // Use the filter method to find groceries by name
@@ -393,35 +516,30 @@ export default function HomeScreen({ navigation }) {
           </Card.Content>
       </Card> */}
 
-                {filterData && filterData.map((item, index) => (
-                  <Card key={index} style={styles.card}>
-                    <Card.Cover source={{ uri: item.imageData }} />
-                    <Card.Content>
-                      <Title style={{ fontSize: 20, fontWeight: 400 }}>
-                        {item.name}
-                      </Title>
 
-                      {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
-                      <Title style={{ color: "green" }}>${item.price}</Title>
+        {filterData.map((item,index) => (
+            <Card key={index} style={styles.card}>
+              <Card.Cover source={{ uri: item.imageData }} />
+              <Card.Content>
+                <Title style={{fontSize:20,fontWeight:400}}>{item.name.length >5 ? item.name.slice(0, 10) + '...' : item.name}</Title>
 
-                      <TouchableOpacity
-                        onPress={() => handleAddToCart(item)}
-                        style={styles.addToCartButton}
-                      >
-                        <Text>Add to Cart</Text>
-                      </TouchableOpacity>
-                    </Card.Content>
-                  </Card>
-                ))}
-              </ScrollView>
-            </View>
-          ) : (
-            <View style={styles.scrollContainer}>
-              <ScrollView
-                contentContainerStyle={styles.cardContainer}
-                horizontal
-              >
+                {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
+                <Title style={{color:'green'}}>${item.price}</Title>
+
+                <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
+                    <Text >Add to Cart</Text>
+                </TouchableOpacity>
+              </Card.Content>
+            </Card>
+          
+))}
+
+      </ScrollView></View>):<View style={styles.scrollContainer}>
+          <ScrollView contentContainerStyle={styles.cardContainer} horizontal>
+        
+
                 {/* <Card style={styles.card}>
+
         <Card.Cover source={{ uri: data[0].imageData }} />
           <Card.Content >
             <Title >{data[0].name}</Title>
@@ -429,102 +547,73 @@ export default function HomeScreen({ navigation }) {
           </Card.Content>
       </Card> */}
 
-                {filterData && filterData.map((item, index) => (
-                  <Card key={index} style={styles.card}>
-                    <Card.Cover
-                      source={{ uri: item.imageData }}
-                      style={{ height: responsiveHeight(20) }}
-                    />
-                    <Card.Content>
-                      <Title
-                        style={{
-                          fontSize: responsiveFontSize(2.5),
-                          fontWeight: 400,
-                        }}
-                      >
-                        {item.name}
-                      </Title>
 
-                      {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
-                      <Title
-                        style={{
-                          color: "green",
-                          fontSize: responsiveFontSize(2),
-                        }}
-                      >
-                        ₹{item.price}
-                      </Title>
+        {filterData.map((item,index) => (
+            <Card key={index} style={styles.card}>
+              <Card.Cover source={{ uri: item.imageData }} style={{height:responsiveHeight(20)}} />
+              <Card.Content>
+                <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400}}>{item.name.length > 5 ? item.name.slice(0,10) + '...' : item.name}</Title>
 
-                      <TouchableOpacity
-                        onPress={() => handleAddToCart(item)}
-                        style={styles.addToCartButton}
-                      >
-                        <Text>Add to Cart</Text>
-                      </TouchableOpacity>
-                    </Card.Content>
-                  </Card>
-                ))}
-              </ScrollView>
-            </View>
-          )}
+                {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
+                <Title style={{color:'green',fontSize:responsiveFontSize(2)}}>${item.price}</Title>
 
-          {/* //Drawer */}
-          {user && user.userData.role === "Admin" ? (
-            <View
-              style={[
-                styles.drawer,
-                { display: isDrawerOpen ? "flex" : "none" },
-              ]}
-            >
-              <TouchableOpacity
-                onPress={toggleDrawer}
-                style={styles.drawerItem}
-              >
-                <Text>Close Drawer</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleReset} style={styles.drawerItem}>
-                <Text>Reset</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleAdmin} style={styles.drawerItem}>
-                <Text>Admin</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
-                <Text>Cart</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleUserDetails}
-                style={styles.drawerItem}
-              >
-                <Text>My Profile</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View
-              style={[
-                styles.drawer,
-                { display: isDrawerOpen ? "flex" : "none" },
-              ]}
-            >
-              <TouchableOpacity
-                onPress={toggleDrawer}
-                style={styles.drawerItem}
-              >
-                <Text>Close Drawer</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleReset} style={styles.drawerItem}>
-                <Text>Reset</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
-                <Text>Cart</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleUserDetails}
-                style={styles.drawerItem}
-              >
-                <Text>My Profile</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+                <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
+                    <Text >Add to Cart</Text>
+                </TouchableOpacity>
+              </Card.Content>
+            </Card>
+          
+))}
+
+
+
+
+
+      </ScrollView></View>}
+      
+     
+
+
+          
+    {/* //Drawer */}
+{user && user.userData.role==="Admin" ? <View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
+        <TouchableOpacity onPress={toggleDrawer} style={styles.drawerItem}>
+          <Text>Close Drawer</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleReset} style={styles.drawerItem}>
+          <Text>Reset</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleAdmin} style={styles.drawerItem}>
+          <Text>Admin</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
+          <Text>Cart</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleUserDetails} style={styles.drawerItem}>
+          <Text>My Profile</Text>
+        </TouchableOpacity>
+      </View>:<View style={[styles.drawer, { display: isDrawerOpen ? 'flex' : 'none' }]}>
+        <TouchableOpacity onPress={toggleDrawer} style={styles.drawerItem}>
+          <Text>Close Drawer</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleReset} style={styles.drawerItem}>
+          <Text>Reset</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleCart} style={styles.drawerItem}>
+          <Text>Cart</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleUserDetails} style={styles.drawerItem}>
+          <Text>My Profile</Text>
+        </TouchableOpacity>
+      </View>}
+    
+
+
+
+
+
+
+
         </>
       )}
     </SafeAreaView>
