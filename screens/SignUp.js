@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Button,
   Alert,
-  ToastAndroid
+  ToastAndroid,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
@@ -20,48 +20,61 @@ import { Formik } from "formik";
 import { api_url } from "../utils/api_url";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../Admin/config";
-import { addDoc, collection, getDocs, query } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 // import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
 const signUpFormSchema = Yup.object().shape({
-  Name: Yup.string().max(30, "Name should be less than 30 chars").required("Name should not be empty"),
+  Name: Yup.string()
+    .max(30, "Name should be less than 30 chars")
+    .required("Name should not be empty"),
   email: Yup.string().email().required("Email should not be empty"),
-  password: Yup.string().min(8, "Password should be of 8 chars").required("Password should not be empty"),
-  phone: Yup.string().length(10, "Phone should be of 10 chars").required("Phone No. should not be empty"),
+  password: Yup.string()
+    .min(8, "Password should be of 8 chars")
+    .required("Password should not be empty"),
+  phone: Yup.string()
+    .length(10, "Phone should be of 10 chars")
+    .required("Phone No. should not be empty"),
 });
 
 const SignUp = ({ navigation }) => {
   // useEffect(() => {
-    const [userD,setUserD] = useState(null);
+  const [userD, setUserD] = useState(null);
   // GoogleSignin.configure({webClientId:"11139080005-ktk42659aqapvu153r4bkfbkj1gifpgu.apps.googleusercontent.com"});
-   
+
   // }, [])
-  
- 
+
   const onSignUp = async (values) => {
-    const { email, password,Name,phone } = values;
-    const dbRef = collection(db,"Users");
+    const { email, password, Name, phone } = values;
+    const dbRef = collection(db, "Users");
+    let userExists = null;
     const payload = {
       email,
       Name,
       phone,
-      role:"User"
+      role: "User",
     };
-    try {
-      await createUserWithEmailAndPassword(auth,email,password);
-      await addDoc(dbRef,payload);
-      const q = query(dbRef,where("email", "==", `${email}`));
+    // try {
+      
+      const q = query(dbRef, where("email", "==", `${email}`));
       const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      // console.log(doc.id, " => ", doc.data());
-      setUserD(doc.data())
-      ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
-    });
-    } catch (error) {
-      alert("SignUp Failed")
-    }
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+        userExists = { ...doc.data() };
+        // setUserD(doc.data())
+      });
+      if (userExists !== null) {
+        alert("SignUp Failed! User Already exists")
+        navigation.navigate("Login");
+      } else {
+        await createUserWithEmailAndPassword(auth, email, password);
+        await addDoc(dbRef, payload);
+        ToastAndroid.show("SignUp successfull", ToastAndroid.LONG);
+      }
+    // } catch (error) {
+    //   alert("SignUp Failed");
+    // }
     // try {
     //   // await createUserWithEmailAndPassword(auth,email, password);
     //   // ToastAndroid.show("SignUp successfull",ToastAndroid.LONG);
@@ -78,17 +91,15 @@ const SignUp = ({ navigation }) => {
     //  Alert.alert("SignUp Failed");
     // }
   };
-  const googleSignUp = async()=>{
+  const googleSignUp = async () => {
     try {
       const data = await fetch(`${api_url}:8082/myapp/googleSignUp`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
       console.log(await data.json());
-    } catch (error) {
-      
-    }
-  }
+    } catch (error) {}
+  };
   return (
     <View style={styles.container}>
       {/* <Text style={styles.createAccountText}>Create an Account</Text> */}
@@ -112,44 +123,68 @@ const SignUp = ({ navigation }) => {
               <View style={{ gap: responsiveHeight(1.3) }}>
                 <Text style={styles.labelFont}>Name</Text>
                 <TextInput
-                  style={errors.Name && errors.Name?styles.inputNotValid:styles.input}
+                  style={
+                    errors.Name && errors.Name
+                      ? styles.inputNotValid
+                      : styles.input
+                  }
                   onChangeText={handleChange("Name")}
                   onBlur={handleBlur("Name")}
                   value={values.Name}
-                  placeholder={`${errors.Name && errors.Name?errors.Name:""}`}
+                  placeholder={`${
+                    errors.Name && errors.Name ? errors.Name : ""
+                  }`}
                 />
               </View>
               <View style={{ gap: responsiveHeight(1.3) }}>
                 <Text style={styles.labelFont}>Email</Text>
                 <TextInput
-                  style={errors.email && errors.email?styles.inputNotValid:styles.input}
+                  style={
+                    errors.email && errors.email
+                      ? styles.inputNotValid
+                      : styles.input
+                  }
                   keyboardType="email-address"
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
-                  placeholder={`${errors.email && errors.email?errors.email:""}`}
+                  placeholder={`${
+                    errors.email && errors.email ? errors.email : ""
+                  }`}
                 />
               </View>
               <View style={{ gap: responsiveHeight(1.3) }}>
                 <Text style={styles.labelFont}>Password</Text>
                 <TextInput
-                  style={errors.password && errors.password?styles.inputNotValid:styles.input}
+                  style={
+                    errors.password && errors.password
+                      ? styles.inputNotValid
+                      : styles.input
+                  }
                   secureTextEntry={true}
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password}
-                  placeholder={`${errors.password && errors.password?errors.password:""}`}
+                  placeholder={`${
+                    errors.password && errors.password ? errors.password : ""
+                  }`}
                 />
               </View>
               <View style={{ gap: responsiveHeight(1.3) }}>
                 <Text style={styles.labelFont}>Phone</Text>
                 <TextInput
-                  style={errors.phone && errors.phone?styles.inputNotValid:styles.input}
+                  style={
+                    errors.phone && errors.phone
+                      ? styles.inputNotValid
+                      : styles.input
+                  }
                   keyboardType="numeric"
                   onChangeText={handleChange("phone")}
                   onBlur={handleBlur("phone")}
                   value={values.phone}
-                  placeholder={`${errors.phone && errors.phone?errors.phone:""}`}
+                  placeholder={`${
+                    errors.phone && errors.phone ? errors.phone : ""
+                  }`}
                 />
               </View>
 
@@ -228,8 +263,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#EDEDED",
     paddingHorizontal: 10,
     paddingVertical: 12,
-    borderColor:"red",
-    borderWidth:1
+    borderColor: "red",
+    borderWidth: 1,
   },
   createAccountBtn: {
     backgroundColor: "#2DDC4A",
@@ -239,7 +274,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  createAccountBtnText:{
+  createAccountBtnText: {
     color: "white",
     fontWeight: "900",
     fontSize: responsiveFontSize(2.3),
@@ -273,7 +308,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  googleTxt:{
+  googleTxt: {
     color: "black",
     fontWeight: "900",
     fontSize: responsiveFontSize(2.3),

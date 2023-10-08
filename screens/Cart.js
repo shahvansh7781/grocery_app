@@ -1,5 +1,12 @@
 import React, { Component, useEffect, useState } from "react";
-import { Text, View, StyleSheet, FlatList, ScrollView, SafeAreaView } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
 
 import { CartCard } from "./Cards/CartCard";
 
@@ -7,16 +14,22 @@ import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
+
 import { getItem, removeItem, setItem } from "../utils/asyncStorage";
 import { add, deleteAll, setCartInitialState } from "../Reducers/CartReducers";
 
-export function Cart() {
-   const data = useSelector((state) => state.Cart);
 
+import axios from "axios";
+import { api_url } from "../utils/api_url";
 
-  //  const [data,setData]=useState([])
-  const navigation = useNavigation();
+export function Cart({navigation}) {
+  const data = useSelector((state) => state.Cart);
   const dispatch=useDispatch()
+  const reqUser = useSelector((state) => 
+    state.users.user
+  );
+  // const navigation = useNavigation();
+
 
   const [subTotal, setSubTotal] = useState(0);
 
@@ -76,24 +89,53 @@ export function Cart() {
 
   const renderItem = ({ item }) => {
     return <CartCard itemData={item}></CartCard>;
-    
   };
+// Rushit_New
 
-  const handleCheckout=()=>{
-    console.log('checkout')
-    navigation.navigate('Checkout',{
-      data:data,
-      id:data.id,
-    subTotal:subTotal})
+//   const handleCheckout=()=>{
+//     console.log('checkout')
+//     navigation.navigate('Checkout',{
+//       data:data,
+//       id:data.id,
+//     subTotal:subTotal})
     
-  }
-
+//   }
+  
+//Rushit_New
+  
+  //Vansh_New
+  const handleCheckout = async() => {
+    // console.log(reqUser ? reqUser:"Not");
+    const payload = {
+      items:data,
+      total:subTotal,
+      user:reqUser && reqUser.userData.email
+    }
+    // console.log(payload);
+    // console.log(data);
+    // console.log(reqUser && reqUser);
+    try {
+      const dataRep = await axios.post(`${api_url}:8082/myapp/createOrder`,payload,{
+        headers: { "Content-Type": "application/json" },
+      })
+      // console.log(await dataRep.json());
+      // console.log(dataRep)
+      if (dataRep.data.myResponse.success) {
+        alert("Order Success");
+        navigation.navigate("Home")
+      }
+    } catch (error) {
+      
+    }
+  };
+// Vansh_New
   return (
     <View style={styles.container}>
       
       {/* <View style={styles.header}>
         <Text style={styles.headerText}>My Cart</Text>
       </View> */}
+
 
 
 
@@ -106,6 +148,7 @@ export function Cart() {
                   renderItem={renderItem}
                   keyExtractor={(item) => item.id} 
                 ></FlatList>
+
       </SafeAreaView>
       
       {/* <View style={styles.flatListContainer}> */}
@@ -144,7 +187,9 @@ export function Cart() {
         </View> */}
       </View>
       <View>
+
         <TouchableOpacity style={styles.uploadBtn} onPress={handleCheckout}>
+
           <Text>Check Out</Text>
         </TouchableOpacity>
       </View>
@@ -155,7 +200,7 @@ export function Cart() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:"2%"
+    padding: "2%",
   },
   header: {
     height: 60,
@@ -232,7 +277,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-marginBottom:"4%",
+    marginBottom: "4%",
     backgroundColor: "#06FF00",
   },
 });
