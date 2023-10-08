@@ -23,11 +23,30 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { addGroceries, fetchGroceries } from "../../Reducers/GroceryReducer";
 import { ref, getDownloadURL, uploadBytes } from "@firebase/storage";
+import { Dropdown } from "react-native-element-dropdown";
 
 export function AddGrocery() {
+  const categoriesData = [
+    {label:"Fruits & Vegetables",value:'Fruits & Vegetables'},
+    {label:"Dairy & Bakery",value:'Dairy & Bakery'},
+    {label:"Snacks",value:'Snacks'},
+    {label:"Beverages",value:'Beverages'},
+  ];
+  const [value, setValue] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
+    const renderLabel = () => {
+      if (value || isFocus) {
+        return (
+          <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+            Dropdown label
+          </Text>
+        );
+      }
+      return null;
+    };
   const navigation = useNavigation();
   const [imageData, setImageData] = useState(null);
-
+ 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
@@ -45,8 +64,9 @@ export function AddGrocery() {
     const payload = {
       name,
       price,
-      discount,
+      // discount,
       description,
+      category:value,
       imageData,
     };
 
@@ -189,10 +209,11 @@ export function AddGrocery() {
   };
   return (
     <ScrollView style={styles.container}>
+      {/* {renderLabel()} */}
       <View style={styles.container}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <Text style={styles.headerText}>Add Grocery</Text>
-        </View>
+        </View> */}
 
         {imageData !== null ? (
           <Image source={{ uri: imageData }} style={styles.img}></Image>
@@ -210,12 +231,36 @@ export function AddGrocery() {
           value={price}
           onChangeText={(text) => setPrice(text)}
         ></TextInput>
-        <TextInput
-          placeholder="Enter Discount"
-          style={styles.input}
-          value={discount}
-          onChangeText={(text) => setDiscount(text)}
-        ></TextInput>
+        <View style={{paddingHorizontal:20,marginTop: 30,}}>
+
+        <Dropdown
+          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={categoriesData}
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder={!isFocus ? 'Select Category' : '...'}
+          value={value}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={item => {
+            setValue(item.value);
+            setIsFocus(false);
+          }}
+          // renderLeftIcon={() => (
+          //   <AntDesign
+          //     style={styles.icon}
+          //     color={isFocus ? 'blue' : 'black'}
+          //     name="Safety"
+          //     size={20}
+          //   />
+          // )}
+        />
+        </View>
         <TextInput
           placeholder="Enter Grocery Description"
           style={styles.input}
@@ -242,6 +287,39 @@ export function AddGrocery() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  label: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  dropdown: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
   header: {
     height: 60,

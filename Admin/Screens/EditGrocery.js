@@ -49,7 +49,7 @@ const editGrocery = async(itemKey, newData) => {
   
 
 
-export function EditGrocery () {
+export function EditGrocery ({data,id}) {
 
     const route=useRoute()
     const navigation=useNavigation()
@@ -57,7 +57,7 @@ export function EditGrocery () {
   
     //  console.log(route.params.data)
 
-     const {data,id}=route.params
+    //  const {data,id}=route.params
     const [imageData,setImageData]= useState(data.imageData)
 
     const [name,setName]=useState('')
@@ -148,7 +148,7 @@ export function EditGrocery () {
     const handleEdit=()=>{
 
         console.log("I am in ....")
-        console.log(route.params.id);
+        console.log(id);
         const newData={
             name:name,
             price:price,
@@ -159,12 +159,13 @@ export function EditGrocery () {
 
         }
         const payload={
-          itemKey:route.params.id,
+          itemKey:id,
           newData
         }
         // editGrocery(route.params.id,newData)
         dispatch(editGroceries(payload))
         dispatch(fetchGroceries())
+        // navigation.navigate("Home")
         navigation.push('Admin')
     }
 
@@ -172,9 +173,9 @@ export function EditGrocery () {
     return (
       <ScrollView style={styles.container}>
       <View style={styles.container}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
             <Text style={styles.headerText}>Edit Grocery</Text>
-        </View>
+        </View> */}
 
         {imageData !== null?(
             <Image

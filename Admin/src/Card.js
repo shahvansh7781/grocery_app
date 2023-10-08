@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import firebase from 'firebase/compat';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteGroceries, fetchGroceries } from '../../Reducers/GroceryReducer';
 import { useEffect } from 'react';
+import { EditGrocery } from '../Screens/EditGrocery';
 
 // import StarRating from './StarRating';
 
@@ -49,7 +50,7 @@ const Card = ({itemData}) => {
   const isLoading = useSelector((state) => state.groceries.isLoading);
   const error = useSelector((state) => state.groceries.error);
 
-
+  const [editGrocery,seteditGrocery] = useState(false);
   // Define a function to delete data
   const handleDelete = (itemKey) => {
     console.log("I am in Handle Delete")
@@ -74,8 +75,8 @@ const Card = ({itemData}) => {
       });
     
     console.log('Done')
-    navigation.navigate('Home')
-    navigation.navigate('Admin')
+    navigation.push('Home')
+    navigation.push('Admin')
     console.log("Navigation done")
   };
  
@@ -84,7 +85,11 @@ const Card = ({itemData}) => {
     <View  style={styles.container}>
        {/* {isLoading && <p>Loading...</p>}
        {error && <p>Error: {error}</p>} */}
-    <TouchableOpacity    >
+       {
+        editGrocery ? <>
+        <EditGrocery data={itemData} id={itemData.id}/>
+        </> : <>
+         <TouchableOpacity    >
       <View style={styles.card} >
         <View >
           <Image
@@ -96,8 +101,8 @@ const Card = ({itemData}) => {
         </View>
         <View style={styles.cardInfo}>
           <Text style={styles.cardTitle}>{itemData.name}</Text>
-          <Text style={styles.cardTitle}>{itemData.price}</Text>
-          <Text style={styles.cardTitle}>{itemData.discount}</Text>
+          <Text style={styles.cardTitle}>₹{itemData.price}</Text>
+          {/* <Text style={styles.cardTitle}>{itemData.discount}</Text> */}
           {/* <StarRating ratings={itemData.ratings} reviews={itemData.reviews} /> */}
           <Text numberOfLines={2} style={styles.cardDetails}>{itemData.description}</Text>
 
@@ -106,13 +111,20 @@ const Card = ({itemData}) => {
         
         <View>
           <TouchableOpacity
-          onPress={()=>{
-            navigation.navigate('EditGrocery',{
-              data:itemData,
-              id:itemData.id
-            })
+          onPress={
+          //   ()=>{
+          //   navigation.push('EditGrocery',{
+          //     data:itemData,
+          //     id:itemData.id
+          //   }
+            
+          //   )
 
-          }}>
+          // }
+          ()=>{
+           seteditGrocery(!editGrocery);
+          }
+          }>
               <Image source={require('../Images/edit.png')} style={styles.icon}></Image>
              
           </TouchableOpacity>
@@ -147,6 +159,9 @@ const Card = ({itemData}) => {
         </View>
       </View>
     </TouchableOpacity>
+        </>
+       }
+   
     </View>
   );
 };
