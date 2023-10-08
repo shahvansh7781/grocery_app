@@ -1,30 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getItem, setItem ,removeItem} from "../utils/asyncStorage";
+
+
+
+const setAsynccart = async (cartData) => {
+  try {
+    const stringValue = JSON.stringify(cartData);
+    setItem('cart', stringValue);
+    
+    // Retrieve the stored value to verify if it was stored correctly
+    const storedValue = await getItem('cart');
+    console.log('Retrieved value:', JSON.parse(storedValue));
+  } catch (error) {
+    console.log('Error storing value: ', error);
+  }
+}
+
+
+
 
 const CartSlice = createSlice({
   name: "Cart",
-  initialState: [
-    {
-      id: 1,
-      image: require("../Admin/Images/shopping-bag.png"),
-      price: 20,
-
-      title: "Apples",
-      count: 1,
-      stock: 8,
-    },
-    {
-      id: 2,
-      image: require("../Admin/Images/shopping-bag.png"),
-
-      price: 90,
-      title: "Oranges",
-      count: 1,
-      stock: 5,
-    },
-  ],
+  initialState:[],
+ 
   reducers: {
     add: (state, action) => {
       state.push(action.payload);
+      console.log('state',state)
+      setAsynccart(state)
+
     },
     // update:(state,action)=>{
     //     const {id,title,desc}=action.payload
@@ -43,6 +47,7 @@ const CartSlice = createSlice({
       if (tf) {
         tf.count = count;
       }
+      setAsynccart(state)
     },
 
     deletee: (state, action) => {
@@ -50,12 +55,23 @@ const CartSlice = createSlice({
       const tf = state.find((grocery) => grocery.id == id);
 
       if (tf) {
+        setAsynccart(state.filter((grocery) => grocery.id !== id))
         return state.filter((grocery) => grocery.id !== id);
       }
+    },
+
+    deleteAll: (state) => {
+      // Set the state to an empty array to remove all items
+      state.splice(0, state.length);
+    },
+
+    setCartInitialState: (state, action) => {
+      // Set the state to the provided initial data
+      return action.payload;
     },
   },
 });
 
-export const { add } = CartSlice.actions;
-export const { update, deletee, updateCount } = CartSlice.actions;
+export const { add,setCartInitialState } = CartSlice.actions;
+export const { update, deletee, updateCount ,deleteAll} = CartSlice.actions;
 export default CartSlice.reducer;

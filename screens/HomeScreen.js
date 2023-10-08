@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { StatusBar, TouchableOpacity, ActivityIndicator,StyleSheet,FlatList, ScrollView } from "react-native";
 import { Text, View ,Image,TextInput} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { removeItem } from "../utils/asyncStorage";
+import { getItem, removeItem, setItem } from "../utils/asyncStorage";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGroceries } from "../Reducers/GroceryReducer";
 
@@ -18,6 +18,7 @@ import * as Updates from 'expo-updates';
 import * as Location from 'expo-location';
 // import Geocoding from 'react-native-geocoding';
 import axios from 'axios'
+import { addAddress, deleteAllAddress, updateAddress, updateCoor } from "../Reducers/AddressReducer";
 
 // Geocoding.init({
 //   baseUrl: 'https://nominatim.openstreetmap.org/',
@@ -143,6 +144,10 @@ export default function HomeScreen() {
       
     
     getLocationAsync()
+
+    // console.log(location,address)
+    
+
     setFirstLoad(false)
   }, [dispatch]);
 
@@ -186,6 +191,8 @@ export default function HomeScreen() {
         // setAddress(response.data.display_name);
         const temp_addr=response.data.address.city+','+response.data.address.state +','+response.data.address.country//+','+response.data.address.postcode
         setAddress(temp_addr)
+        const addr=response.data.display_name
+        dispatch(updateAddress({address:{addr}}))
       } else {
         setAddress('Address not found');
       }
@@ -195,6 +202,13 @@ export default function HomeScreen() {
     }
 
     setLocation(coords);
+    // dispatch(deleteAllAddress())
+    // dispatch(addAddress({coords:location,address:address}))
+
+    dispatch(updateCoor({ coords}));
+    
+
+    // dispatch(updateAddress({coords:location,address:address}))
     
   }
   
@@ -228,20 +242,39 @@ export default function HomeScreen() {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
+  const setAsynccart=async()=>{
+    console.log('called')
+    const stringValue = JSON.stringify(cartData);
+    await removeItem("cart")
+    await setItem('cart',stringValue)
+    const storedValue = await getItem("cart");
+    console.log(storedValue)
 
+  }
   const handleAddToCart=(item)=>{
     // console.log(item.id)
 
-    if (!cartData.some(cd => cd.id === item.id)) {
+
+   
+
+    if (cartData && !cartData.some(cd => cd.id === item.id)) {
 
       
       dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: 10, title: item.name }))
       console.log("Item added to the cart");
-    } else {
-      console.log('Item is already in the cart.');
-    }
+      // setAsynccart()
+     
+    } else if(!cartData){
+      dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: 10, title: item.name }))
+      console.log("Item added to the cart");
+      // setAsynccart()
   
-
+    }
+      
+  
+    
+     
+   
     
     navigation.push('Cart')
   }
@@ -382,7 +415,7 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
             <Card key={index} style={styles.card}>
               <Card.Cover source={{ uri: item.imageData }} />
               <Card.Content>
-                <Title style={{fontSize:20,fontWeight:400}}>{item.name}</Title>
+                <Title style={{fontSize:20,fontWeight:400}}>{item.name.length >5 ? item.name.slice(0, 10) + '...' : item.name}</Title>
 
                 {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
                 <Title style={{color:'green'}}>${item.price}</Title>
@@ -409,7 +442,7 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
             <Card key={index} style={styles.card}>
               <Card.Cover source={{ uri: item.imageData }} style={{height:responsiveHeight(20)}} />
               <Card.Content>
-                <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400}}>{item.name}</Title>
+                <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400}}>{item.name.length > 5 ? item.name.slice(0,10) + '...' : item.name}</Title>
 
                 {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
                 <Title style={{color:'green',fontSize:responsiveFontSize(2)}}>${item.price}</Title>
@@ -421,6 +454,10 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
             </Card>
           
 ))}
+
+
+
+
 
       </ScrollView></View>}
       

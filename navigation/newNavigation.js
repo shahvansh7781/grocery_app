@@ -8,6 +8,9 @@ import { Cart } from "../screens/Cart";
 import UserDetails from "../screens/UserDetails";
 import DashBoard from "../Admin/Screens/DashBoard";
 import { EditGrocery } from "../Admin/Screens/EditGrocery";
+import CheckOut from "../screens/CheckOut";
+import ChangeAddress from "../screens/ChangeAddress";
+
 const InsideStack = createNativeStackNavigator();
 const NewNavigation = () => {
   const userData = useSelector((state) => {
@@ -22,6 +25,9 @@ const NewNavigation = () => {
         {/* Admin Side */}
         <InsideStack.Screen name="Admin" component={DashBoard} />
         <InsideStack.Screen name="Edit Grocery" component={EditGrocery} />
+        <InsideStack.Screen name="Checkout" component={CheckOut} />
+        <InsideStack.Screen name="Map" component={ChangeAddress} />
+        <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
       </InsideStack.Navigator>
     );
   }
@@ -31,6 +37,9 @@ const NewNavigation = () => {
       <InsideStack.Screen name="Cart" component={Cart} />
       <InsideStack.Screen name="Admin" component={DashBoard} />
       <InsideStack.Screen name="UserDetails" component={UserDetails} />
+      <InsideStack.Screen name="Checkout" component={CheckOut} />
+      <InsideStack.Screen name="Map" component={ChangeAddress} />
+      <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
     </InsideStack.Navigator>
   );
 };

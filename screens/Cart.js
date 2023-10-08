@@ -5,49 +5,111 @@ import { CartCard } from "./Cards/CartCard";
 
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { getItem, removeItem, setItem } from "../utils/asyncStorage";
+import { add, deleteAll, setCartInitialState } from "../Reducers/CartReducers";
 
 export function Cart() {
-  const data = useSelector((state) => state.Cart);
+   const data = useSelector((state) => state.Cart);
 
+
+  //  const [data,setData]=useState([])
   const navigation = useNavigation();
+  const dispatch=useDispatch()
 
   const [subTotal, setSubTotal] = useState(0);
 
-  // Calculate subtotal when data changes
+  
+  useEffect(() => {
+    // Fetch cart data asynchronously
+
+
+    const getAsynccart = async () => {
+      try {
+        // Retrieve the stored string value
+        const storedValue = await getItem("cart");
+        console.log('storedGet', storedValue);
+    
+        if (storedValue) {
+          // Parse the string back into an array
+          const retrievedArray = JSON.parse(storedValue);
+    
+          console.log(retrievedArray);
+    
+          // Set the retrieved array to the data state
+          // setData(retrievedArray);
+          return retrievedArray
+        }
+      } catch (error) {
+        console.error('Error retrieving cart data: ', error);
+      }
+    };
+    
+    getAsynccart()
+      .then((cartData) => {
+        // Dispatch an action to set the initial state with the fetched cart data
+        dispatch(setCartInitialState(cartData));
+      })
+      .catch((error) => {
+        console.error("Error fetching cart data: ", error);
+      });
+  }, [dispatch]);
+
+
+
+
   useEffect(() => {
     let total = 0;
-    data.forEach((item) => {
-      total += item.price * item.count;
-    });
+    if (data) {
+      data.forEach((item) => {
+        total += item.price * item.count;
+      });
+    }
     setSubTotal(total);
-
-    // console.log('useEffect')
+      // console.log('useEffect')
     // console.log(data[0].count)
   }, [data]);
+
+
+
 
   const renderItem = ({ item }) => {
     return <CartCard itemData={item}></CartCard>;
     
   };
 
+  const handleCheckout=()=>{
+    console.log('checkout')
+    navigation.navigate('Checkout',{
+      data:data,
+      id:data.id,
+    subTotal:subTotal})
+    
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      
+      {/* <View style={styles.header}>
         <Text style={styles.headerText}>My Cart</Text>
-      </View>
+      </View> */}
 
-      {/* <View style={styles.flatListContainer}> */}
+
+
+
       <SafeAreaView style={{flex:1}}>
 
-        <FlatList
-          style={styles.scrollableSection}
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-        ></FlatList>
+                <FlatList
+                  style={styles.scrollableSection}
+                  data={data}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.id} 
+                ></FlatList>
       </SafeAreaView>
+      
+      {/* <View style={styles.flatListContainer}> */}
+     
       {/* </View> */}
 
       {/* <TouchableOpacity>
@@ -64,25 +126,25 @@ export function Cart() {
         </View>
       </TouchableOpacity> */}
 
-      <View style={styles.card}>
+      <View style={styles.cardTotal}>
         <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <Text style={styles.totalText}>Sub Total : </Text>
           <Text style={styles.totalPrice}>{subTotal}</Text>
         </View>
-        <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
+        {/* <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <Text style={styles.totalText}>Delievery Charge : </Text>
           <Text style={styles.totalPrice}>{10}</Text>
-        </View>
+        </View> */}
 
         {/* Horizontal line */}
         <View style={styles.line}></View>
-        <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
+        {/* <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <Text style={styles.totalText}>Grand Total : </Text>
           <Text style={styles.totalPrice}>{subTotal + 10}</Text>
-        </View>
+        </View> */}
       </View>
       <View>
-        <TouchableOpacity style={styles.uploadBtn} onPress={() => {}}>
+        <TouchableOpacity style={styles.uploadBtn} onPress={handleCheckout}>
           <Text>Check Out</Text>
         </TouchableOpacity>
       </View>
@@ -123,6 +185,18 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 0.3,
+    width: "90%",
+    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    elevation: 4,
+    marginTop: 10,
+    borderRadius: 10,
+
+    marginBottom: 10,
+  },
+  cardTotal: {
+    flex: 0.15,
     width: "90%",
     alignSelf: "center",
     justifyContent: "center",
