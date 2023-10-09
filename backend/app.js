@@ -5,8 +5,6 @@ const groceryRoutes = require("./routes/groceryRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const app = express();
 const cors = require('cors');
-// const stripe = require('stripe')(`${process.env.STRIPE_KEY}`)
-// whsec_6b3c1f280d5d849c8df239eeb4063a59db556fb3a836d1b8bcb949cd195e1e84
 
 app.use("/myapp/stripe", express.raw({ type: "*/*" }));
 app.use(express.json());
