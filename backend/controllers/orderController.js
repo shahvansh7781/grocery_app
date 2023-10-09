@@ -16,6 +16,7 @@ exports.createOrder = async (req, res) => {
 
           success: true,
           message: "Order created successfully",
+          orderId:resp.id
         }
         // id: resp.id,
       });

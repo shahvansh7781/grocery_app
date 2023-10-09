@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native';
+import { api_url } from '../utils/api_url';
 
 export default function CheckOut() {
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -23,6 +24,8 @@ export default function CheckOut() {
 
   const data=route.params.data
   const subTotal=route.params.subTotal
+  const userEmail = route.params.userEmail;
+  const userName = route.params.userName;
 
   // console.log(data)
 
@@ -163,8 +166,31 @@ export default function CheckOut() {
     
   }
 
-  const handlePayment = ()=>{
-    console.log('Payment Razorpay')
+  const handlePayment = async()=>{
+    console.log('Payment Razorpay');
+    const payload = {
+      items:data,
+      userName,
+      userEmail,
+      subTotal,
+      deliveryCharge,
+      grandTotal:subTotal+deliveryCharge,
+      shippingAddress:addressData.address.addr
+    }
+    try {
+      const dataRep = await axios.post(`${api_url}:8082/myapp/createOrder`,payload,{
+        headers: { "Content-Type": "application/json" },
+      })
+      // console.log(await dataRep.json());
+      // console.log(dataRep)
+      if (dataRep.data.myResponse.success) {
+        alert("Order Success");
+        navigation.navigate("Home")
+      }
+    } catch (error) {
+      alert("Order Failed");
+      
+    }
   }
   return (
     <View  style={styles.container}>
