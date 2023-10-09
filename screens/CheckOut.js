@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 import { StyleSheet ,FlatList,Dimensions} from 'react-native';
@@ -10,10 +10,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native';
 import { api_url } from '../utils/api_url';
+import { useStripe } from '@stripe/stripe-react-native';
 
 export default function CheckOut() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
+
 
   const [deliveryCharge,setDeliveryCahrge]=useState(0)
   // const [address,setAddress]=useState('')
@@ -160,6 +162,8 @@ export default function CheckOut() {
   //   // });
   
   // }
+  const stripe = useStripe();
+  
   const handleChangeAddr=()=>{
     console.log('checkout')
     navigation.navigate('Map')
@@ -167,7 +171,7 @@ export default function CheckOut() {
   }
 
   const handlePayment = async()=>{
-    console.log('Payment Razorpay');
+    console.log('Payment Stripe');
     const payload = {
       items:data,
       userName,
@@ -181,14 +185,30 @@ export default function CheckOut() {
       const dataRep = await axios.post(`${api_url}:8082/myapp/createOrder`,payload,{
         headers: { "Content-Type": "application/json" },
       })
+      // const data = await dataRep.json();
+      console.log(dataRep.data.clientSecret)
+      const clientSecret = dataRep.data.clientSecret;
+      const initSheet = await stripe.initPaymentSheet({
+        paymentIntentClientSecret:clientSecret,
+        merchantDisplayName: 'GrocerExpress',
+      })
+      
+      if (initSheet.error) return Alert.alert(initSheet.error.message);
+      const presentSheet = await stripe.presentPaymentSheet({
+        clientSecret
+      })
+      if (presentSheet.error) return Alert.alert(presentSheet.error.message);
+      alert("Payment success! Order Placed")
+      navigation.navigate("Home")
       // console.log(await dataRep.json());
       // console.log(dataRep)
-      if (dataRep.data.myResponse.success) {
-        alert("Order Success");
-        navigation.navigate("Home")
-      }
+      // if (dataRep.data.myResponse.success) {
+      //   alert("Order Success");
+      //   navigation.navigate("Home")
+      // }
     } catch (error) {
-      alert("Order Failed");
+      console.log(error)
+      alert("Order Failed",error);
       
     }
   }
@@ -252,7 +272,7 @@ export default function CheckOut() {
 
       <View>
         <TouchableOpacity style={styles.uploadBtn} onPress={handlePayment}>
-          <Text>Proceed For Payment</Text>
+          <Text>Pay ₹{subTotal+deliveryCharge}</Text>
         </TouchableOpacity>
       </View>
 

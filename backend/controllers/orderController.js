@@ -1,30 +1,66 @@
 const { addDoc, collection } = require("firebase/firestore");
 const { dbF } = require("../config/firebaseConfig");
 const { getAuth } = require("firebase/auth");
-
+const stripe = require('stripe')(`${process.env.STRIPE_KEY}`)
 const auth = getAuth();
 const dbRef = collection(dbF, "Orders");
 exports.createOrder = async (req, res) => {
   // const user = auth.currentUser;
+  const {userName} = req.body;
+  // console.log(userName)
   try {
-    const resp = await addDoc(dbRef, req.body);
-    // console.log(user);
-    // console.log(req.body);
-    // if (resp) {
-      res.status(201).send({
-        myResponse:{
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount:req.body.grandTotal*100,
+      currency:'inr',
+      payment_method_types: ['card'],
+      metadata:{userName}
+    })
+    const clientSecret = paymentIntent.client_secret;
+    res.json({message:"Payment Initiated",clientSecret})
+    // const resp = await addDoc(dbRef, req.body);
+    // // console.log(user);
+    // // console.log(req.body);
+    // // if (resp) {
+    //   res.status(201).send({
+    //     myResponse:{
 
-          success: true,
-          message: "Order created successfully",
-          orderId:resp.id
-        }
-        // id: resp.id,
-      });
+    //       success: true,
+    //       message: "Order created successfully",
+    //       orderId:resp.id
+    //     }
+    //     // id: resp.id,
+    //   });
     // }
   } catch (error) {
-    res.status(404).send({
+    res.status(500).send({
       success: false,
-      message: "Order failed",
+      message: "Internal Server Error",
     });
   }
 };
+
+exports.myWebhook = async(req,res)=>{
+  const sig = req.headers["stripe-signature"];
+  let event;
+  try {
+    event = await stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: err.message });
+  }
+
+  // Event when a payment is initiated
+  if (event.type === "payment_intent.created") {
+    console.log(`${event.data.object.metadata.userName} initated payment!`);
+  }
+  // Event when a payment is succeeded
+  if (event.type === "payment_intent.succeeded") {
+    console.log(`${event.data.object.metadata.userName} succeeded payment!`);
+    // fulfilment
+  }
+  res.json({ ok: true });
+}
