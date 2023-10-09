@@ -163,6 +163,9 @@ export default function CheckOut() {
     
   }
 
+  const handlePayment = ()=>{
+    console.log('Payment Razorpay')
+  }
   return (
     <View  style={styles.container}>
 
@@ -222,8 +225,8 @@ export default function CheckOut() {
       </View>
 
       <View>
-        <TouchableOpacity style={styles.uploadBtn} >
-          <Text>Check Out</Text>
+        <TouchableOpacity style={styles.uploadBtn} onPress={handlePayment}>
+          <Text>Proceed For Payment</Text>
         </TouchableOpacity>
       </View>
 

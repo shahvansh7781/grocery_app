@@ -92,42 +92,42 @@ export function Cart({navigation}) {
   };
 // Rushit_New
 
-//   const handleCheckout=()=>{
-//     console.log('checkout')
-//     navigation.navigate('Checkout',{
-//       data:data,
-//       id:data.id,
-//     subTotal:subTotal})
+  const handleCheckout=()=>{
+    console.log('checkout')
+    navigation.navigate('Checkout',{
+      data:data,
+      id:data.id,
+    subTotal:subTotal})
     
-//   }
+  }
   
 //Rushit_New
   
   //Vansh_New
-  const handleCheckout = async() => {
-    // console.log(reqUser ? reqUser:"Not");
-    const payload = {
-      items:data,
-      total:subTotal,
-      user:reqUser && reqUser.userData.email
-    }
-    // console.log(payload);
-    // console.log(data);
-    // console.log(reqUser && reqUser);
-    try {
-      const dataRep = await axios.post(`${api_url}:8082/myapp/createOrder`,payload,{
-        headers: { "Content-Type": "application/json" },
-      })
-      // console.log(await dataRep.json());
-      // console.log(dataRep)
-      if (dataRep.data.myResponse.success) {
-        alert("Order Success");
-        navigation.navigate("Home")
-      }
-    } catch (error) {
+  // const handleCheckout = async() => {
+  //   // console.log(reqUser ? reqUser:"Not");
+  //   const payload = {
+  //     items:data,
+  //     total:subTotal,
+  //     user:reqUser && reqUser.userData.email
+  //   }
+  //   // console.log(payload);
+  //   // console.log(data);
+  //   // console.log(reqUser && reqUser);
+  //   try {
+  //     const dataRep = await axios.post(`${api_url}:8082/myapp/createOrder`,payload,{
+  //       headers: { "Content-Type": "application/json" },
+  //     })
+  //     // console.log(await dataRep.json());
+  //     // console.log(dataRep)
+  //     if (dataRep.data.myResponse.success) {
+  //       alert("Order Success");
+  //       navigation.navigate("Home")
+  //     }
+  //   } catch (error) {
       
-    }
-  };
+  //   }
+  // };
 // Vansh_New
   return (
     <View style={styles.container}>

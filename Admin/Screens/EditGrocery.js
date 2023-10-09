@@ -49,7 +49,7 @@ const editGrocery = async(itemKey, newData) => {
   
 
 
-export function EditGrocery ({data,id}) {
+export function EditGrocery () {
 
     const route=useRoute()
     const navigation=useNavigation()
@@ -57,7 +57,7 @@ export function EditGrocery ({data,id}) {
   
     //  console.log(route.params.data)
 
-    //  const {data,id}=route.params
+     const {data,id}=route.params
     const [imageData,setImageData]= useState(data.imageData)
 
     const [name,setName]=useState('')

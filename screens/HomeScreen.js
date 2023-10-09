@@ -130,19 +130,12 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     // Fetch data and set isLoading accordingly
-
-    dispatch(fetchGroceries())
-      .then(() => {
-        setIsLoading(false);
-        setActiveCategory(2);
-        setActiveCategory(1);
-        setFilterData(data);
-      }) // Data fetched, set isLoading to false
+    
+    (dispatch(fetchGroceries())
+      .then(() => {setIsLoading(false);setActiveCategory(2);setActiveCategory(1);setFilterData(data);}) // Data fetched, set isLoading to false
       .catch((error) => {
         console.error("Error fetching data:", error);
         setIsLoading(false); // In case of an error, also set isLoading to false
-      });
-
 
          
         
@@ -160,8 +153,41 @@ export default function HomeScreen({ navigation }) {
     
 
     setFirstLoad(false)
-
   }, [dispatch]);
+  // useEffect(() => {
+  //   // Fetch data and set isLoading accordingly
+
+  //   dispatch(fetchGroceries())
+  //     .then(() => {
+  //       setIsLoading(false);
+  //       setActiveCategory(2);
+  //       setActiveCategory(1);
+  //       setFilterData(data);
+  //     }) // Data fetched, set isLoading to false
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //       setIsLoading(false); // In case of an error, also set isLoading to false
+  //     });
+
+
+         
+        
+  //     }));
+    
+    
+  //   setFilterData(data)
+    
+    
+      
+    
+  //   getLocationAsync()
+
+  //   // console.log(location,address)
+    
+
+  //   setFirstLoad(false)
+
+  // }, [dispatch]);
 
   useEffect(() => {
     setFilterData(data);
@@ -284,7 +310,7 @@ export default function HomeScreen({ navigation }) {
      
    
     
-    navigation.push('Cart')
+    navigation.navigate('Cart')
   }
 
 
