@@ -22,11 +22,21 @@ import HomeScreen from "./screens/HomeScreen";
 import { Cart } from "./screens/Cart";
 import DashBoard from "./Admin/Screens/DashBoard";
 import { EditGrocery } from "./Admin/Screens/EditGrocery";
-import NewNavigation from "./navigation/newNavigation";
+import UserBottomNavigation from "./navigation/UserBottomNavigation";
+
+import CheckOut from "./screens/CheckOut";
+import ChangeAddress from "./screens/ChangeAddress";
+
+
+
+import AdminBottomNavigation from "./navigation/AdminBottomNavigation";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 LogBox.ignoreAllLogs();
 const Stack = createNativeStackNavigator();
 const UnregisteredStack = createNativeStackNavigator();
-const InsideStack = createNativeStackNavigator();
+const UserInsideStack = createNativeStackNavigator();
+const AdminInsideStack = createNativeStackNavigator();
 const AdminStack = createNativeStackNavigator();
 function Authentication() {
   return (
@@ -40,29 +50,59 @@ function Authentication() {
     </UnregisteredStack.Navigator>
   );
 }
-function InsideLayout(params) {
+// function InsideLayout(params) {
 
-  return (
+
+//   return (
     
-    <InsideStack.Navigator initialRouteName="Home">
-      <InsideStack.Screen name="Home" component={HomeScreen} />
-      <InsideStack.Screen name="Cart" component={Cart} />
-      <InsideStack.Screen name="UserDetails" component={UserDetails} />
-    </InsideStack.Navigator>
-  );
-}
-function AdminSide() {
-  return (
-    <AdminStack.Navigator initialRouteName="Admin">
-      <AdminStack.Screen name="Admin" component={DashBoard} options={{headerShown:false}} />
-      <AdminStack.Screen name="EditGrocery" component={EditGrocery} />
-      <InsideStack.Screen name="UserDetails" component={UserDetails} />
-    </AdminStack.Navigator>
-  );
-}
+//     <InsideStack.Navigator initialRouteName="Home">
+//       <InsideStack.Screen name="Home" component={HomeScreen} />
+//       <InsideStack.Screen name="Cart" component={Cart} />
+//       <InsideStack.Screen name="UserDetails" component={UserDetails} />
+//       <InsideStack.Screen name="Checkout" component={CheckOut} />
+//       <InsideStack.Screen name="Map" component={ChangeAddress} />
+//       <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
+
+//     </InsideStack.Navigator>
+//   );
+// }
+// function AdminSide() {
+//   return (
+//     <AdminStack.Navigator initialRouteName="Admin">
+//       <AdminStack.Screen name="Admin" component={DashBoard} options={{headerShown:false}} />
+//       <AdminStack.Screen name="EditGrocery" component={EditGrocery} />
+//       <InsideStack.Screen name="UserDetails" component={UserDetails} />
+//       <InsideStack.Screen name="Checkout" component={CheckOut} />
+//       <InsideStack.Screen name="Map" component={ChangeAddress} />
+//       <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
+//     </AdminStack.Navigator>
+//   );
+// }
+
+//   return (
+
+//     <InsideStack.Navigator initialRouteName="Home">
+//       <InsideStack.Screen name="Home" component={HomeScreen} />
+//       <InsideStack.Screen name="Cart" component={Cart} />
+//       <InsideStack.Screen name="UserDetails" component={UserDetails} />
+//     </InsideStack.Navigator>
+//   );
+// }
+// function AdminSide() {
+//   return (
+//     <AdminStack.Navigator initialRouteName="Admin">
+//       <AdminStack.Screen name="Admin" component={DashBoard} options={{headerShown:false}} />
+//       <AdminStack.Screen name="EditGrocery" component={EditGrocery} />
+//       <InsideStack.Screen name="UserDetails" component={UserDetails} />
+//     </AdminStack.Navigator>
+//   );
+// }
+
 const dbRef = collection(db, "Users");
 export default function App() {
   const [user, setUser] = useState(null);
+  const userD = useSelector((state) => state.users.user);
+  const [userV, setUserV] = useState(null);
   let v = null;
   const dispatch = useDispatch();
   useEffect(() => {
@@ -77,7 +117,8 @@ export default function App() {
             d.forEach((doc) => {
               // console.log("doc:",doc.data());
               v = { ...doc.data() };
-              // console.log("v:",v);
+              // console.log("v:",v.role);
+              setUserV(v);
             });
           })
           .then(() => {
@@ -90,25 +131,70 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      {user ? (
+          userV && userV.role === "User" ? (
+              <UserInsideStack.Navigator>
+                <UserInsideStack.Screen
+                  name="Inside"
+                  component={UserBottomNavigation}
+                  options={{ headerShown: false }}
+                />
+                {/* <NInsideStack.Screen name="EditGrocery" component={EditGrocery} /> */}
+                <UserInsideStack.Screen name="Checkout" component={CheckOut} />
+                <UserInsideStack.Screen name="Map" component={ChangeAddress} />
+              </UserInsideStack.Navigator>
+            ) : (
+              <AdminInsideStack.Navigator>
+                <AdminInsideStack.Screen
+                  name={`${userV && userV.role}`}
+                  component={AdminBottomNavigation}
+                  options={{ headerShown: false }}
+                />
+                <AdminInsideStack.Screen name="EditGrocery" component={EditGrocery} />
+                <AdminInsideStack.Screen name="Checkout" component={CheckOut} />
+                <AdminInsideStack.Screen name="Map" component={ChangeAddress} />
+              </AdminInsideStack.Navigator>
+            )
+        
+      ) : (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Auth"
+            component={Authentication}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      )}
+      {/* <Stack.Navigator>
         {user ? (
-         
-            <Stack.Screen
-              name="Inside"
-              component={NewNavigation}
-              options={{ headerShown: false }}
-            />
-         
+          <>
+            {v && v.userData.role !== "Admin" ? (
+              <>
+                <Stack.Screen
+                  name="Inside"
+                  component={NewNavigation}
+                  options={{ headerShown: false }}
+                />
+              </>
+            ) : (
+              <>
+                <Stack.Screen
+                  name="InsideAdmin"
+                  component={BottomNavigation}
+                  options={{ headerShown: false }}
+                />
+              </>
+            )}
+          </>
         ) : (
           // <Stack.Screen name="Login" component={Login}/>
-
           <Stack.Screen
             name="Auth"
             component={Authentication}
             options={{ headerShown: false }}
           />
         )}
-      </Stack.Navigator>
+      </Stack.Navigator> */}
     </NavigationContainer>
     // {/* <AppNavigation></AppNavigation>  */}
   );

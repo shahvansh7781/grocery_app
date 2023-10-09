@@ -1,23 +1,37 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
-import { StatusBar, TouchableOpacity, ActivityIndicator,StyleSheet,FlatList, ScrollView } from "react-native";
-import { Text, View ,Image,TextInput} from "react-native";
+import {
+  StatusBar,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+} from "react-native";
+import { Text, View, Image, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { removeItem } from "../utils/asyncStorage";
+import { getItem, removeItem, setItem } from "../utils/asyncStorage";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGroceries } from "../Reducers/GroceryReducer";
 
-import { Card, Title, Paragraph } from 'react-native-paper';
+import { Card, Title, Paragraph } from "react-native-paper";
 import { add } from "../Reducers/CartReducers";
 // import { Icon } from "react-native-vector-icons/icon";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import Icon from "react-native-vector-icons/FontAwesome";
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from "react-native-responsive-dimensions";
 
-import * as Updates from 'expo-updates';
+import * as Updates from "expo-updates";
 
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 // import Geocoding from 'react-native-geocoding';
+
 import axios from 'axios'
+import { addAddress, deleteAllAddress, updateAddress, updateCoor } from "../Reducers/AddressReducer";
+
 
 // Geocoding.init({
 //   baseUrl: 'https://nominatim.openstreetmap.org/',
@@ -25,84 +39,75 @@ import axios from 'axios'
 //   // osmPassword: 'Rushit2002', // Set your OSM password here (required by Nominatim)
 // });
 
-
-
 // import Card from '@mui/material/Card';
 // import CardContent from '@mui/material/CardContent';
 // import CardMedia from '@mui/material/CardMedia';
 // import Typography from '@mui/material/Typography';
 // import { Button, CardActionArea, CardActions } from '@mui/material';
 
-
-export default function HomeScreen() {
-  const navigation = useNavigation();
+export default function HomeScreen({ navigation }) {
+  // const navigation = useNavigation();
   const dispatch = useDispatch();
-  const user = useSelector((state)=>state.users.user)
+  const user = useSelector((state) => state.users.user);
   const [isLoading, setIsLoading] = useState(true); // Add a loading state
 
-  const [firstLoad,setFirstLoad]=useState(true)
+  const [firstLoad, setFirstLoad] = useState(true);
 
-  const [address,setAddress]=useState('')
-  const [location,setLocation]=useState('')
-  const [searchQuery,setSearchQuery]=useState('')
-  
-  const data=useSelector((state) => state.groceries.data)
-  
+  const [address, setAddress] = useState("");
+  const [location, setLocation] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
- 
-  
+  const data = useSelector((state) => state.groceries.data);
 
   const [filterData, setFilterData] = useState(data);
 
- 
-
-  
-  
   // const [data,setData]=useState([])
 
-  const cartData=useSelector((state)=>state.Cart)
-
-
+  const cartData = useSelector((state) => state.Cart);
 
   const buttonList = [
-    { id: 1, label: 'All' },
-    { id: 2, label: 'Fruits' },
-    { id: 3, label: 'Vegetables' },
-    { id: 4, label: 'Dairy' },
+    { id: 1, label: "All" },
+    { id: 2, label: "Fruits & Vegetables" },
+    { id: 3, label: "Dairy & Bakery" },
+    { id: 4, label: "Snacks" },
+    { id: 5, label: "Beverages" },
   ];
 
-  const [activeCategory,setActiveCategory]=useState(1)
+  const [activeCategory, setActiveCategory] = useState(1);
 
-  const renderButton=({item})=>{
-    
-    if (item.id === activeCategory){
-      return(
-        
+  const renderButton = ({ item }) => {
+    if (item.id === activeCategory) {
+      return (
         <TouchableOpacity style={styles.activebutton}>
-            <Text style={styles.activebuttonText} onPress={() =>setActiveCategory(item.id)}>{item.label} </Text>
+          <Text
+            style={styles.activebuttonText}
+            onPress={() => setActiveCategory(item.id)}
+          >
+            {item.label}{" "}
+          </Text>
         </TouchableOpacity>
-      )
-    }
-    else{
-      return(
-        
+      );
+    } else {
+      return (
         <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText} onPress={() =>setActiveCategory(item.id)}>{item.label} </Text>
+          <Text
+            style={styles.buttonText}
+            onPress={() => setActiveCategory(item.id)}
+          >
+            {item.label}{" "}
+          </Text>
         </TouchableOpacity>
-      )
+      );
     }
+  };
 
-  
-
-  }
-  
   // const filterByCategory=()=>{
 
   //   console.log('I am in filterBy Category')
   //    if (activeCategory===3){
 
   //     const results = filterData.filter((grocery) => {
-        
+
   //       return grocery.price==='10'
   //     });
   //     console.log("filterByCAt",results)
@@ -122,7 +127,7 @@ export default function HomeScreen() {
     // Whenever the 'data' state changes, update 'filterData'
     setFilterData(data);
   }, [data]);
-  
+
   useEffect(() => {
     // Fetch data and set isLoading accordingly
     
@@ -143,11 +148,49 @@ export default function HomeScreen() {
       
     
     getLocationAsync()
+
+    // console.log(location,address)
+    
+
     setFirstLoad(false)
   }, [dispatch]);
+  // useEffect(() => {
+  //   // Fetch data and set isLoading accordingly
+
+  //   dispatch(fetchGroceries())
+  //     .then(() => {
+  //       setIsLoading(false);
+  //       setActiveCategory(2);
+  //       setActiveCategory(1);
+  //       setFilterData(data);
+  //     }) // Data fetched, set isLoading to false
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //       setIsLoading(false); // In case of an error, also set isLoading to false
+  //     });
+
+
+         
+        
+  //     }));
+    
+    
+  //   setFilterData(data)
+    
+    
+      
+    
+  //   getLocationAsync()
+
+  //   // console.log(location,address)
+    
+
+  //   setFirstLoad(false)
+
+  // }, [dispatch]);
 
   useEffect(() => {
-     setFilterData(data)
+    setFilterData(data);
     // Debounce the handleSearch function
 
     const debounceSearch = setTimeout(() => {
@@ -156,50 +199,57 @@ export default function HomeScreen() {
 
     // Cleanup the timeout when the component unmounts or when searchQuery changes
     return () => clearTimeout(debounceSearch);
-  }, [searchQuery,activeCategory]);
-
-
+  }, [searchQuery, activeCategory]);
 
   async function getLocationAsync() {
-
-    setActiveCategory(1)
+    setActiveCategory(1);
 
     const { status } = await Location.requestForegroundPermissionsAsync();
 
-    if (status !== 'granted') {
-      console.error('Location permission not granted');
+    if (status !== "granted") {
+      console.error("Location permission not granted");
       return;
     }
 
     // Get the current location
     const { coords } = await Location.getCurrentPositionAsync({});
-     
-     // Reverse geocode the coordinates
-     try {
+
+    // Reverse geocode the coordinates
+    try {
       const response = await axios.get(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}`
       );
 
-      console.log(response.data)
+      console.log(response.data);
 
       if (response.data && response.data.display_name) {
         // setAddress(response.data.display_name);
+
         const temp_addr=response.data.address.city+','+response.data.address.state +','+response.data.address.country//+','+response.data.address.postcode
         setAddress(temp_addr)
+        const addr=response.data.display_name
+        dispatch(updateAddress({address:{addr}}))
+
       } else {
-        setAddress('Address not found');
+        setAddress("Address not found");
       }
     } catch (error) {
-      console.error('Error fetching address:', error);
-      setAddress('Address not found');
+      console.error("Error fetching address:", error);
+      setAddress("Address not found");
     }
 
     setLocation(coords);
-    
-  }
-  
 
-  
+    // dispatch(deleteAllAddress())
+    // dispatch(addAddress({coords:location,address:address}))
+
+    dispatch(updateCoor({ coords}));
+    
+
+    // dispatch(updateAddress({coords:location,address:address}))
+    
+
+  }
 
   const handleReset = async () => {
     await removeItem("onboarded");
@@ -208,19 +258,16 @@ export default function HomeScreen() {
 
   const handleAdmin = async () => {
     navigation.push("Admin");
-    setIsDrawerOpen(false)
-    
-    
+    setIsDrawerOpen(false);
   };
 
-  const handleUserDetails = async()=>{
+  const handleUserDetails = async () => {
     navigation.push("UserDetails");
     setIsDrawerOpen(false);
-  }
+  };
   const handleCart = async () => {
-    navigation.push("Cart");
-    setIsDrawerOpen(false)
-    
+    navigation.navigate("Cart");
+    setIsDrawerOpen(false);
   };
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -228,22 +275,42 @@ export default function HomeScreen() {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
+  const setAsynccart=async()=>{
+    console.log('called')
+    const stringValue = JSON.stringify(cartData);
+    await removeItem("cart")
+    await setItem('cart',stringValue)
+    const storedValue = await getItem("cart");
+    console.log(storedValue)
 
+
+  }
   const handleAddToCart=(item)=>{
     // console.log(item.id)
 
-    if (!cartData.some(cd => cd.id === item.id)) {
+
+   
+
+    if (cartData && !cartData.some(cd => cd.id === item.id)) {
 
       
       dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: 10, title: item.name }))
       console.log("Item added to the cart");
-    } else {
-      console.log('Item is already in the cart.');
-    }
+      // setAsynccart()
+     
+    } else if(!cartData){
+      dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: 10, title: item.name }))
+      console.log("Item added to the cart");
+      // setAsynccart()
   
-
+    }
+      
+  
     
-    navigation.push('Cart')
+     
+   
+    
+    navigation.navigate('Cart')
   }
 
 
@@ -270,107 +337,204 @@ export default function HomeScreen() {
 //   // You can update the state or perform any other actions with the search results here
 
 // })
+// Rushit_New - Start
+// const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
+//   if (activeCategory === 2) {
+//     // Filter by category if "Vegetables" is selected
+//     const results = data.filter((grocery) => grocery.description === 'Fruit');
+//     setFilterData(results.filter((grocery) =>
+//     grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+//     );
+//   } 
+//   else if (activeCategory === 3){
 
-const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
-  if (activeCategory === 2) {
-    // Filter by category if "Vegetables" is selected
-    const results = data.filter((grocery) => grocery.description === 'Fruit');
-    setFilterData(results.filter((grocery) =>
-    grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
-    );
-  } 
-  else if (activeCategory === 3){
+//     const results = data.filter((grocery) => grocery.description === 'Vegetable');
+//     setFilterData(results.filter((grocery) =>
+//     grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+//     );
 
-    const results = data.filter((grocery) => grocery.description === 'Vegetable');
-    setFilterData(results.filter((grocery) =>
-    grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
-    );
+//   }
+//   else if (activeCategory === 4){
+//     const results = data.filter((grocery) => grocery.description === 'Dairy');
+//     setFilterData(results.filter((grocery) =>
+//     grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+//     );
 
-  }
-  else if (activeCategory === 4){
-    const results = data.filter((grocery) => grocery.description === 'Dairy');
-    setFilterData(results.filter((grocery) =>
-    grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
-    );
+//   }
+//   else {
+//     // Filter by search query for other categories
+//     setFilterData((data.filter((grocery) =>
+//     grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+//     ))
+//   }
+// });
+//Rushit_New - Finish
 
-  }
-  else {
-    // Filter by search query for other categories
-    setFilterData((data.filter((grocery) =>
-    grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
-    ))
-  }
-});
+  // Vansh_New - Start
+//   const handleAddToCart = (item) => {
+//     // console.log(item.id)
+
+//     if (!cartData.some((cd) => cd.id === item.id)) {
+//       dispatch(
+//         add({
+//           id: item.id,
+//           image: item.imageData,
+//           price: item.price,
+//           count: 1,
+//           stock: 10,
+//           title: item.name,
+//         })
+//       );
+//       console.log("Item added to the cart");
+//     } else {
+//       console.log("Item is already in the cart.");
+//     }
 
 
+//     navigation.navigate("Cart");
+//   };
+//Vansh_New - Finish
+  
+  //   const handleSearch=useCallback((searchQuery)=>{
+
+  //     // Use the filter method to find groceries by name
+  //   const searchResults = filterData.filter((grocery) => {
+  //     // Convert both the search query and grocery name to lowercase for case-insensitive search
+  //     const query = searchQuery.toLowerCase();
+  //     const name = grocery.name.toLowerCase();
+
+  //     // Check if the grocery name contains the search query
+  //     return (
+  //       name.startsWith(query) &&
+  //       (activeCategory === 1 || grocery.description === buttonList[activeCategory-1]['label'])
+  //     );
+  //   });
+
+  //   // Now, searchResults contains an array of matching groceries
+  //   console.log('Search results:', searchResults);
+  //   setFilterData(searchResults)
+  //   // You can update the state or perform any other actions with the search results here
+
+  // })
+
+  const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
+    if (activeCategory === 2) {
+      // Filter by category if "Vegetables" is selected
+      const results = data.filter((grocery) => grocery.category === "Fruits & Vegetables");
+      setFilterData(
+        results.filter((grocery) =>
+          grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+        )
+      );
+    } else if (activeCategory === 3) {
+      const results = data.filter(
+        (grocery) => grocery.category === "Dairy & Bakery"
+      );
+      setFilterData(
+        results.filter((grocery) =>
+          grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+        )
+      );
+      console.log(results);
+    } else if (activeCategory === 4) {
+      const results = data.filter((grocery) => grocery.category === "Snacks");
+      console.log(results)
+      setFilterData(
+        results.filter((grocery) =>
+          grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+        )
+      );
+    } else if (activeCategory === 5) {
+      const results = data.filter((grocery) => grocery.category === "Beverages");
+      setFilterData(
+        results.filter((grocery) =>
+          grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+        )
+      );
+    } 
+    else {
+      // Filter by search query for other categories
+      setFilterData(
+        data.filter((grocery) =>
+          grocery.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+        )
+      );
+    }
+  });
 
   return (
-    <SafeAreaView >
-      
+    <SafeAreaView style={{ marginTop: "10%" }}>
       {isLoading ? ( // Show a loading indicator while data is being fetched
         <ActivityIndicator size="large" color="#06FF00" />
       ) : (
         <>
-          
-         {!isDrawerOpen && ( <TouchableOpacity onPress={toggleDrawer} style={styles.drawerButton}>
+          {/* {!isDrawerOpen && ( <TouchableOpacity onPress={toggleDrawer} style={styles.drawerButton}>
           <Text style={{fontSize:40}}>X</Text>
           
-        </TouchableOpacity>)}
-        <Text style={{fontSize:responsiveFontSize(2),fontWeight:"bold"}} > Welcome! {user && user.userData.Name}</Text>
-       {/* {user ? <View style={{marginVertical:15}}> <Text> Welcome! </Text> </View> :  <></>} */}
-        {/* Location */}
+        </TouchableOpacity>)} */}
+          <Text
+            style={{ fontSize: responsiveFontSize(3.5), fontWeight: "bold",marginLeft:15 }}
+          >
+            {" "}
+            Welcome! {user ? user.userData.Name : ""}
+          </Text>
+          {/* {user ? <View style={{marginVertical:15}}> <Text> Welcome! </Text> </View> :  <></>} */}
+          {/* Location */}
 
-        <View style={styles.locationContainer}>
-          <Icon name="map-marker" size={30} color="green"></Icon>
-          <Text style={styles.text}>{address}</Text>
-        </View>
-        
-        {/* search */}
+          <View style={styles.locationContainer}>
+            <Icon name="map-marker" size={30} color="green"></Icon>
+            <Text style={styles.text}>{address}</Text>
+          </View>
 
-        <View style={styles.searchcartContainer}>
+          {/* search */}
 
-            
+          <View style={styles.searchcartContainer}>
             <View style={styles.searchContainer}>
-                  <Icon name="search" size={20} color="green"  />
-                  <TextInput
-                    // style={{flex:1}}
-                    placeholder="   Search Grocery"
-                    value={searchQuery}
-                    onChangeText={(text) => setSearchQuery(text)}
-                  />
-
+              <Icon name="search" size={20} color="green" />
+              <TextInput
+                // style={{flex:1}}
+                placeholder="   Search Grocery"
+                value={searchQuery}
+                onChangeText={(text) => setSearchQuery(text)}
+              />
             </View>
 
             <TouchableOpacity style={styles.cartContainer}>
-                <Icon name="shopping-cart" size={30} color="green" onPress={handleCart} />
+              <Icon
+                name="shopping-cart"
+                size={30}
+                color="green"
+                onPress={handleCart}
+              />
             </TouchableOpacity>
+          </View>
 
+          {/* categories */}
+          <Text style={styles.groceryHeader}>Categories </Text>
 
-       
-        </View>
-        
-        
-       
-
-        {/* categories */}
-        <Text style={styles.groceryHeader}>Categories </Text>
-
-        <View >
+          <View>
             <FlatList
               data={buttonList}
               renderItem={renderButton}
               keyExtractor={(item) => item.id}
-              horizontal 
+              horizontal
               showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
               contentContainerStyle={styles.buttonList} // Adjust container style
             />
-        </View>
+          </View>
 
-
-
-        {data && filterData.length === 0 && activeCategory===1 && firstLoad?( <View style={styles.scrollContainer}>
-          <ScrollView contentContainerStyle={styles.cardContainer} horizontal>
-        {/* <Card style={styles.card}>
+          {data &&
+          filterData.length === 0 &&
+          activeCategory === 1 &&
+          firstLoad ? (
+            <View 
+            style={styles.scrollContainer}
+            >
+              <ScrollView
+                contentContainerStyle={styles.cardContainer}
+                horizontal
+              >
+                {/* <Card style={styles.card}>
         <Card.Cover source={{ uri: data[0].imageData }} />
           <Card.Content >
             <Title >{data[0].name}</Title>
@@ -378,11 +542,12 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
           </Card.Content>
       </Card> */}
 
+
         {filterData.map((item,index) => (
             <Card key={index} style={styles.card}>
               <Card.Cover source={{ uri: item.imageData }} />
               <Card.Content>
-                <Title style={{fontSize:20,fontWeight:400}}>{item.name}</Title>
+                <Title style={{fontSize:20,fontWeight:400}}>{item.name.length >5 ? item.name.slice(0, 10) + '...' : item.name}</Title>
 
                 {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
                 <Title style={{color:'green'}}>${item.price}</Title>
@@ -397,7 +562,10 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
 
       </ScrollView></View>):<View style={styles.scrollContainer}>
           <ScrollView contentContainerStyle={styles.cardContainer} horizontal>
-        {/* <Card style={styles.card}>
+        
+
+                {/* <Card style={styles.card}>
+
         <Card.Cover source={{ uri: data[0].imageData }} />
           <Card.Content >
             <Title >{data[0].name}</Title>
@@ -405,11 +573,12 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
           </Card.Content>
       </Card> */}
 
+
         {filterData.map((item,index) => (
             <Card key={index} style={styles.card}>
               <Card.Cover source={{ uri: item.imageData }} style={{height:responsiveHeight(20)}} />
               <Card.Content>
-                <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400}}>{item.name}</Title>
+                <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400}}>{item.name.length > 5 ? item.name.slice(0,10) + '...' : item.name}</Title>
 
                 {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
                 <Title style={{color:'green',fontSize:responsiveFontSize(2)}}>${item.price}</Title>
@@ -421,6 +590,10 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
             </Card>
           
 ))}
+
+
+
+
 
       </ScrollView></View>}
       
@@ -466,10 +639,9 @@ const filterDataByCategoryAndSearch = useCallback((searchQuery) => {
 
 
 
+
         </>
       )}
-
-     
     </SafeAreaView>
   );
 }
@@ -478,206 +650,175 @@ const styles = StyleSheet.create({
     flex: 1,
     // justifyContent: 'center',
     // alignItems: 'center',
-    height:'100%',
-    marginBottom:responsiveHeight(10)
-    
-   
+    height: "100%",
+    marginBottom: responsiveHeight(10),
   },
   scrollContainer: {
-    height: '90%', // 80% of the screen height
+    height: "90%", // 80% of the screen height
   },
   drawerButton: {
-   
     // top: 0,
     // left: 0,
-    
-    backgroundColor:'green',
-    height:50,
-    width:50,
-    textAlign:'center',
-    justifyContent:'center',
-    alignItems:'center',
-    
+
+    backgroundColor: "green",
+    height: 50,
+    width: 50,
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
   },
   drawer: {
-    position: 'absolute',
+    position: "absolute",
     top: 20,
     left: 0,
-    width: '80%',
-    bottom:-100000,
-   
-    backgroundColor: '#fff',
-    shadowColor: '#000',
+    width: "80%",
+    bottom: -100000,
+
+    backgroundColor: "#fff",
+    shadowColor: "#000",
     shadowOffset: { width: -2, height: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 8,
   },
- 
+
   drawerItem: {
     padding: 12,
-    marginTop:20,
+    marginTop: 20,
     borderBottomWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
 
-  card:{
-    
+  card: {
     // margin:'1%',
     // flexBasis: "48%",
 
     width: responsiveWidth(45), // Adjust the width as needed
     marginHorizontal: responsiveWidth(2),
-    height:responsiveHeight(36)
-   
-    
+    height: responsiveHeight(36),
   },
- cardContainer:{
+  cardContainer: {
+    // // marginTop:230,
+    // flexDirection: "row",
+    // flexWrap: "wrap",
+    // justifyContent: "space-between",
+    // padding: '5%',
+    // // marginBottom:250,
+    // // bottom:250
+    // marginBottom:responsiveHeight(10)
 
-  
+    flexDirection:"row",
 
-  // // marginTop:230,
-  // flexDirection: "row",
-  // flexWrap: "wrap",
-  // justifyContent: "space-between",
-  // padding: '5%',
-  // // marginBottom:250,
-  // // bottom:250
-  // marginBottom:responsiveHeight(10)
+    paddingVertical: "5%",
+  },
 
-  flexDirection: 'row',
-    paddingVertical: '5%',
- 
- },
+  content: {
+    fontSize: 18, // Adjust the font size as needed
+    fontWeight: "bold",
+  },
+  addToCartButton: {
+    backgroundColor: "green",
+    height: 35,
+    width: "90%",
+    margin: "5%",
+    marginLeft: 0,
+    marginBottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+  },
+  locationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: responsiveWidth(3),
+    // paddingRight:responsiveWidth(10),
+    // paddingBottom:responsiveWidth(1),
+    // paddingTop:responsiveWidth(5),
+    backgroundColor: "white",
+    borderRadius: 10,
+    marginLeft: responsiveWidth(5),
+    marginRight: responsiveWidth(5),
+    marginTop: responsiveWidth(3),
+    marginBottom: responsiveWidth(0),
+    elevation: 5,
+  },
+  text: {
+    marginLeft: responsiveWidth(3), // Add spacing between the icon and text
+    fontSize: responsiveFontSize(2),
+    color: "black",
+  },
+  searchContainer: {
+    width: responsiveWidth(70),
+    height: responsiveHeight(6),
+    borderRadius: 10,
+    borderWidth: 0.5,
+    marginLeft: responsiveWidth(5),
+    padding: responsiveWidth(3),
+    marginTop: responsiveHeight(2),
+    // alignSelf: "center",
+    backgroundColor: "white",
+    elevation: 5,
+    flexDirection: "row",
 
- 
- content:{
-  fontSize: 18, // Adjust the font size as needed
-  fontWeight: 'bold',
-
- },
- addToCartButton:{
-  backgroundColor:'green',
-  height:35,
-  width:'90%',
-  margin:'5%',
-  marginLeft:0,
-  marginBottom:0,
-  alignItems:'center',
-  justifyContent:'center',
-  borderRadius:10
-
- },
- locationContainer:{
-  flexDirection: 'row',
-  alignItems: 'center',
-  padding:responsiveWidth(3),
-  // paddingRight:responsiveWidth(10),
-  // paddingBottom:responsiveWidth(1),
-  // paddingTop:responsiveWidth(5),
-  backgroundColor:'white',
-  borderRadius:10,
- marginLeft:responsiveWidth(5),
- marginRight:responsiveWidth(5),
- marginTop:responsiveWidth(3),
- marginBottom:responsiveWidth(0),
- elevation:5
- },
- text: {
-  marginLeft: responsiveWidth(3), // Add spacing between the icon and text
-  fontSize: responsiveFontSize(2),
-  color: 'black',
-},
-searchContainer: {
-  width: responsiveWidth(70),
-  height:responsiveHeight(6),
-  borderRadius: 10,
-  borderWidth: 0.5,
-  marginLeft:responsiveWidth(5),
-  padding:responsiveWidth(3),
-  marginTop:responsiveHeight(2),
-  // alignSelf: "center",
-  backgroundColor:'white',
-  elevation:5,
-  flexDirection:"row",
-  
-
- 
-  borderColor: 'green',
-  borderWidth: 1,
- 
-  
-  
-},
-buttonList: {
-  padding: 10,
- 
-},
-button: {
-  backgroundColor: 'white',
-  padding: responsiveWidth(2.5),
-  borderRadius: 5,
-  marginRight: responsiveWidth(2),
-  width:responsiveWidth(25),
-  display:"flex",
-  justifyContent:"center",
-  alignItems:'center'
-},
-activebutton: {
-  backgroundColor: 'green',
-  padding: responsiveWidth(2.5),
-  borderRadius: 5,
-  marginRight: responsiveWidth(2),
-  width:responsiveWidth(25),
-  display:"flex",
-  justifyContent:"center",
-  alignItems:'center'
-},
-buttonText: {
-  fontSize: responsiveFontSize(1.8),
-  fontWeight: 'bold',
- 
-},
-activebuttonText: {
-  fontSize: responsiveFontSize(1.8),
-  fontWeight: 'bold',
-  color:'white'
-},
-groceryHeader:{
-  padding:responsiveWidth(4),
-  // marginLeft:responsiveWidth(5),
-  fontSize:responsiveFontSize(2.5),
-  fontWeight:'bold',
- 
-
-},
-cartContainer: {
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems:'center',
-  marginRight:responsiveWidth(5),
-  backgroundColor:'white',
-  width:responsiveWidth(15),
-  height:responsiveHeight(6),
-  padding:responsiveWidth(3),
-  marginTop:responsiveHeight(2),
-  marginLeft:responsiveWidth(4),
-  borderRadius:10,
-  borderWidth:0.3,
-  borderColor:'green'
- 
-},
-searchcartContainer:{
-  flexDirection: 'row', // Use flexDirection: 'row' for a horizontal layout
-  alignItems: 'center',
-}
+    borderColor: "green",
+    borderWidth: 1,
+  },
+  buttonList: {
+    padding: 10,
+  },
+  button: {
+    backgroundColor: "white",
+    padding: responsiveWidth(2.5),
+    borderRadius: 5,
+    marginRight: responsiveWidth(2),
+    // width: responsiveWidth(45),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  activebutton: {
+    backgroundColor: "green",
+    paddingVertical: responsiveWidth(2.5),
+    paddingHorizontal:responsiveHeight(3.5),
+    borderRadius: 5,
+    marginRight: responsiveWidth(2),
+    // width: responsiveWidth(45),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    fontSize: responsiveFontSize(1.8),
+    fontWeight: "bold",
+  },
+  activebuttonText: {
+    fontSize: responsiveFontSize(1.8),
+    fontWeight: "bold",
+    color: "white",
+  },
+  groceryHeader: {
+    padding: responsiveWidth(4),
+    // marginLeft:responsiveWidth(5),
+    fontSize: responsiveFontSize(2.5),
+    fontWeight: "bold",
+  },
+  cartContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: responsiveWidth(5),
+    backgroundColor: "white",
+    width: responsiveWidth(15),
+    height: responsiveHeight(6),
+    padding: responsiveWidth(3),
+    marginTop: responsiveHeight(2),
+    marginLeft: responsiveWidth(4),
+    borderRadius: 10,
+    borderWidth: 0.3,
+    borderColor: "green",
+  },
+  searchcartContainer: {
+    flexDirection: "row", // Use flexDirection: 'row' for a horizontal layout
+    alignItems: "center",
+  },
 });
-
-
-
-
-
-
-
-
-

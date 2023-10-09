@@ -19,7 +19,7 @@ export default function GroceryCard({item}) {
       
     
         
-        navigation.push('Cart')
+        // navigation.push('Cart')
       }
   return (
     <View>

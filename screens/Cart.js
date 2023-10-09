@@ -1,53 +1,160 @@
 import React, { Component, useEffect, useState } from "react";
-import { Text, View, StyleSheet, FlatList, ScrollView, SafeAreaView } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
 
 import { CartCard } from "./Cards/CartCard";
 
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
 
-export function Cart() {
-  const data = useSelector((state) => state.Cart);
+import { getItem, removeItem, setItem } from "../utils/asyncStorage";
+import { add, deleteAll, setCartInitialState } from "../Reducers/CartReducers";
 
-  const navigation = useNavigation();
+
+import axios from "axios";
+import { api_url } from "../utils/api_url";
+
+export function Cart({navigation}) {
+  const data = useSelector((state) => state.Cart);
+  const dispatch=useDispatch()
+  const reqUser = useSelector((state) => 
+    state.users.user
+  );
+  // const navigation = useNavigation();
+
 
   const [subTotal, setSubTotal] = useState(0);
 
-  // Calculate subtotal when data changes
+  
+  useEffect(() => {
+    // Fetch cart data asynchronously
+
+
+    const getAsynccart = async () => {
+      try {
+        // Retrieve the stored string value
+        const storedValue = await getItem("cart");
+        console.log('storedGet', storedValue);
+    
+        if (storedValue) {
+          // Parse the string back into an array
+          const retrievedArray = JSON.parse(storedValue);
+    
+          console.log(retrievedArray);
+    
+          // Set the retrieved array to the data state
+          // setData(retrievedArray);
+          return retrievedArray
+        }
+      } catch (error) {
+        console.error('Error retrieving cart data: ', error);
+      }
+    };
+    
+    getAsynccart()
+      .then((cartData) => {
+        // Dispatch an action to set the initial state with the fetched cart data
+        dispatch(setCartInitialState(cartData));
+      })
+      .catch((error) => {
+        console.error("Error fetching cart data: ", error);
+      });
+  }, [dispatch]);
+
+
+
+
   useEffect(() => {
     let total = 0;
-    data.forEach((item) => {
-      total += item.price * item.count;
-    });
+    if (data) {
+      data.forEach((item) => {
+        total += item.price * item.count;
+      });
+    }
     setSubTotal(total);
-
-    // console.log('useEffect')
+      // console.log('useEffect')
     // console.log(data[0].count)
   }, [data]);
 
+
+
+
   const renderItem = ({ item }) => {
     return <CartCard itemData={item}></CartCard>;
-    
   };
+// Rushit_New
 
+  const handleCheckout=()=>{
+    console.log('checkout')
+    navigation.navigate('Checkout',{
+      data:data,
+      id:data.id,
+      userEmail: reqUser && reqUser.userData.email,
+      userName: reqUser && reqUser.userData.Name,
+      subTotal:subTotal})
+    
+  }
+  
+//Rushit_New
+  
+  //Vansh_New
+  // const handleCheckout = async() => {
+  //   // console.log(reqUser ? reqUser:"Not");
+  //   const payload = {
+  //     items:data,
+  //     total:subTotal,
+  //     user:reqUser && reqUser.userData.email
+  //   }
+  //   // console.log(payload);
+  //   // console.log(data);
+  //   // console.log(reqUser && reqUser);
+  //   try {
+  //     const dataRep = await axios.post(`${api_url}:8082/myapp/createOrder`,payload,{
+  //       headers: { "Content-Type": "application/json" },
+  //     })
+  //     // console.log(await dataRep.json());
+  //     // console.log(dataRep)
+  //     if (dataRep.data.myResponse.success) {
+  //       alert("Order Success");
+  //       navigation.navigate("Home")
+  //     }
+  //   } catch (error) {
+      
+  //   }
+  // };
+// Vansh_New
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      
+      {/* <View style={styles.header}>
         <Text style={styles.headerText}>My Cart</Text>
-      </View>
+      </View> */}
 
-      {/* <View style={styles.flatListContainer}> */}
+
+
+
+
       <SafeAreaView style={{flex:1}}>
 
-        <FlatList
-          style={styles.scrollableSection}
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-        ></FlatList>
+                <FlatList
+                  style={styles.scrollableSection}
+                  data={data}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.id} 
+                ></FlatList>
+
       </SafeAreaView>
+      
+      {/* <View style={styles.flatListContainer}> */}
+     
       {/* </View> */}
 
       {/* <TouchableOpacity>
@@ -64,25 +171,27 @@ export function Cart() {
         </View>
       </TouchableOpacity> */}
 
-      <View style={styles.card}>
+      <View style={styles.cardTotal}>
         <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <Text style={styles.totalText}>Sub Total : </Text>
           <Text style={styles.totalPrice}>{subTotal}</Text>
         </View>
-        <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
+        {/* <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <Text style={styles.totalText}>Delievery Charge : </Text>
           <Text style={styles.totalPrice}>{10}</Text>
-        </View>
+        </View> */}
 
         {/* Horizontal line */}
         <View style={styles.line}></View>
-        <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
+        {/* <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <Text style={styles.totalText}>Grand Total : </Text>
           <Text style={styles.totalPrice}>{subTotal + 10}</Text>
-        </View>
+        </View> */}
       </View>
       <View>
-        <TouchableOpacity style={styles.uploadBtn} onPress={() => {}}>
+
+        <TouchableOpacity style={styles.uploadBtn} onPress={handleCheckout}>
+
           <Text>Check Out</Text>
         </TouchableOpacity>
       </View>
@@ -93,7 +202,7 @@ export function Cart() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:"2%"
+    padding: "2%",
   },
   header: {
     height: 60,
@@ -133,6 +242,18 @@ const styles = StyleSheet.create({
 
     marginBottom: 10,
   },
+  cardTotal: {
+    flex: 0.15,
+    width: "90%",
+    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    elevation: 4,
+    marginTop: 10,
+    borderRadius: 10,
+
+    marginBottom: 10,
+  },
 
   totalText: {
     fontSize: 18,
@@ -158,7 +279,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-marginBottom:"4%",
+    marginBottom: "4%",
     backgroundColor: "#06FF00",
   },
 });
