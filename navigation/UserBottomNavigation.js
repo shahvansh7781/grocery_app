@@ -91,7 +91,7 @@ const NewNavigation = () => {
         <Tab.Screen
           name="Cart"
           component={Cart}
-          options={{ tabBarBadge: data && data.length, headerShown: false }}
+          options={{ tabBarBadge: data && data.length }}
         />
         <Tab.Screen name="Contact" component={Contact} />
         <Tab.Screen name="UserDetails" component={ProfileScreen} />

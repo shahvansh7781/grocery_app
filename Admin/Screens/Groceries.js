@@ -5,6 +5,7 @@ import Card from "../src/Card";
 import { ImageBackground } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGroceries } from "../../Reducers/GroceryReducer";
+import Card2 from "../src/Card2";
 
 export function Groceries() {
   // const [data, setData] = useState();
@@ -63,7 +64,7 @@ export function Groceries() {
   // }, []);
 
   const renderItem = ({ item }) => {
-    return <Card itemData={item}></Card>;
+    return <Card2 itemData={item}></Card2>;
   };
 
   return (

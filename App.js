@@ -22,21 +22,21 @@ import HomeScreen from "./screens/HomeScreen";
 import { Cart } from "./screens/Cart";
 import DashBoard from "./Admin/Screens/DashBoard";
 import { EditGrocery } from "./Admin/Screens/EditGrocery";
-import NewNavigation from "./navigation/newNavigation";
+import UserBottomNavigation from "./navigation/UserBottomNavigation";
 
 import CheckOut from "./screens/CheckOut";
 import ChangeAddress from "./screens/ChangeAddress";
 
 
 
-import BottomNavigation from "./navigation/bottomNavigation";
+import AdminBottomNavigation from "./navigation/AdminBottomNavigation";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 LogBox.ignoreAllLogs();
 const Stack = createNativeStackNavigator();
 const UnregisteredStack = createNativeStackNavigator();
-const InsideStack = createNativeStackNavigator();
-const NInsideStack = createNativeStackNavigator();
+const UserInsideStack = createNativeStackNavigator();
+const AdminInsideStack = createNativeStackNavigator();
 const AdminStack = createNativeStackNavigator();
 function Authentication() {
   return (
@@ -53,31 +53,31 @@ function Authentication() {
 // function InsideLayout(params) {
 
 
-  return (
+//   return (
     
-    <InsideStack.Navigator initialRouteName="Home">
-      <InsideStack.Screen name="Home" component={HomeScreen} />
-      <InsideStack.Screen name="Cart" component={Cart} />
-      <InsideStack.Screen name="UserDetails" component={UserDetails} />
-      <InsideStack.Screen name="Checkout" component={CheckOut} />
-      <InsideStack.Screen name="Map" component={ChangeAddress} />
-      <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
+//     <InsideStack.Navigator initialRouteName="Home">
+//       <InsideStack.Screen name="Home" component={HomeScreen} />
+//       <InsideStack.Screen name="Cart" component={Cart} />
+//       <InsideStack.Screen name="UserDetails" component={UserDetails} />
+//       <InsideStack.Screen name="Checkout" component={CheckOut} />
+//       <InsideStack.Screen name="Map" component={ChangeAddress} />
+//       <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
 
-    </InsideStack.Navigator>
-  );
-}
-function AdminSide() {
-  return (
-    <AdminStack.Navigator initialRouteName="Admin">
-      <AdminStack.Screen name="Admin" component={DashBoard} options={{headerShown:false}} />
-      <AdminStack.Screen name="EditGrocery" component={EditGrocery} />
-      <InsideStack.Screen name="UserDetails" component={UserDetails} />
-      <InsideStack.Screen name="Checkout" component={CheckOut} />
-      <InsideStack.Screen name="Map" component={ChangeAddress} />
-      <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
-    </AdminStack.Navigator>
-  );
-}
+//     </InsideStack.Navigator>
+//   );
+// }
+// function AdminSide() {
+//   return (
+//     <AdminStack.Navigator initialRouteName="Admin">
+//       <AdminStack.Screen name="Admin" component={DashBoard} options={{headerShown:false}} />
+//       <AdminStack.Screen name="EditGrocery" component={EditGrocery} />
+//       <InsideStack.Screen name="UserDetails" component={UserDetails} />
+//       <InsideStack.Screen name="Checkout" component={CheckOut} />
+//       <InsideStack.Screen name="Map" component={ChangeAddress} />
+//       <InsideStack.Screen name="EditGrocery" component={EditGrocery} />
+//     </AdminStack.Navigator>
+//   );
+// }
 
 //   return (
 
@@ -133,22 +133,27 @@ export default function App() {
     <NavigationContainer>
       {user ? (
           userV && userV.role === "User" ? (
-              <InsideStack.Navigator>
-                <InsideStack.Screen
+              <UserInsideStack.Navigator>
+                <UserInsideStack.Screen
                   name="Inside"
-                  component={NewNavigation}
+                  component={UserBottomNavigation}
                   options={{ headerShown: false }}
                 />
-              </InsideStack.Navigator>
+                {/* <NInsideStack.Screen name="EditGrocery" component={EditGrocery} /> */}
+                <UserInsideStack.Screen name="Checkout" component={CheckOut} />
+                <UserInsideStack.Screen name="Map" component={ChangeAddress} />
+              </UserInsideStack.Navigator>
             ) : (
-              <NInsideStack.Navigator>
-                <NInsideStack.Screen
+              <AdminInsideStack.Navigator>
+                <AdminInsideStack.Screen
                   name={`${userV && userV.role}`}
-                  component={BottomNavigation}
+                  component={AdminBottomNavigation}
                   options={{ headerShown: false }}
                 />
-                <NInsideStack.Screen name="Edit Grocery" component={EditGrocery} />
-              </NInsideStack.Navigator>
+                <AdminInsideStack.Screen name="EditGrocery" component={EditGrocery} />
+                <AdminInsideStack.Screen name="Checkout" component={CheckOut} />
+                <AdminInsideStack.Screen name="Map" component={ChangeAddress} />
+              </AdminInsideStack.Navigator>
             )
         
       ) : (

@@ -41,7 +41,7 @@ const BottomNavigation = () => {
         }}
       >
         <AdminTab.Screen name="Home" component={HomeScreen} options={{headerShown:false}}/>
-        <AdminTab.Screen name="Cart" component={Cart} options={{ tabBarBadge: data && data.length, headerShown: false }}/>
+        <AdminTab.Screen name="Cart" component={Cart} options={{ tabBarBadge: data && data.length }}/>
         <AdminTab.Screen name="Admin" component={DashBoard} />
         <AdminTab.Screen name="UserDetails" component={ProfileScreen} />
         {/* Admin Side */}
