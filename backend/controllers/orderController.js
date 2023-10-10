@@ -4,33 +4,22 @@ const { getAuth } = require("firebase/auth");
 const stripe = require('stripe')(`${process.env.STRIPE_KEY}`)
 const auth = getAuth();
 const dbRef = collection(dbF, "Orders");
+
+let payload=null;
 exports.createOrder = async (req, res) => {
   // const user = auth.currentUser;
-  const {userName} = req.body;
+  const {userName,userEmail} = req.body;
+  payload=req.body;
   // console.log(userName)
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount:req.body.grandTotal*100,
       currency:'inr',
       payment_method_types: ['card'],
-      metadata:{userName}
+      metadata:{userName,userEmail}
     })
     const clientSecret = paymentIntent.client_secret;
     res.json({message:"Payment Initiated",clientSecret})
-    // const resp = await addDoc(dbRef, req.body);
-    // // console.log(user);
-    // // console.log(req.body);
-    // // if (resp) {
-    //   res.status(201).send({
-    //     myResponse:{
-
-    //       success: true,
-    //       message: "Order created successfully",
-    //       orderId:resp.id
-    //     }
-    //     // id: resp.id,
-    //   });
-    // }
   } catch (error) {
     res.status(500).send({
       success: false,
@@ -61,6 +50,12 @@ exports.myWebhook = async(req,res)=>{
   if (event.type === "payment_intent.succeeded") {
     console.log(`${event.data.object.metadata.userName} succeeded payment!`);
     // fulfilment
+    const resp = await addDoc(dbRef, payload);
+      res.status(201).send({
+        myResponse:{
+          success: true,
+          orderId:resp.id
+        }
+      });
   }
-  res.json({ ok: true });
 }

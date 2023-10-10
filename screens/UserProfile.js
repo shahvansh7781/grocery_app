@@ -15,11 +15,12 @@ import {
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { auth } from "../Admin/config";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteAll } from "../Reducers/CartReducers";
 
 const ProfileScreen = () => {
   const user = useSelector((state) => state.users.user);
-
+  const dispatch = useDispatch();
   return (
     <>
       {user ? (
@@ -50,22 +51,22 @@ const ProfileScreen = () => {
             </View>
           </View>
           <View style={styles.userInfoSection}>
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
               <Icon name="map-marker-radius" color="#777777" size={20} />
               <Text style={{ color: "#777777", marginLeft: 20 }}>
                 Baroda, India
               </Text>
-            </View>
+            </View> */}
             <View style={styles.row}>
               <Icon name="phone" color="#777777" size={20} />
               <Text style={{ color: "#777777", marginLeft: 20 }}>
-                +91-9423198765
+              {user.userData.phone}
               </Text>
             </View>
             <View style={styles.row}>
               <Icon name="email" color="#777777" size={20} />
               <Text style={{ color: "#777777", marginLeft: 20 }}>
-                dsp06@gmail.com
+              {user.userData.email}
               </Text>
             </View>
           </View>
@@ -89,16 +90,16 @@ const ProfileScreen = () => {
           </View>
 
           <View style={styles.menuWrapper}>
-            <TouchableRipple onPress={() => {}}>
+            {/* <TouchableRipple onPress={() => {}}>
               <View style={styles.menuItem}>
                 <Icon name="heart-outline" color="#38E54D" size={25} />
                 <Text style={styles.menuItemText}>Favorites</Text>
               </View>
-            </TouchableRipple>
+            </TouchableRipple> */}
             <TouchableRipple onPress={() => {}}>
               <View style={styles.menuItem}>
                 <Icon name="credit-card" color="#38E54D" size={25} />
-                <Text style={styles.menuItemText}>Payment</Text>
+                <Text style={styles.menuItemText}>My Orders</Text>
               </View>
             </TouchableRipple>
             <TouchableRipple onPress={() => {}}>
@@ -111,6 +112,7 @@ const ProfileScreen = () => {
             <TouchableRipple
               onPress={() => {
                 auth.signOut();
+                // dispatch(deleteAll())
               }}
             >
               <View style={styles.menuItem}>

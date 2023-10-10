@@ -11,6 +11,7 @@ import axios from 'axios';
 import { TouchableOpacity } from 'react-native';
 import { api_url } from '../utils/api_url';
 import { useStripe } from '@stripe/stripe-react-native';
+import { deleteAll } from '../Reducers/CartReducers';
 
 export default function CheckOut() {
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -191,6 +192,7 @@ export default function CheckOut() {
       const initSheet = await stripe.initPaymentSheet({
         paymentIntentClientSecret:clientSecret,
         merchantDisplayName: 'GrocerExpress',
+        googlePay:true
       })
       
       if (initSheet.error) return Alert.alert(initSheet.error.message);
@@ -200,6 +202,7 @@ export default function CheckOut() {
       if (presentSheet.error) return Alert.alert(presentSheet.error.message);
       alert("Payment success! Order Placed")
       navigation.navigate("Home")
+      dispatch(deleteAll());
       // console.log(await dataRep.json());
       // console.log(dataRep)
       // if (dataRep.data.myResponse.success) {
