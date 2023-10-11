@@ -97,7 +97,9 @@ export function Cart({navigation}) {
     navigation.navigate('Checkout',{
       data:data,
       id:data.id,
-    subTotal:subTotal})
+      userEmail: reqUser && reqUser.userData.email,
+      userName: reqUser && reqUser.userData.Name,
+      subTotal:subTotal})
     
   }
   

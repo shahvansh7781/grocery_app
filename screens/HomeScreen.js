@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { Text, View, Image, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -46,6 +47,15 @@ import { addAddress, deleteAllAddress, updateAddress, updateCoor } from "../Redu
 // import { Button, CardActionArea, CardActions } from '@mui/material';
 
 export default function HomeScreen({ navigation }) {
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
   // const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.users.user);
@@ -533,6 +543,9 @@ export default function HomeScreen({ navigation }) {
               <ScrollView
                 contentContainerStyle={styles.cardContainer}
                 horizontal
+                refreshControl={
+                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
               >
                 {/* <Card style={styles.card}>
         <Card.Cover source={{ uri: data[0].imageData }} />
@@ -561,7 +574,9 @@ export default function HomeScreen({ navigation }) {
 ))}
 
       </ScrollView></View>):<View style={styles.scrollContainer}>
-          <ScrollView contentContainerStyle={styles.cardContainer} horizontal>
+          <ScrollView contentContainerStyle={styles.cardContainer} horizontal refreshControl={
+                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }>
         
 
                 {/* <Card style={styles.card}>

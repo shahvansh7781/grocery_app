@@ -63,6 +63,7 @@ const CartSlice = createSlice({
     deleteAll: (state) => {
       // Set the state to an empty array to remove all items
       state.splice(0, state.length);
+      setAsynccart(state)
     },
 
     setCartInitialState: (state, action) => {
