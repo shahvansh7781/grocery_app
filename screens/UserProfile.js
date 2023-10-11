@@ -17,9 +17,13 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { auth } from "../Admin/config";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAll } from "../Reducers/CartReducers";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = () => {
   const user = useSelector((state) => state.users.user);
+
+
+  const navigation=useNavigation()
   const dispatch = useDispatch();
   return (
     <>
@@ -96,7 +100,11 @@ const ProfileScreen = () => {
                 <Text style={styles.menuItemText}>Favorites</Text>
               </View>
             </TouchableRipple> */}
-            <TouchableRipple onPress={() => {}}>
+            <TouchableRipple onPress={() => {navigation.navigate('MyOrders',{
+
+              email:user.userData.email
+              
+            })}}>
               <View style={styles.menuItem}>
                 <Icon name="credit-card" color="#38E54D" size={25} />
                 <Text style={styles.menuItemText}>My Orders</Text>

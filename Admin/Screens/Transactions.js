@@ -2,13 +2,31 @@ import React, { Component } from 'react'
 import { Text, View,StyleSheet,FlatList ,Dimensions,ScrollView} from 'react-native'
 import { data } from '../src/data'
 import Card from '../src/Card'
+import { useEffect } from 'react'
 
 import {
   LineChart
  
 } from "react-native-chart-kit";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchOrders } from '../../Reducers/OrderReducer';
 
 export function Transactions () {
+
+
+  const dispatch=useDispatch()
+  const data=useSelector((state)=>state.orders)
+  console.log(data)
+
+  useEffect(() => {
+    dispatch(fetchOrders())
+    .then() // Data fetched, set isLoading to false
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+     // In case of an error, also set isLoading to false
+    });
+  }, [dispatch]);
+
 
   const renderItem=({item})=>{
     return(
