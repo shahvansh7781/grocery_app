@@ -155,3 +155,20 @@ exports.logout = async (req, res) => {
     });
   }
 };
+
+exports.getAllUsers = async(req,res)=>{
+try {
+  const data = await getDocs(dbRef);
+  const items = data.docs.map((item) => {
+    return {...item.data(),id:item.id}
+  });
+  if (items) {
+    res.status(200).json({
+      success:true,
+      users:items
+    })
+  }
+} catch (error) {
+  
+}
+}
