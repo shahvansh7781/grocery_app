@@ -99,6 +99,8 @@ export function Cart({navigation}) {
       id:data.id,
       userEmail: reqUser && reqUser.userData.email,
       userName: reqUser && reqUser.userData.Name,
+      userId: reqUser && reqUser.userData.id,
+      walletCoins:reqUser && reqUser.userData.walletCoins,
       subTotal:subTotal})
     
   }

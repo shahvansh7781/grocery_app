@@ -1,18 +1,23 @@
-import { View, Text ,StyleSheet,TouchableOpacity,Image,FlatList} from 'react-native'
+import { View, Text ,StyleSheet,TouchableOpacity,Image,FlatList, Alert} from 'react-native'
 import React from 'react'
 import { responsiveHeight,responsiveWidth,responsiveFontSize } from 'react-native-responsive-dimensions';
 import { useRoute } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { collection, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../Admin/config';
+import { getWalletCoins } from '../Reducers/OrderReducer';
 
-export default function MyOrdersDetail() {
+export default function MyOrdersDetail({navigation}) {
 
 const route=useRoute()
 const data=route.params.data
 console.log('Helloo',data)
-
-
+const subTotal = data.subTotal;
+const dispatch = useDispatch();
+const user = useSelector((state)=>state.users.user)
+const coins = user && user.userData.walletCoins
+const userId = user && user.userData.id;
 const renderItem=({item})=>{
-
-   
     return(
         <TouchableOpacity >
         <View style={styles.card}>
@@ -87,7 +92,11 @@ const renderItem=({item})=>{
                             <Text style={styles.totalText}>Delievery Charge : </Text>
                             <Text style={styles.totalPrice}>{data.deliveryCharge}</Text>
                         </View>
-
+                        {data.savings && <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
+                            <Text style={styles.totalText}>Savings : </Text>
+                            <Text style={styles.totalPrice}>{data.savings}</Text>
+                        </View>}
+                        
                         {/* Horizontal line */}
                         <View style={styles.line}></View>
                         <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
@@ -99,8 +108,42 @@ const renderItem=({item})=>{
 
                 </View>
 
-
-                <TouchableOpacity style={styles.uploadBtn} onPress={()=>{}}>
+                <TouchableOpacity style={styles.uploadBtn} onPress={()=>{Alert.alert(
+                      'Confirmation',
+                      'Are Groceries Fresh?',
+                      [
+                        {
+                          text: 'No',
+                          onPress: () => {
+                            // Handle Cancel button press
+                            console.log('Confirm No pressed');
+                            alert("Your order is not returnable")
+                          },
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'Yes',
+                          onPress: async() => {
+                            // Handle OK button press
+                            const dbRef = collection(db,"Users");
+                            
+                            console.log(userId);
+                            console.log('Confirm Yes pressed');
+                            const docToUpdate = doc(db,"Users",userId)
+                            // Coins earned will be 2% of SubTotal and While redeem 1 coin === Rs. 1
+                            const walletCoins = Math.ceil(0.02*subTotal);
+                            console.log(walletCoins);
+                            await updateDoc(docToUpdate,{
+                              walletCoins:coins+walletCoins
+                            })
+                            dispatch(getWalletCoins(coins+walletCoins))
+                            alert(`Your order is returned successfully and You will receive ${walletCoins} coins on this order`)
+                            navigation.push("UserDetails")
+                          },
+                        },
+                      ],
+                      { cancelable: false }
+                    );}}>
 
                         <Text>Return</Text>
                 </TouchableOpacity>

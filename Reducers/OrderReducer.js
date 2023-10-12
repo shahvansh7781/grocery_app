@@ -24,9 +24,14 @@ export const fetchOrders = createAsyncThunk("orders/fetchOrders", async () => {
 // Create a slice
 const ordersSlice = createSlice({
   name: "orders",
-  initialState: { data: [] },
+  initialState: { data: [],myOrdersLength:0,walletCoins:0 },
   reducers: {
-    
+    getMyOrdersLength(state,action){
+state.myOrdersLength=action.payload
+    },
+    getWalletCoins(state,action){
+      state.walletCoins=action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -47,4 +52,5 @@ const ordersSlice = createSlice({
 });
 
 // export const { deletee } = groceriesSlice.actions;
+export const {getWalletCoins} = ordersSlice.actions;
 export default ordersSlice.reducer;

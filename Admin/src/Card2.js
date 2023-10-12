@@ -74,8 +74,8 @@ const Card2 = ({itemData}) => {
       });
     
     console.log('Done')
-    navigation.navigate('Home')
-    navigation.navigate('Admin')
+    navigation.push("Home")
+    navigation.push("Admin")
     console.log("Navigation done")
   };
  
@@ -84,7 +84,7 @@ const Card2 = ({itemData}) => {
     <View  style={styles.container}>
        {/* {isLoading && <p>Loading...</p>}
        {error && <p>Error: {error}</p>} */}
-    <TouchableOpacity    >
+    <TouchableOpacity>
       <View style={styles.card} >
         <View >
           <Image
@@ -156,7 +156,7 @@ export default Card2;
 const styles = StyleSheet.create({
 
   container:{
-    flex:1
+    flex:1,
   },
   card: {
     flexDirection:'row',
@@ -164,10 +164,11 @@ const styles = StyleSheet.create({
     alignSelf:'center',
     backgroundColor:'#fff',
     elevation:4,
-    marginTop:10,
+    marginTop:7,
+    // gap:5,
     borderRadius:10,
-    height:100,
-    marginBottom:10
+    // height:100,
+    marginBottom:7
   },
   cardImgWrapper: {
     flex: 1,

@@ -103,9 +103,9 @@ export function Groceries() {
 
 const styles = StyleSheet.create({
   scrollableSection: {
-    height: "100%", // Take the other half of the available width
-    backgroundColor: "white",
-    padding: 15,
+    // height: "100%", // Take the other half of the available width
+    // backgroundColor: "white",
+    paddingHorizontal: 7,
   },
   img: {
     width: "90%",

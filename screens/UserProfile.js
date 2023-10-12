@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   SafeAreaView,
@@ -21,13 +21,24 @@ import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = () => {
   const user = useSelector((state) => state.users.user);
-
-
+  const walletCoins = useSelector((state) => state.orders.walletCoins);
+  
   const navigation=useNavigation()
   const dispatch = useDispatch();
+  const [loading, setloading] = useState(true);
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        setloading(false);
+      }, 2000);
+    }
+  }, [user]);
   return (
     <>
-      {user ? (
+      {loading ? (
+        
+        <ActivityIndicator size="large" color="black" />
+      ) : (
         <SafeAreaView style={styles.container}>
           <View style={styles.userInfoSection}>
             <View style={{ flexDirection: "row", marginTop: 90 }}>
@@ -84,7 +95,7 @@ const ProfileScreen = () => {
                 },
               ]}
             >
-              <Title>₹1040</Title>
+              <Title>{user && user.userData.walletCoins} coins</Title>
               <Caption>Wallet</Caption>
             </View>
             <View style={styles.infoBox}>
@@ -130,8 +141,6 @@ const ProfileScreen = () => {
             </TouchableRipple>
           </View>
         </SafeAreaView>
-      ) : (
-        <ActivityIndicator size="large" color="black" />
       )}
     </>
   );

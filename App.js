@@ -34,6 +34,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AllOrdersDetail from "./Admin/Screens/AllOrdersDetail";
 import MyOrders from "./screens/MyOrders";
 import MyOrdersDetail from "./screens/MyOrdersDetail";
+import ProfileScreen from "./screens/UserProfile";
 
 LogBox.ignoreAllLogs();
 const Stack = createNativeStackNavigator();
@@ -119,8 +120,8 @@ export default function App() {
           .then((d) => {
             d.forEach((doc) => {
               // console.log("doc:",doc.data());
-              v = { ...doc.data() };
-              // console.log("v:",v.role);
+              v = { ...doc.data(),id:doc.id };
+              // console.log("v:",v);
               setUserV(v);
             });
           })
@@ -147,6 +148,7 @@ export default function App() {
                 <UserInsideStack.Screen name="Map" component={ChangeAddress} />
                 <UserInsideStack.Screen name="MyOrders" component={MyOrders} />
                 <UserInsideStack.Screen name="MyOrdersDetail" component={MyOrdersDetail} />
+                <UserInsideStack.Screen name="UserDetails" component={ProfileScreen} />
               </UserInsideStack.Navigator>
             ) : (
               <AdminInsideStack.Navigator>
@@ -160,6 +162,7 @@ export default function App() {
                 <AdminInsideStack.Screen name="Map" component={ChangeAddress} />
                 <AdminInsideStack.Screen name="AdminOrderDetail" component={AllOrdersDetail} />
                 <AdminInsideStack.Screen name="MyOrders" component={MyOrders}/>
+                <AdminInsideStack.Screen name="UserDetails" component={ProfileScreen} />
                 <AdminInsideStack.Screen name="MyOrdersDetail" component={MyOrdersDetail}/>
               </AdminInsideStack.Navigator>
             )
