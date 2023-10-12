@@ -5,6 +5,7 @@ import { Groceries } from './Groceries'
 import { AddGrocery } from './AddGrocery'
 import { Transactions } from './Transactions'
 import Stats from './Stats'
+import AllOrders from './AllOrders'
 
 export default function DashBoard () {
 
@@ -12,7 +13,7 @@ export default function DashBoard () {
   
     return (
       <View style={styles.container}>
-        {selectedTab==0?(<Groceries></Groceries>):selectedTab==1?(<AddGrocery/>):(<Transactions></Transactions>)}
+        {selectedTab==0?(<Groceries></Groceries>):selectedTab==1?(<AddGrocery/>):(<AllOrders></AllOrders>)}
         <View style={styles.bottom}>
           <TouchableOpacity style={[styles.bottomTab,{ backgroundColor: selectedTab==0? '#CBFFA9':'#fff'}]} onPress={()=>{SetSelectedTab(0)}}>
                 <Image source={require('../Images/shopping-bag.png')}  style={[styles.bottomImg]}></Image>
