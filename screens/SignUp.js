@@ -53,6 +53,7 @@ const SignUp = ({ navigation }) => {
       Name,
       phone,
       role: "User",
+      walletCoins:0
     };
     // try {
       

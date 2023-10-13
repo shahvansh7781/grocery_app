@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   SafeAreaView,
@@ -18,16 +18,31 @@ import { auth } from "../Admin/config";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAll } from "../Reducers/CartReducers";
 import { useNavigation } from "@react-navigation/native";
+import { loadUser } from "../Reducers/UserReducer";
 
 const ProfileScreen = () => {
   const user = useSelector((state) => state.users.user);
-
-
+  const userProfile = useSelector((state) => state.users.userProfile);
+  const userEmail = user && user.userData.email;
+  const walletCoins = useSelector((state) => state.orders.walletCoins);
+  console.log('user prof user prof - screen',userProfile&&userProfile);
   const navigation=useNavigation()
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    dispatch(loadUser(userEmail))
+    .then(() =>{setIsLoading(false)}) // Data fetched, set isLoading to false
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setIsLoading(false); // In case of an error, also set isLoading to false
+      });
+  }, [dispatch,walletCoins]);
   return (
     <>
-      {user ? (
+      {isLoading ? (
+        
+        <ActivityIndicator size="large" color="black" />
+      ) : (
         <SafeAreaView style={styles.container}>
           <View style={styles.userInfoSection}>
             <View style={{ flexDirection: "row", marginTop: 90 }}>
@@ -84,7 +99,7 @@ const ProfileScreen = () => {
                 },
               ]}
             >
-              <Title>₹1040</Title>
+              <Title>{userProfile&&userProfile.walletCoins} coins</Title>
               <Caption>Wallet</Caption>
             </View>
             <View style={styles.infoBox}>
@@ -130,8 +145,6 @@ const ProfileScreen = () => {
             </TouchableRipple>
           </View>
         </SafeAreaView>
-      ) : (
-        <ActivityIndicator size="large" color="black" />
       )}
     </>
   );

@@ -2,7 +2,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import { View, Text, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-
+import { collection, doc, updateDoc } from 'firebase/firestore';
 import { StyleSheet ,FlatList,Dimensions} from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,11 +12,12 @@ import { TouchableOpacity } from 'react-native';
 import { api_url } from '../utils/api_url';
 import { useStripe } from '@stripe/stripe-react-native';
 import { deleteAll } from '../Reducers/CartReducers';
+import { db } from '../Admin/config';
+import { getWalletCoins } from '../Reducers/OrderReducer';
 
 export default function CheckOut() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
-
 
   const [deliveryCharge,setDeliveryCahrge]=useState(0)
   // const [address,setAddress]=useState('')
@@ -26,9 +27,11 @@ export default function CheckOut() {
   const route=useRoute()
 
   const data=route.params.data
-  const subTotal=route.params.subTotal
+  let subTotal=route.params.subTotal
   const userEmail = route.params.userEmail;
   const userName = route.params.userName;
+  const userId = route.params.userId;
+  const walletCoins = route.params.walletCoins;
 
   // console.log(data)
 
@@ -170,9 +173,43 @@ export default function CheckOut() {
     navigation.navigate('Map')
     
   }
-
+let isCoinsUsed = false;
   const handlePayment = async()=>{
     console.log('Payment Stripe');
+    if (walletCoins!=0) {
+      Alert.alert(
+        'Confirmation',
+        `You have ${walletCoins} coins in your Wallet. You will save ${walletCoins} on this order. Do you want to use coins?`,
+        [
+          {
+            text: 'No',
+            onPress: () => {
+              // Handle Cancel button press
+              console.log('Confirm No pressed');
+              handleFinalPayment(subTotal)
+            },
+            style: 'cancel',
+          },
+          {
+            text: 'Yes',
+            onPress: async() => {
+              // Handle OK button press
+              
+              console.log('Confirm Yes pressed');
+              subTotal=subTotal-walletCoins;
+              isCoinsUsed=true;
+              handleFinalPayment(subTotal)
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+    else{
+      handleFinalPayment(subTotal);
+    }
+  }
+  const handleFinalPayment = async(subTotal)=>{
     const payload = {
       items:data,
       userName,
@@ -180,7 +217,8 @@ export default function CheckOut() {
       subTotal,
       deliveryCharge,
       grandTotal:subTotal+deliveryCharge,
-      shippingAddress:addressData.address.addr
+      shippingAddress:addressData.address.addr,
+      savings:walletCoins
     }
     try {
       const dataRep = await axios.post(`${api_url}:8082/myapp/createOrder`,payload,{
@@ -201,7 +239,15 @@ export default function CheckOut() {
       })
       if (presentSheet.error) return Alert.alert(presentSheet.error.message);
       alert("Payment success! Order Placed")
-      navigation.navigate("Home")
+      
+      if (isCoinsUsed) {
+        const docToUpdate = doc(db, "Users", userId);
+      await updateDoc(docToUpdate, {
+        walletCoins: 0,
+      });
+      dispatch(getWalletCoins(0))
+      }
+      navigation.navigate("UserDetails")
       dispatch(deleteAll());
       // console.log(await dataRep.json());
       // console.log(dataRep)

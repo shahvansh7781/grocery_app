@@ -28,6 +28,7 @@ export function Cart({navigation}) {
   const reqUser = useSelector((state) => 
     state.users.user
   );
+  const userProfile = useSelector((state) => state.users.userProfile);
   // const navigation = useNavigation();
 
 
@@ -99,6 +100,8 @@ export function Cart({navigation}) {
       id:data.id,
       userEmail: reqUser && reqUser.userData.email,
       userName: reqUser && reqUser.userData.Name,
+      userId: reqUser && reqUser.userData.id,
+      walletCoins:userProfile && userProfile.walletCoins,
       subTotal:subTotal})
     
   }
