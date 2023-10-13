@@ -34,6 +34,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AllOrdersDetail from "./Admin/Screens/AllOrdersDetail";
 import MyOrders from "./screens/MyOrders";
 import MyOrdersDetail from "./screens/MyOrdersDetail";
+import Charts from "./Admin/Screens/Charts";
 
 LogBox.ignoreAllLogs();
 const Stack = createNativeStackNavigator();
@@ -161,6 +162,7 @@ export default function App() {
                 <AdminInsideStack.Screen name="AdminOrderDetail" component={AllOrdersDetail} />
                 <AdminInsideStack.Screen name="MyOrders" component={MyOrders}/>
                 <AdminInsideStack.Screen name="MyOrdersDetail" component={MyOrdersDetail}/>
+                {/* <AdminInsideStack.Screen name="Charts" component={Charts}/> */}
               </AdminInsideStack.Navigator>
             )
         

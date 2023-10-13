@@ -78,7 +78,7 @@ const styles= StyleSheet.create({
     scrollableSection: {
         height: "100%", // Take the other half of the available width
         backgroundColor: "white",
-        padding: 15,
+       
       },
 
   })

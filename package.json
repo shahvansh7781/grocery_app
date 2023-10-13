@@ -22,8 +22,10 @@
     "@react-navigation/native-stack": "^6.9.13",
     "@reduxjs/toolkit": "^1.9.5",
     "@shopify/react-native-skia": "0.1.196",
+    "@stripe/stripe-react-native": "0.28.0",
     "axios": "^1.5.0",
     "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0",
     "dotenv": "^16.3.1",
     "expo": "~49.0.5",
     "expo-constants": "~14.4.2",
@@ -55,13 +57,13 @@
     "react-native-safe-area-context": "4.6.3",
     "react-native-screens": "~3.22.0",
     "react-native-skia-charts": "^0.0.60",
-    "react-native-svg": "13.9.0",
+    "react-native-svg": "^13.9.0",
+    "react-native-svg-charts": "^5.4.0",
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6",
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",
-    "yup": "^1.2.0",
-    "@stripe/stripe-react-native": "0.28.0"
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
