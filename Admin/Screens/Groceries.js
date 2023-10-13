@@ -13,8 +13,8 @@ export function Groceries() {
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch()
     const data = useSelector((state) => state.groceries.data);
-    // console.log("Rushit")
-    // console.log(data)
+   
+    console.log(data)
     
   
     useEffect(() => {
