@@ -18,24 +18,28 @@ import { auth } from "../Admin/config";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAll } from "../Reducers/CartReducers";
 import { useNavigation } from "@react-navigation/native";
+import { loadUser } from "../Reducers/UserReducer";
 
 const ProfileScreen = () => {
   const user = useSelector((state) => state.users.user);
+  const userProfile = useSelector((state) => state.users.userProfile);
+  const userEmail = user && user.userData.email;
   const walletCoins = useSelector((state) => state.orders.walletCoins);
-  
+  console.log('user prof user prof - screen',userProfile&&userProfile);
   const navigation=useNavigation()
   const dispatch = useDispatch();
-  const [loading, setloading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    if (user) {
-      setTimeout(() => {
-        setloading(false);
-      }, 2000);
-    }
-  }, [user]);
+    dispatch(loadUser(userEmail))
+    .then(() =>{setIsLoading(false)}) // Data fetched, set isLoading to false
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setIsLoading(false); // In case of an error, also set isLoading to false
+      });
+  }, [dispatch,walletCoins]);
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         
         <ActivityIndicator size="large" color="black" />
       ) : (
@@ -95,7 +99,7 @@ const ProfileScreen = () => {
                 },
               ]}
             >
-              <Title>{user && user.userData.walletCoins} coins</Title>
+              <Title>{userProfile&&userProfile.walletCoins} coins</Title>
               <Caption>Wallet</Caption>
             </View>
             <View style={styles.infoBox}>

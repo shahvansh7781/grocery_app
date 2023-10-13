@@ -15,7 +15,8 @@ console.log('Helloo',data)
 const subTotal = data.subTotal;
 const dispatch = useDispatch();
 const user = useSelector((state)=>state.users.user)
-const coins = user && user.userData.walletCoins
+const userProfile = useSelector((state) => state.users.userProfile);
+const coins = userProfile && userProfile.walletCoins
 const userId = user && user.userData.id;
 const renderItem=({item})=>{
     return(
@@ -133,6 +134,7 @@ const renderItem=({item})=>{
                             // Coins earned will be 2% of SubTotal and While redeem 1 coin === Rs. 1
                             const walletCoins = Math.ceil(0.02*subTotal);
                             console.log(walletCoins);
+                            //j
                             await updateDoc(docToUpdate,{
                               walletCoins:coins+walletCoins
                             })

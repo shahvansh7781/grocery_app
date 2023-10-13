@@ -116,26 +116,30 @@ exports.loginUser = async (req, res) => {
 //   }
 // };
 
-exports.loadUser = (req, res) => {
+let userArr = null;
+exports.loadUser = async(req, res) => {
+  console.log(req.body.email);
   try {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        res.status(200).send({
-          success: true,
-          user,
-        });
-      } else {
-        res.status(404).send({
-          success: false,
-          user: null,
-        });
-      }
+    const q = query(
+      dbRef,
+      where("email", "==", `${req.body.email}`)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log(doc.id, " => ", doc.data());
+      userArr = {...doc.data(),id:doc.id};
+      // console.log(userArr)
+    });
+    // console.log(userArr)
+   await res.status(200).send({
+      // data: {
+      success: true,
+      userProfile: userArr,
+      // },
     });
   } catch (error) {
-    res.status(404).send({
-      success: false,
-      error,
-    });
+    console.log(error)
   }
 };
 
