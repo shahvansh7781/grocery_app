@@ -7,7 +7,7 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 
 
 
-export default function MyOrderCard({itemData}) {
+export default function MyOrderCard({itemData,role}) {
 
 
   const navigation=useNavigation()
@@ -21,7 +21,8 @@ export default function MyOrderCard({itemData}) {
     <TouchableOpacity  
     onPress={()=>{navigation.navigate('MyOrdersDetail',{
       data:itemData,
-      id:itemData.id
+      id:itemData.id,
+      role:role
     })}}  >
       <View style={styles.card} >
         
@@ -71,7 +72,9 @@ const styles = StyleSheet.create({
       elevation:4,
       marginTop:10,
       borderRadius:10,
+
       height:responsiveHeight(20),
+
       marginBottom:10
     },
     cardImgWrapper: {

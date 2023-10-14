@@ -1,24 +1,25 @@
-import { View, Text ,StyleSheet,ActivityIndicator,FlatList} from 'react-native'
-import React, { useState ,useEffect} from 'react'
-import { useRoute } from '@react-navigation/native'
+import { View, Text,ActivityIndicator ,StyleSheet,FlatList} from 'react-native'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchOrders } from '../Reducers/OrderReducer'
-import MyOrderCard from './Cards/MyOrderCard'
+import { fetchUsers } from '../../Reducers/UserReducer'
+import { useState,useEffect } from 'react'
+import UserCard from '../src/UserCard'
+import { fetchOrders } from '../../Reducers/OrderReducer'
 
-export default function MyOrders() {
 
-    const route=useRoute()
-    const email=route.params.email
-    const role=route.params.role
+export default function AllUsers() {
+
+
+   
 
     const dispatch=useDispatch()
+    const users=useSelector((state)=>state.users.data)
+    console.log(users)
     const [isLoading, setIsLoading] = useState(true);
-    const [filterData,setFilterData]=useState([])
-    const data=useSelector((state)=>state.orders.data)
-    
+   
     useEffect(() => {
-      dispatch(fetchOrders())
-      .then(() =>{dataFilter(); setIsLoading(false)}) // Data fetched, set isLoading to false
+      dispatch(fetchUsers())
+      .then(() => setIsLoading(false)) // Data fetched, set isLoading to false
       .catch((error) => {
         console.error("Error fetching data:", error);
         setIsLoading(false); // In case of an error, also set isLoading to false
@@ -26,22 +27,19 @@ export default function MyOrders() {
     }, [dispatch]);
 
 
-    const dataFilter=()=>{
-         const filteredOrders = data.filter(order => order.userEmail === email);
-         setFilterData(filteredOrders)
-    }
+   
 
     const renderItem=({item})=>{
         console.log(item)
             return(
-              <MyOrderCard
+              <UserCard
               itemData={item}
-              role={role}
-              ></MyOrderCard>
+              ></UserCard>
             
             )
            
           }
+  
   return (
     <>
     {isLoading ? (
@@ -55,7 +53,7 @@ export default function MyOrders() {
        
           <FlatList
                   style={styles.scrollableSection}
-                  data={filterData}
+                  data={users}
                   renderItem={renderItem}
                   keyExtractor={item=>item.id}>
             </FlatList> 
@@ -67,13 +65,12 @@ export default function MyOrders() {
 }
 
 
-
 const styles= StyleSheet.create({
    
     scrollableSection: {
         height: "100%", // Take the other half of the available width
         backgroundColor: "white",
-        padding: 5,
+       
       },
 
   })

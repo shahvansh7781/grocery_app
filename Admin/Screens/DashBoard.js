@@ -11,6 +11,7 @@ import { responsiveFontSize,responsiveHeight,responsiveWidth } from 'react-nativ
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Charts from './Charts'
+import AllUsers from './AllUsers'
 
 export default function DashBoard () {
 
@@ -23,7 +24,8 @@ export default function DashBoard () {
       id:3 , name:'list-alt'
     },
     {id:4, name:'chart-bar'},
-    {id:5, name:'bell'}
+    {id:5, name:'user'},
+    {id:6, name:'bell'}
 
    
   ];
@@ -87,7 +89,7 @@ export default function DashBoard () {
             />
           </View>
 
-        {selectedTab==1?(<Groceries></Groceries>):selectedTab==2?(<AddGrocery/>):selectedTab==3?(<AllOrders></AllOrders>):selectedTab==4?(<Charts></Charts>):(<Text>none</Text>)}
+        {selectedTab==1?(<Groceries></Groceries>):selectedTab==2?(<AddGrocery/>):selectedTab==3?(<AllOrders></AllOrders>):selectedTab==4?(<Charts></Charts>): selectedTab==5?(<AllUsers></AllUsers>):(<Text>none</Text>)}
 
       </View>
     )
@@ -143,7 +145,8 @@ export default function DashBoard () {
       color: "green",
     },
     buttonList: {
-      flex:1,
+     
       padding: 10,
+     
     },
   })

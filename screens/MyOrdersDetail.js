@@ -14,6 +14,9 @@ const data=route.params.data
 const orderId = route.params.id;
 const orderStatus = route.params.data.status;
 console.log('Helloo',data)
+
+const role=route.params.role
+
 const subTotal = data.subTotal;
 const dispatch = useDispatch();
 const user = useSelector((state)=>state.users.user)
@@ -110,8 +113,13 @@ const renderItem=({item})=>{
                 <View>
 
                 </View>
+
+
+                {role==='User'?(
+
                 {
                   orderStatus === 'Delivered' ? (<>
+
                   <TouchableOpacity style={styles.uploadBtn} onPress={()=>{Alert.alert(
                     'Confirmation',
                     'Are Groceries Fresh?',
@@ -129,12 +137,18 @@ const renderItem=({item})=>{
                         text: 'Yes',
                         onPress: async() => {
                           // Handle OK button press
+
+                          const dbRef = collection(db,"Users");
+
                           
+
                           
                           console.log(userId);
                           console.log('Confirm Yes pressed');
                           const docToUpdate = doc(db,"Users",userId)
+
                           const orderDocToUpdate = doc(db,'Orders',orderId);
+
                           // Coins earned will be 2% of SubTotal and While redeem 1 coin === Rs. 1
                           const walletCoins = Math.ceil(0.02*subTotal);
                           console.log(walletCoins);
@@ -142,17 +156,29 @@ const renderItem=({item})=>{
                           await updateDoc(docToUpdate,{
                             walletCoins:coins+walletCoins
                           })
+
+                          dispatch(getWalletCoins(coins+walletCoins))
+                          alert(`Your order is returned successfully and You will receive ${walletCoins} coins on this order`)
+                          navigation.push("UserDetails")
+
                           await updateDoc(orderDocToUpdate,{
                             status:"Returned"
                           })
                           dispatch(getWalletCoins(coins+walletCoins))
                           alert(`Your order is returned successfully and You will receive ${walletCoins} coins on this order`)
                           navigation.navigate("Home")
+
                         },
                       },
                     ],
                     { cancelable: false }
                   );}}>
+
+
+                      <Text>Return</Text>
+              </TouchableOpacity>
+                ):(<Text></Text>)}
+
 
                       <Text>Return</Text>
               </TouchableOpacity>
@@ -228,13 +254,13 @@ const styles = StyleSheet.create({
       },
 
     cardTotal: {
-        flex: 0.3,
+        flex: 0.36,
         width: "90%",
         alignSelf: "center",
         justifyContent: "center",
         backgroundColor: "#fff",
         elevation: 4,
-       marginTop:responsiveHeight(0.5),
+        marginTop:responsiveHeight(0.5),
         borderRadius: 10,
     
         marginBottom: 10,
