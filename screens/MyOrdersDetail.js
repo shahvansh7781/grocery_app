@@ -11,6 +11,8 @@ export default function MyOrdersDetail({navigation}) {
 
 const route=useRoute()
 const data=route.params.data
+const orderId = route.params.id;
+const orderStatus = route.params.data.status;
 console.log('Helloo',data)
 const subTotal = data.subTotal;
 const dispatch = useDispatch();
@@ -108,48 +110,57 @@ const renderItem=({item})=>{
                 <View>
 
                 </View>
-
-                <TouchableOpacity style={styles.uploadBtn} onPress={()=>{Alert.alert(
-                      'Confirmation',
-                      'Are Groceries Fresh?',
-                      [
-                        {
-                          text: 'No',
-                          onPress: () => {
-                            // Handle Cancel button press
-                            console.log('Confirm No pressed');
-                            alert("Your order is not returnable")
-                          },
-                          style: 'cancel',
+                {
+                  orderStatus === 'Delivered' ? (<>
+                  <TouchableOpacity style={styles.uploadBtn} onPress={()=>{Alert.alert(
+                    'Confirmation',
+                    'Are Groceries Fresh?',
+                    [
+                      {
+                        text: 'No',
+                        onPress: () => {
+                          // Handle Cancel button press
+                          console.log('Confirm No pressed');
+                          alert("Your order is not returnable")
                         },
-                        {
-                          text: 'Yes',
-                          onPress: async() => {
-                            // Handle OK button press
-                            const dbRef = collection(db,"Users");
-                            
-                            console.log(userId);
-                            console.log('Confirm Yes pressed');
-                            const docToUpdate = doc(db,"Users",userId)
-                            // Coins earned will be 2% of SubTotal and While redeem 1 coin === Rs. 1
-                            const walletCoins = Math.ceil(0.02*subTotal);
-                            console.log(walletCoins);
-                            //j
-                            await updateDoc(docToUpdate,{
-                              walletCoins:coins+walletCoins
-                            })
-                            dispatch(getWalletCoins(coins+walletCoins))
-                            alert(`Your order is returned successfully and You will receive ${walletCoins} coins on this order`)
-                            navigation.push("UserDetails")
-                          },
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Yes',
+                        onPress: async() => {
+                          // Handle OK button press
+                          
+                          
+                          console.log(userId);
+                          console.log('Confirm Yes pressed');
+                          const docToUpdate = doc(db,"Users",userId)
+                          const orderDocToUpdate = doc(db,'Orders',orderId);
+                          // Coins earned will be 2% of SubTotal and While redeem 1 coin === Rs. 1
+                          const walletCoins = Math.ceil(0.02*subTotal);
+                          console.log(walletCoins);
+                          //j
+                          await updateDoc(docToUpdate,{
+                            walletCoins:coins+walletCoins
+                          })
+                          await updateDoc(orderDocToUpdate,{
+                            status:"Returned"
+                          })
+                          dispatch(getWalletCoins(coins+walletCoins))
+                          alert(`Your order is returned successfully and You will receive ${walletCoins} coins on this order`)
+                          navigation.navigate("Home")
                         },
-                      ],
-                      { cancelable: false }
-                    );}}>
+                      },
+                    ],
+                    { cancelable: false }
+                  );}}>
 
-                        <Text>Return</Text>
-                </TouchableOpacity>
-
+                      <Text>Return</Text>
+              </TouchableOpacity>
+                  </>) : (
+                  <></>
+)
+                }
+                
       
     
 

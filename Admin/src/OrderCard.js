@@ -38,7 +38,8 @@ const OrderCard = ({itemData}) => {
           <Text style={styles.cardTitle}>User Name : {itemData.userName}</Text>
           <Text style={styles.cardTitle}>Email ID : {itemData.userEmail}</Text>
           <Text style={styles.cardTitle}>Total No. Of Items : {itemData.items.length}</Text>
-          <Text style={styles.cardTitle}>Delievery Cahrge : {itemData.deliveryCharge}</Text>
+          <Text style={styles.cardTitle}>Delivery Charge : {itemData.deliveryCharge}</Text>
+          <Text style={styles.cardTitle}>Status : {itemData.status}</Text>
 
         
          
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     elevation:4,
     marginTop:10,
     borderRadius:10,
-    height:100,
+    height:130,
     marginBottom:10
   },
   cardImgWrapper: {
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
   },
   cardInfo: {
     flex:2,
-    padding: 10,
+    padding: 15,
     backgroundColor: '#fff',
     
   },

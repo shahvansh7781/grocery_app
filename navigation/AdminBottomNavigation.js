@@ -4,7 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeScreen from '../screens/HomeScreen';
 import { Cart } from '../screens/Cart';
 import UserDetails from '../screens/UserDetails';
-import Icon from "react-native-vector-icons/Ionicons";
+// import Icon from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/Ionicons"
 import DashBoard from '../Admin/Screens/DashBoard';
 import { EditGrocery } from '../Admin/Screens/EditGrocery';
 import ProfileScreen from '../screens/UserProfile';

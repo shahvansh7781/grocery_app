@@ -31,8 +31,9 @@ export default function MyOrderCard({itemData}) {
           
           <Text style={styles.cardTitle}>Total No. Of Items : {itemData.items.length}</Text>
           <Text style={styles.cardTitle}>Sub Total : {itemData.subTotal}</Text>
-          <Text style={styles.cardTitle}>Delievery Cahrge : {itemData.deliveryCharge}</Text>
+          <Text style={styles.cardTitle}>Delivery Charge : {itemData.deliveryCharge}</Text>
           <Text style={styles.cardTitle}>Shipping Address : {itemData.shippingAddress}</Text>
+          <Text style={styles.cardTitle}>Order Status : {itemData.status}</Text>
 
          
           
@@ -59,7 +60,8 @@ export default function MyOrderCard({itemData}) {
 const styles = StyleSheet.create({
 
     container:{
-      flex:1
+      flex:1,
+      marginBottom:10
     },
     card: {
       flexDirection:'row',
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
       elevation:4,
       marginTop:10,
       borderRadius:10,
-      height:responsiveHeight(18),
+      height:responsiveHeight(20),
       marginBottom:10
     },
     cardImgWrapper: {
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     },
     cardInfo: {
       flex:2,
-      padding: 10,
+      padding: 15,
       backgroundColor: '#fff',
       
     },
