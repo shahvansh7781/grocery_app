@@ -11,7 +11,7 @@ export default function AllOrders() {
   const dispatch=useDispatch()
   const [isLoading, setIsLoading] = useState(true);
   const data=useSelector((state)=>state.orders.data)
-  console.log("AllOrders",data)
+  // console.log("AllOrders",data)
   
   useEffect(() => {
     dispatch(fetchOrders())
