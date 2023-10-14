@@ -4,20 +4,29 @@ import { LineChart } from 'react-native-chart-kit';
 import { responsiveHeight, responsiveWidth,responsiveFontSize } from 'react-native-responsive-dimensions';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrders } from '../../Reducers/OrderReducer';
-import { PieChart } from 'react-native-svg-charts';
+// import { PieChart } from 'react-native-svg-charts';
 import { color } from '@mui/system';
 import { fetchGroceries } from '../../Reducers/GroceryReducer';
 import { ActivityIndicator } from 'react-native';
+import {
+
+  PieChart
+  
+} from "react-native-chart-kit";
+import { fetchUsers } from '../../Reducers/UserReducer';
 
 
 
 export default function Charts() {
 
-
+  
   const dispatch=useDispatch()
   const orders=useSelector((state)=>state.orders.data)
   const totalOrders=orders.length
-//   console.log(orders)
+  //   console.log(orders)
+
+  const users=useSelector((state)=>state.users.data)
+  const totalUsers=users.length
 
   const groceries = useSelector((state) => state.groceries.data);
   const totalGroceries=groceries.length
@@ -27,6 +36,19 @@ export default function Charts() {
   const [top5,setTop5]=useState({})
   const [x,setX]=useState([])
   const [y,setY]=useState([])
+
+  const [isPie,setIsPie]=useState(0)
+
+
+
+  useEffect(() => {
+    dispatch(fetchUsers())
+    .then() // Data fetched, set isLoading to false
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+     // In case of an error, also set isLoading to false
+    });
+  }, [dispatch]);
 
   
 
@@ -80,6 +102,7 @@ export default function Charts() {
 
     // console.log(categoryCount)
     setCategorySum(categoryCount)
+    setIsPie(1)
     }
 
     getCategoryCount()
@@ -351,30 +374,59 @@ useEffect(()=>{
   };
 
   // Pie chart data
+  // const pieData = [
+  //   {
+  //     key: 'Fruits & Vegetables',
+  //     value: categorySum['Fruits & Vegetables'],
+  //     svg: { fill: 'green' },
+  //   },
+  //   {
+  //     key: 'Snacks',
+  //     value: categorySum['Snacks'],
+  //     svg: { fill: 'gray' },
+  //   },
+  //   {
+  //       key: 'Dairy & Bakery',
+  //       value: categorySum['Dairy & Bakery'],
+  //       svg: { fill: 'red' },
+  //     },
+  //     {
+  //       key: 'Beverages',
+  //       value: categorySum['Beverages'],
+  //       svg: { fill: 'blue' },
+  //     },
+  // ];
   const pieData = [
     {
-      key: 'Fruits & Vegetables',
-      value: categorySum['Fruits & Vegetables'],
-      svg: { fill: 'green' },
+      name: 'Fruits & Vegetables',
+      population: categorySum['Fruits & Vegetables'],
+      color: "rgba(131, 167, 234, 1)",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12,
     },
     {
-      key: 'Snacks',
-      value: categorySum['Snacks'],
-      svg: { fill: 'gray' },
+      name: "Snacks",
+      population: categorySum['Snacks'],
+      color: "green",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12,
     },
     {
-        key: 'Dairy & Bakery',
-        value: categorySum['Dairy & Bakery'],
-        svg: { fill: 'red' },
-      },
-      {
-        key: 'Beverages',
-        value: categorySum['Beverages'],
-        svg: { fill: 'blue' },
-      },
+      name: 'Dairy & Bakery',
+      population: categorySum['Dairy & Bakery'],
+      color: "red",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12,
+    },
+    {
+      name: 'Beverages',
+      population: categorySum['Beverages'],
+      color: "#ffffff",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12,
+    },
   ];
-
-
+  
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1,  }}>
@@ -382,7 +434,7 @@ useEffect(()=>{
       <View style={styles.cardContainer}>
         <View style={styles.card}>
             <Text style={styles.lineChartTitle}>Revenue:</Text>
-            <Text style={styles.cardPrice}>{revenue}</Text>
+            <Text style={styles.cardPrice}> ₹{revenue}</Text>
         </View>
         <View style={styles.card}>
             <Text style={styles.lineChartTitle}>Orders:</Text>
@@ -398,7 +450,7 @@ useEffect(()=>{
         </View>
         <View style={styles.card}>
             <Text style={styles.lineChartTitle}>Users:</Text>
-            <Text style={styles.cardPrice}>1000</Text>
+            <Text style={styles.cardPrice}>{totalUsers}</Text>
         </View>
         {/* <View style={styles.card2}>
             <Text style={styles.lineChartTitle}>Revenue:</Text>
@@ -437,7 +489,7 @@ useEffect(()=>{
     
      
     <View style={styles.pieContainer}>
-        <PieChart
+        {/* <PieChart
             style={styles.pie}
             data={pieData}
             // innerRadius="15%"
@@ -451,7 +503,38 @@ useEffect(()=>{
                 % </Text>
             ))
            }
-        </View>
+        </View> */}
+        {isPie ? (
+           <PieChart
+                
+           data={pieData}
+           width={responsiveWidth(90)}
+           height={responsiveHeight(25)}
+           chartConfig={{
+               
+               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+             
+               
+             }}
+           accessor={"population"}
+           backgroundColor={"transparent"}
+           
+           center={[0, 0]}
+           
+           
+    />
+     
+    ) : (
+      <View style={{ height: responsiveHeight(25), width: responsiveWidth(95) }}>
+          <ActivityIndicator size="large" color="#06FF00" />
+      </View>
+    
+      
+    )}
+       
+
+
     </View>    
       
     </ScrollView>

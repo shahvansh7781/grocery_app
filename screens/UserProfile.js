@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteAll } from "../Reducers/CartReducers";
 import { useNavigation } from "@react-navigation/native";
 import { loadUser } from "../Reducers/UserReducer";
+import { fetchOrders } from "../Reducers/OrderReducer";
 
 const ProfileScreen = () => {
   const user = useSelector((state) => state.users.user);
@@ -37,6 +38,36 @@ const ProfileScreen = () => {
         setIsLoading(false); // In case of an error, also set isLoading to false
       });
   }, [dispatch,walletCoins]);
+
+
+
+
+
+
+
+
+  const [filterData,setFilterData]=useState([])
+    const data=useSelector((state)=>state.orders.data)
+    
+    useEffect(() => {
+      dispatch(fetchOrders())
+      .then(() =>{dataFilter(); }) // Data fetched, set isLoading to false
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        // In case of an error, also set isLoading to false
+      });
+    }, [dispatch]);
+
+
+    const dataFilter=()=>{
+         const filteredOrders = data.filter(order => order.userEmail === user.userData.email);
+         setFilterData(filteredOrders)
+    }
+    
+
+
+
+
   return (
     <>
       {isLoading ? (
@@ -103,7 +134,7 @@ const ProfileScreen = () => {
               <Caption>Wallet</Caption>
             </View>
             <View style={styles.infoBox}>
-              <Title>5</Title>
+              <Title>{filterData.length}</Title>
               <Caption>Orders</Caption>
             </View>
           </View>
@@ -117,7 +148,8 @@ const ProfileScreen = () => {
             </TouchableRipple> */}
             <TouchableRipple onPress={() => {navigation.navigate('MyOrders',{
 
-              email:user.userData.email
+              email:user.userData.email,
+              role:'User'
               
             })}}>
               <View style={styles.menuItem}>
