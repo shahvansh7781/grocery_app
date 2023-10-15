@@ -115,10 +115,8 @@ const renderItem=({item})=>{
                 </View>
 
 
-                {role==='User'?(
+                {role==='User' && orderStatus==='Delivered' ? (
 
-                {
-                  orderStatus === 'Delivered' ? (<>
 
                   <TouchableOpacity style={styles.uploadBtn} onPress={()=>{Alert.alert(
                     'Confirmation',
@@ -177,16 +175,11 @@ const renderItem=({item})=>{
 
                       <Text>Return</Text>
               </TouchableOpacity>
-                ):(<Text></Text>)}
+                ):(<></>)}
 
 
-                      <Text>Return</Text>
-              </TouchableOpacity>
-                  </>) : (
-                  <></>
-)
-                }
-                
+                     
+
       
     
 
@@ -254,7 +247,7 @@ const styles = StyleSheet.create({
       },
 
     cardTotal: {
-        flex: 0.36,
+        flex: 0.5,
         width: "90%",
         alignSelf: "center",
         justifyContent: "center",

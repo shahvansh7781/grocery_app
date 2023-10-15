@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, LogBox } from "react-native";
+import { StyleSheet, Text, View, LogBox, ActivityIndicator } from "react-native";
 import AppNavigation from "./navigation/appNavigation";
 import { configureStore } from "@reduxjs/toolkit";
 import GroceryReducer from "./Reducers/GroceryReducer";
@@ -38,6 +38,7 @@ import MyOrdersDetail from "./screens/MyOrdersDetail";
 import Charts from "./Admin/Screens/Charts";
 
 import ProfileScreen from "./screens/UserProfile";
+import { useFonts } from "expo-font";
 
 
 LogBox.ignoreAllLogs();
@@ -108,6 +109,7 @@ function Authentication() {
 
 const dbRef = collection(db, "Users");
 export default function App() {
+  
   const [user, setUser] = useState(null);
   const userD = useSelector((state) => state.users.user);
   const [userV, setUserV] = useState(null);
@@ -136,7 +138,14 @@ export default function App() {
       }
     });
   }, []);
-
+  const [fontsLoaded] = useFonts({
+    'Inter-Medium': require('./assets/Inter-Medium.ttf'),
+    'Poppins-Bold': require('./assets/Poppins-Bold.ttf'),
+    'Poppins-SemiBold': require('./assets/Poppins-SemiBold.ttf'),
+  });
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#06FF00"/>
+  }
   return (
     <NavigationContainer>
       {user ? (
