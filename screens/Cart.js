@@ -13,7 +13,7 @@ import { CartCard } from "./Cards/CartCard";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
 import { getItem, removeItem, setItem } from "../utils/asyncStorage";
 import { add, deleteAll, setCartInitialState } from "../Reducers/CartReducers";
@@ -195,7 +195,7 @@ export function Cart({navigation}) {
 
         <TouchableOpacity style={styles.uploadBtn} onPress={handleCheckout}>
 
-          <Text>Check Out</Text>
+          <Text style={{color:"white",fontFamily:"Poppins-Bold",fontSize:responsiveFontSize(2.5)}}>Check Out</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -276,13 +276,17 @@ const styles = StyleSheet.create({
   },
   uploadBtn: {
     width: "90%",
-    height: 50,
+    display:"flex",
+    // height: responsiveHeight(8),
+    paddingVertical:10,
     borderRadius: 10,
-    borderWidth: 0.5,
+    // borderWidth: 0.5,
+    elevation:2,
     alignSelf: "center",
     justifyContent: "center",
+    alignContent:"center",
     alignItems: "center",
-    marginBottom: "4%",
-    backgroundColor: "#06FF00",
+    // marginBottom: "4%",
+    backgroundColor: "#2DDC4A",
   },
 });
