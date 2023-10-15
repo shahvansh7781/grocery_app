@@ -12,6 +12,7 @@ import { responsiveFontSize,responsiveHeight,responsiveWidth } from 'react-nativ
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Charts from './Charts'
 import AllUsers from './AllUsers'
+import Notification from './Notification'
 
 export default function DashBoard () {
 
@@ -89,7 +90,7 @@ export default function DashBoard () {
             />
           </View>
 
-        {selectedTab==1?(<Groceries></Groceries>):selectedTab==2?(<AddGrocery/>):selectedTab==3?(<AllOrders></AllOrders>):selectedTab==4?(<Charts></Charts>): selectedTab==5?(<AllUsers></AllUsers>):(<Text>none</Text>)}
+        {selectedTab==1?(<Groceries></Groceries>):selectedTab==2?(<AddGrocery/>):selectedTab==3?(<AllOrders></AllOrders>):selectedTab==4?(<Charts></Charts>): selectedTab==5?(<AllUsers></AllUsers>):(<Notification></Notification>)}
 
       </View>
     )
