@@ -23,26 +23,29 @@ import { auth } from "../Admin/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 const loginFormSchema = Yup.object().shape({
-  email: Yup.string().required("Email should not be empty"),
-  password: Yup.string().required("Password should not be empty"),
+  phone: Yup.string()
+  .required("Enter Phone No. with Country Code(+91)"),
 });
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const onSignIn = async (values) => {
-    const { email, password } = values;
-    const payload = {
-      email,
-      password,
-    };
-    setLoading(true);
-    try {
-      const resp = await signInWithEmailAndPassword(auth, email, password);
-      // console.log(resp);
-    } catch (error) {
-      alert("Invalid Credentials");
-    } finally {
-      setLoading(false);
-    }
+    const { phone } = values;
+    navigation.navigate("LoginOTPAuth",{
+      phoneNumber:phone
+    })
+    // const payload = {
+    //   email,
+    //   password,
+    // };
+    // setLoading(true);
+    // try {
+    //   const resp = await signInWithEmailAndPassword(auth, email, password);
+    //   // console.log(resp);
+    // } catch (error) {
+    //   alert("Invalid Credentials");
+    // } finally {
+    //   setLoading(false);
+    // }
     // try {
     //   const data = await fetch(`${api_url}:8082/myapp/login`, {
     //     method: "POST",
@@ -87,20 +90,12 @@ const Login = ({ navigation }) => {
     //   ]);
     // }
   };
-  const googleSignUp = async () => {
-    // try {
-    //   await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    //   const { idToken } = await GoogleSignin.signIn();
-    //   // console.log(userInfo);
-    // } catch (error) {
-    // }
-  };
   return (
     <View style={styles.container}>
       {/* <Text style={styles.createAccountText}>Login</Text> */}
       <Text style={styles.createAccountText}>Hello, Welcome Back</Text>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ phone:"" }}
         onSubmit={onSignIn}
         validationSchema={loginFormSchema}
         validateOnMount={true}
@@ -115,8 +110,8 @@ const Login = ({ navigation }) => {
           /* and other goodies */
         }) => (
           <>
-            <View style={{ gap: responsiveHeight(4.5) }}>
-              <View style={{ gap: responsiveHeight(1.3) }}>
+            <View>
+              {/* <View style={{ gap: responsiveHeight(1.3) }}>
                 <Text style={styles.labelFont}>Email</Text>
                 <TextInput
                   style={
@@ -149,8 +144,24 @@ const Login = ({ navigation }) => {
                     errors.password && errors.password ? errors.password : ""
                   }`}
                 />
+              </View> */}
+                 <View style={{ gap: responsiveHeight(1.3) }}>
+                <Text style={styles.labelFont}>Phone</Text>
+                <TextInput
+                  style={
+                    errors.phone && errors.phone
+                      ? styles.inputNotValid
+                      : styles.input
+                  }
+                  keyboardType="phone-pad"
+                  onChangeText={handleChange("phone")}
+                  onBlur={handleBlur("phone")}
+                  value={values.phone}
+                  placeholder={`${
+                    errors.phone && errors.phone ? errors.phone : ""
+                  }`}
+                />
               </View>
-
               <View style={{ marginTop: responsiveHeight(2) }}>
                 <TouchableOpacity
                   style={styles.createAccountBtn}
@@ -165,22 +176,22 @@ const Login = ({ navigation }) => {
           </>
         )}
       </Formik>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
             <View>
               <Text style={styles.ORText}>OR LOGIN WITH</Text>
             </View>
             <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
-          </View>
-          <View style={{ flexDirection: "row", gap: responsiveWidth(3) }}>
+          </View> */}
+          {/* <View style={{ flexDirection: "row", gap: responsiveWidth(3) }}>
             <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
               <Text style={styles.googleTxt}>Google</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
               <Text style={styles.googleTxt}>Phone</Text>
             </TouchableOpacity>
-            {/* <GoogleSigninButton size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={googleSignUp}/> */}
-          </View>
+         
+          </View> */}
           <View style={styles.alreadyAccountContainer}>
             <Text style={styles.alreadyAccountText}>
               Don't Have an Account?

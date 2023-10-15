@@ -3,7 +3,7 @@ import  {getFirestore} from 'firebase/firestore'
 import {getStorage} from "firebase/storage"
 import {getAuth} from "firebase/auth"
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyAjPgs8TWlv8g76ahyCn9IJIRn748_WRPE",
     authDomain: "temp-grocery.firebaseapp.com",
     projectId: "temp-grocery",
@@ -16,6 +16,7 @@ const firebaseConfig = {
 
 
   // Initialize Firebase
+  
 export const app = initializeApp(firebaseConfig);
 
 // Initialize Cloud Firestore and get a reference to the service

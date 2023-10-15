@@ -29,6 +29,7 @@
     "dotenv": "^16.3.1",
     "expo": "~49.0.5",
     "expo-constants": "~14.4.2",
+    "expo-firebase-recaptcha": "^2.3.1",
     "expo-font": "^11.4.0",
     "expo-image-picker": "~14.3.2",
     "expo-location": "^16.3.0",
@@ -62,6 +63,7 @@
     "react-native-svg-charts": "^5.4.0",
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6",
+    "react-native-webview": "^13.6.2",
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",
     "yup": "^1.2.0"

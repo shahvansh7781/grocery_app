@@ -39,6 +39,8 @@ import Charts from "./Admin/Screens/Charts";
 
 import ProfileScreen from "./screens/UserProfile";
 import { useFonts } from "expo-font";
+import OtpAuth from "./screens/SignUpOtpAuth";
+import LoginOtpAuth from "./screens/LoginOtpAuth";
 
 
 LogBox.ignoreAllLogs();
@@ -51,6 +53,8 @@ function Authentication() {
   return (
     <UnregisteredStack.Navigator initialRouteName="Login">
       <UnregisteredStack.Screen name="Login" component={Login} />
+      <UnregisteredStack.Screen name="OTPAuth" component={OtpAuth} />
+      <UnregisteredStack.Screen name="LoginOTPAuth" component={LoginOtpAuth} />
       <UnregisteredStack.Screen
         name="SignUp"
         component={SignUp}
@@ -120,8 +124,9 @@ export default function App() {
       // console.log(user.email);
       // if (user) {
       setUser(user);
+      console.log("User- App.js",user)
       if (user) {
-        const q = query(dbRef, where("email", "==", `${user.email}`));
+        const q = query(dbRef, where("phoneNumber", "==", `${user.phoneNumber}`));
         getDocs(q)
           .then((d) => {
             d.forEach((doc) => {

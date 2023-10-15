@@ -504,7 +504,7 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.searchContainer}>
               <Icon name="search" size={20} color="black" />
               <TextInput
-                // style={{flex:1}}
+                style={{fontSize:responsiveFontSize(2.5)}}
                 placeholder="   Search Grocery"
                 placeholderTextColor="black"
                 value={searchQuery}
@@ -794,7 +794,7 @@ elevation:2,
     backgroundColor: "rgba(242,242,242,0.6)",
     // elevation: 5,
     flexDirection: "row",
-alignItems:"center",
+    alignItems:"center",
     // borderColor: "green",
     // borderWidth: 1,
   },

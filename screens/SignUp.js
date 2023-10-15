@@ -33,31 +33,34 @@ const signUpFormSchema = Yup.object().shape({
     .min(8, "Password should be of 8 chars")
     .required("Password should not be empty"),
   phone: Yup.string()
-    .length(10, "Phone should be of 10 chars")
-    .required("Phone No. should not be empty"),
+    .required("Enter Phone No. with Country Code(+91)"),
 });
 
 const SignUp = ({ navigation }) => {
   // useEffect(() => {
   const [userD, setUserD] = useState(null);
+  const [phoneNo,setPhoneNo] = useState();
   // GoogleSignin.configure({webClientId:"11139080005-ktk42659aqapvu153r4bkfbkj1gifpgu.apps.googleusercontent.com"});
 
   // }, [])
 
   const onSignUp = async (values) => {
     const { email, password, Name, phone } = values;
+    
+    //Imp - S
+    // setPhoneNo(phone);
     const dbRef = collection(db, "Users");
     let userExists = null;
-    const payload = {
-      email,
-      Name,
-      phone,
-      role: "User",
-      walletCoins:0
-    };
-    // try {
+    // const payload = {
+    //   email,
+    //   Name,
+    //   phone,
+    //   role: "User",
+    //   walletCoins:0
+    // };
+     // try {
       
-      const q = query(dbRef, where("email", "==", `${email}`));
+      const q = query(dbRef, where("phoneNumber", "==", `${phone}`));
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
@@ -69,10 +72,11 @@ const SignUp = ({ navigation }) => {
         alert("SignUp Failed! User Already exists")
         navigation.navigate("Login");
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
-        await addDoc(dbRef, payload);
-        ToastAndroid.show("SignUp successfull", ToastAndroid.LONG);
+        navigation.navigate("OTPAuth",{
+          data:values
+        })
       }
+      // Imp - E
     // } catch (error) {
     //   alert("SignUp Failed");
     // }
@@ -91,15 +95,6 @@ const SignUp = ({ navigation }) => {
     // } catch (error) {
     //  Alert.alert("SignUp Failed");
     // }
-  };
-  const googleSignUp = async () => {
-    try {
-      const data = await fetch(`${api_url}:8082/myapp/googleSignUp`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      console.log(await data.json());
-    } catch (error) {}
   };
   return (
     <View style={styles.container}>
@@ -179,7 +174,7 @@ const SignUp = ({ navigation }) => {
                       ? styles.inputNotValid
                       : styles.input
                   }
-                  keyboardType="numeric"
+                  keyboardType="phone-pad"
                   onChangeText={handleChange("phone")}
                   onBlur={handleBlur("phone")}
                   value={values.phone}
@@ -212,12 +207,6 @@ const SignUp = ({ navigation }) => {
           <Text style={styles.ORText}>OR</Text>
         </View>
         <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
-      </View>
-      <View>
-        <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
-          <Text style={styles.googleTxt}>Signup with Google</Text>
-        </TouchableOpacity>
-        {/* <GoogleSigninButton size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={googleSignUp}/> */}
       </View>
       <View style={styles.alreadyAccountContainer}>
         <Text style={styles.alreadyAccountText}>Already Have an Account?</Text>
