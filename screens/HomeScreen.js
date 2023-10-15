@@ -473,17 +473,19 @@ export default function HomeScreen({ navigation }) {
   });
 
   return (
-    <SafeAreaView style={{ marginTop: "10%" }}>
+    <SafeAreaView style={{ marginTop: "10%",backgroundColor:"white" }}>
       {isLoading ? ( // Show a loading indicator while data is being fetched
         <ActivityIndicator size="large" color="#06FF00" />
       ) : (
-        <>
+        <View style={{backgroundColor:"white"}}>
           {/* {!isDrawerOpen && ( <TouchableOpacity onPress={toggleDrawer} style={styles.drawerButton}>
           <Text style={{fontSize:40}}>X</Text>
           
         </TouchableOpacity>)} */}
+        <View style={styles.topContainer}>
+
           <Text
-            style={{ fontSize: responsiveFontSize(3.5), fontWeight: "bold",marginLeft:15 }}
+            style={{ fontSize: responsiveFontSize(3.5),marginLeft:responsiveWidth(3.5),fontFamily:"Poppins-Bold" }}
           >
             {" "}
             Welcome! {user ? user.userData.Name : ""}
@@ -492,7 +494,7 @@ export default function HomeScreen({ navigation }) {
           {/* Location */}
 
           <View style={styles.locationContainer}>
-            <Icon name="map-marker" size={30} color="green"></Icon>
+            <Icon name="map-marker" size={30} color="#2DDC4A"></Icon>
             <Text style={styles.text}>{address}</Text>
           </View>
 
@@ -500,10 +502,11 @@ export default function HomeScreen({ navigation }) {
 
           <View style={styles.searchcartContainer}>
             <View style={styles.searchContainer}>
-              <Icon name="search" size={20} color="green" />
+              <Icon name="search" size={20} color="black" />
               <TextInput
                 // style={{flex:1}}
                 placeholder="   Search Grocery"
+                placeholderTextColor="black"
                 value={searchQuery}
                 onChangeText={(text) => setSearchQuery(text)}
               />
@@ -513,11 +516,12 @@ export default function HomeScreen({ navigation }) {
               <Icon
                 name="shopping-cart"
                 size={30}
-                color="green"
+                color="#2DDC4A"
                 onPress={handleCart}
               />
             </TouchableOpacity>
           </View>
+        </View>
 
           {/* categories */}
           <Text style={styles.groceryHeader}>Categories </Text>
@@ -558,18 +562,21 @@ export default function HomeScreen({ navigation }) {
 
         {filterData.map((item,index) => (
             <Card key={index} style={styles.card}>
-              <Card.Cover source={{ uri: item.imageData }} />
-              <Card.Content>
-                <Title style={{fontSize:20,fontWeight:400}}>{item.name.length >5 ? item.name.slice(0, 10) + '...' : item.name}</Title>
+            <Card.Cover source={{ uri: item.imageData }} style={{height:responsiveHeight(20)}} />
+            <Card.Content style={styles.content}>
+              <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400,fontFamily:"Poppins-SemiBold"}}>
+                {item.name.length > 5 ? item.name.slice(0,7) + '...' : item.name}
+                
+                </Title>
 
-                {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
-                <Title style={{color:'green'}}>${item.price}</Title>
+              {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
+              <Title style={{color:'#2DDC4A',fontSize:responsiveFontSize(2.5),fontFamily:"Poppins-Bold"}}>₹{item.price}</Title>
 
-                <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
-                    <Text >Add to Cart</Text>
-                </TouchableOpacity>
-              </Card.Content>
-            </Card>
+              <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
+                  <Text style={{color:"white",fontFamily:"Poppins-SemiBold"}}>Add to Cart</Text>
+              </TouchableOpacity>
+            </Card.Content>
+          </Card>
           
 ))}
 
@@ -592,14 +599,17 @@ export default function HomeScreen({ navigation }) {
         {filterData.map((item,index) => (
             <Card key={index} style={styles.card}>
               <Card.Cover source={{ uri: item.imageData }} style={{height:responsiveHeight(20)}} />
-              <Card.Content>
-                <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400}}>{item.name.length > 5 ? item.name.slice(0,10) + '...' : item.name}</Title>
+              <Card.Content style={styles.content}>
+                <Title style={{fontSize:responsiveFontSize(2.5),fontWeight:400,fontFamily:"Poppins-SemiBold"}}>
+                  {item.name.length > 5 ? item.name.slice(0,7) + '...' : item.name}
+                  
+                  </Title>
 
                 {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
-                <Title style={{color:'green',fontSize:responsiveFontSize(2)}}>${item.price}</Title>
+                <Title style={{color:'#2DDC4A',fontSize:responsiveFontSize(2.5),fontFamily:"Poppins-Bold"}}>₹{item.price}</Title>
 
                 <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
-                    <Text >Add to Cart</Text>
+                    <Text style={{color:"white",fontFamily:"Poppins-SemiBold"}}>Add to Cart</Text>
                 </TouchableOpacity>
               </Card.Content>
             </Card>
@@ -655,12 +665,16 @@ export default function HomeScreen({ navigation }) {
 
 
 
-        </>
+        </View>
       )}
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
+  topContainer:{
+display:"flex",
+gap:10
+  },
   container: {
     flex: 1,
     // justifyContent: 'center',
@@ -707,10 +721,12 @@ const styles = StyleSheet.create({
   card: {
     // margin:'1%',
     // flexBasis: "48%",
-
+backgroundColor:"white",
+display:"flex",
+elevation:2,
     width: responsiveWidth(45), // Adjust the width as needed
     marginHorizontal: responsiveWidth(2),
-    height: responsiveHeight(36),
+    height: responsiveHeight(40),
   },
   cardContainer: {
     // // marginTop:230,
@@ -722,17 +738,20 @@ const styles = StyleSheet.create({
     // // bottom:250
     // marginBottom:responsiveHeight(10)
 
-    flexDirection:"row",
+    // flexDirection:"row",
 
-    paddingVertical: "5%",
+    // paddingVertical: "5%",
   },
 
   content: {
+    display:"flex",
     fontSize: 18, // Adjust the font size as needed
-    fontWeight: "bold",
+    gap:10,
+    marginTop:4
   },
   addToCartButton: {
-    backgroundColor: "green",
+    display:"flex",
+    backgroundColor: "#2DDC4A",
     height: 35,
     width: "90%",
     margin: "5%",
@@ -745,46 +764,49 @@ const styles = StyleSheet.create({
   locationContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: responsiveWidth(3),
+    // padding: responsiveWidth(3),
     // paddingRight:responsiveWidth(10),
     // paddingBottom:responsiveWidth(1),
     // paddingTop:responsiveWidth(5),
-    backgroundColor: "white",
-    borderRadius: 10,
-    marginLeft: responsiveWidth(5),
-    marginRight: responsiveWidth(5),
-    marginTop: responsiveWidth(3),
-    marginBottom: responsiveWidth(0),
-    elevation: 5,
+    // backgroundColor: "white",
+    // borderRadius: 10,
+    marginLeft: responsiveWidth(4.5),
+    // marginRight: responsiveWidth(5),
+    // marginTop: responsiveWidth(3),
+    // marginBottom: responsiveWidth(0),
+    // elevation: 5,
   },
   text: {
     marginLeft: responsiveWidth(3), // Add spacing between the icon and text
-    fontSize: responsiveFontSize(2),
-    color: "black",
+    fontSize: responsiveFontSize(2.4),
+    color: "gray",
+    fontFamily:"Poppins-SemiBold"
   },
   searchContainer: {
-    width: responsiveWidth(70),
-    height: responsiveHeight(6),
+    width: responsiveWidth(73.5),
+    height: responsiveHeight(7),
     borderRadius: 10,
-    borderWidth: 0.5,
-    marginLeft: responsiveWidth(5),
-    padding: responsiveWidth(3),
-    marginTop: responsiveHeight(2),
+    // borderWidth: 0.5,
+    // marginLeft: responsiveWidth(5),
+    padding: responsiveWidth(4),
+    // marginTop: responsiveHeight(2),
     // alignSelf: "center",
-    backgroundColor: "white",
-    elevation: 5,
+    backgroundColor: "rgba(242,242,242,0.6)",
+    // elevation: 5,
     flexDirection: "row",
-
-    borderColor: "green",
-    borderWidth: 1,
+alignItems:"center",
+    // borderColor: "green",
+    // borderWidth: 1,
   },
   buttonList: {
     padding: 10,
+    marginBottom:25
   },
   button: {
     backgroundColor: "white",
     padding: responsiveWidth(2.5),
     borderRadius: 5,
+    elevation:2,
     marginRight: responsiveWidth(2),
     // width: responsiveWidth(45),
     display: "flex",
@@ -792,7 +814,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   activebutton: {
-    backgroundColor: "green",
+    backgroundColor: "#2DDC4A",
     paddingVertical: responsiveWidth(2.5),
     paddingHorizontal:responsiveHeight(3.5),
     borderRadius: 5,
@@ -805,35 +827,41 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: responsiveFontSize(1.8),
     fontWeight: "bold",
+    fontFamily:"Poppins-SemiBold",
   },
   activebuttonText: {
     fontSize: responsiveFontSize(1.8),
     fontWeight: "bold",
     color: "white",
+    fontFamily:"Poppins-SemiBold",
   },
   groceryHeader: {
-    padding: responsiveWidth(4),
+    // padding: responsiveWidth(4),
     // marginLeft:responsiveWidth(5),
-    fontSize: responsiveFontSize(2.5),
-    fontWeight: "bold",
+    fontSize: responsiveFontSize(3.5),
+    marginLeft:responsiveWidth(4),
+    marginTop:responsiveWidth(4),
+    fontFamily:"Poppins-SemiBold"
   },
   cartContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: responsiveWidth(5),
+    // marginRight: responsiveWidth(5),
     backgroundColor: "white",
     width: responsiveWidth(15),
     height: responsiveHeight(6),
-    padding: responsiveWidth(3),
-    marginTop: responsiveHeight(2),
-    marginLeft: responsiveWidth(4),
-    borderRadius: 10,
-    borderWidth: 0.3,
-    borderColor: "green",
+    // padding: responsiveWidth(3),
+    // marginTop: responsiveHeight(2),
+    // marginLeft: responsiveWidth(4),
+    // borderRadius: 10,
+    // borderWidth: 0.3,
+    // borderColor: "green",
   },
   searchcartContainer: {
     flexDirection: "row", // Use flexDirection: 'row' for a horizontal layout
     alignItems: "center",
+    justifyContent:"center",
+    gap:5
   },
 });

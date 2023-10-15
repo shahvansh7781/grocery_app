@@ -218,7 +218,8 @@ let isCoinsUsed = false;
       deliveryCharge,
       grandTotal:subTotal+deliveryCharge,
       shippingAddress:addressData.address.addr,
-      savings:walletCoins
+      savings:walletCoins,
+      status:"Dispatched"
     }
     try {
       const dataRep = await axios.post(`${api_url}:8082/myapp/createOrder`,payload,{

@@ -26,7 +26,7 @@ const ProfileScreen = () => {
   const userProfile = useSelector((state) => state.users.userProfile);
   const userEmail = user && user.userData.email;
   const walletCoins = useSelector((state) => state.orders.walletCoins);
-  console.log('user prof user prof - screen',userProfile&&userProfile);
+  // console.log('user prof user prof - screen',userProfile&&userProfile);
   const navigation=useNavigation()
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
@@ -51,7 +51,8 @@ const ProfileScreen = () => {
     
     useEffect(() => {
       dispatch(fetchOrders())
-      .then(() =>{dataFilter(); }) // Data fetched, set isLoading to false
+      .then(() =>{console.log('hi')
+      dataFilter(); }) // Data fetched, set isLoading to false
       .catch((error) => {
         console.error("Error fetching data:", error);
         // In case of an error, also set isLoading to false

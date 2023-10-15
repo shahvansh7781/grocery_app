@@ -1,7 +1,8 @@
 import React, { Component, useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { deletee, updateCount } from "../../Reducers/CartReducers";
-
+import Icon from "react-native-vector-icons/Ionicons"
+import AntIcon from "react-native-vector-icons/AntDesign"
 import { useDispatch } from "react-redux";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
@@ -62,22 +63,26 @@ export function CartCard({ itemData }) {
                 onPress={() => {
                   incCount();
                 }}
+                style={{elevation:4,borderRadius:360,backgroundColor:"white",display:"flex",justifyContent:"center",alignItems:"center"}}
               >
-                <Image
+                {/* <Image
                   source={require("../Cards/plus_cart.jpeg")}
                   style={styles.icon}
-                ></Image>
+                ></Image> */}
+                <Icon name="add" size={20} style={{padding:2}}/>
               </TouchableOpacity>
               <Text style={styles.cardInfo}>{count}</Text>
               <TouchableOpacity
                 onPress={() => {
-                  decCount();
+                  incCount();
                 }}
+                style={{elevation:4,borderRadius:360,backgroundColor:"white",display:"flex",justifyContent:"center",alignItems:"center"}}
               >
-                <Image
-                  source={require("../Cards/minus_cart.jpeg")}
+                {/* <Image
+                  source={require("../Cards/plus_cart.jpeg")}
                   style={styles.icon}
-                ></Image>
+                ></Image> */}
+                <Icon name="remove-outline" size={20} style={{padding:2}}/>
               </TouchableOpacity>
 
               <TouchableOpacity

@@ -8,16 +8,16 @@ import { fetchOrders } from '../../Reducers/OrderReducer';
 import { color } from '@mui/system';
 import { fetchGroceries } from '../../Reducers/GroceryReducer';
 import { ActivityIndicator } from 'react-native';
-import {
 
-  PieChart
-  
-} from "react-native-chart-kit";
+import {PieChart} from "react-native-chart-kit";
+
 import { fetchUsers } from '../../Reducers/UserReducer';
 
 
 
+
 export default function Charts() {
+
 
   
   const dispatch=useDispatch()
@@ -41,6 +41,7 @@ export default function Charts() {
 
 
 
+
   useEffect(() => {
     dispatch(fetchUsers())
     .then() // Data fetched, set isLoading to false
@@ -49,6 +50,7 @@ export default function Charts() {
      // In case of an error, also set isLoading to false
     });
   }, [dispatch]);
+
 
   
 
@@ -71,6 +73,7 @@ export default function Charts() {
         },
       ],
     };
+    console.log("Line chart data:- ",updatedData)
     setData1(updatedData); // setData1 is a state setter for data1
 
     // Additionally, you can use updatedData directly where you need it
@@ -100,7 +103,8 @@ export default function Charts() {
     }
     });
 
-    // console.log(categoryCount)
+    console.log("Category count:-",categoryCount)
+    console.log("Category count Snacks:-",categoryCount['Snacks'])
     setCategorySum(categoryCount)
     setIsPie(1)
     }
