@@ -47,6 +47,8 @@ import { addAddress, deleteAllAddress, updateAddress, updateCoor } from "../Redu
 // import { Button, CardActionArea, CardActions } from '@mui/material';
 
 export default function HomeScreen({ navigation }) {
+
+  const [loadSelectedItem,setLoadSelectedItem]=useState(0)
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
@@ -472,6 +474,20 @@ export default function HomeScreen({ navigation }) {
     }
   });
 
+
+  useEffect(() => {
+    // Whenever activeCategory or searchQuery changes, set loadSelectedItem to 1
+    setLoadSelectedItem(1);
+    const delay = 1500; // 1 second in milliseconds
+    const timerId = setTimeout(() => {
+      setLoadSelectedItem(0);
+    }, delay);
+  
+    // Cleanup the timeout when the component unmounts or when activeCategory or searchQuery changes
+    return () => clearTimeout(timerId);
+  }, [activeCategory, searchQuery]);
+  
+
   return (
     <SafeAreaView style={{ marginTop: "10%",backgroundColor:"white" }}>
       {isLoading ? ( // Show a loading indicator while data is being fetched
@@ -537,7 +553,12 @@ export default function HomeScreen({ navigation }) {
             />
           </View>
 
-          {data &&
+          {loadSelectedItem ? (
+           <ActivityIndicator size="large" color="#06FF00"/>
+               
+              ) : (
+
+          data &&
           filterData.length === 0 &&
           activeCategory === 1 &&
           firstLoad ? (
@@ -620,7 +641,7 @@ export default function HomeScreen({ navigation }) {
 
 
 
-      </ScrollView></View>}
+      </ScrollView></View>)}
       
      
 
@@ -672,8 +693,8 @@ export default function HomeScreen({ navigation }) {
 }
 const styles = StyleSheet.create({
   topContainer:{
-display:"flex",
-gap:10
+      display:"flex",
+      gap:10
   },
   container: {
     flex: 1,
@@ -681,6 +702,7 @@ gap:10
     // alignItems: 'center',
     height: "100%",
     marginBottom: responsiveHeight(10),
+   
   },
   scrollContainer: {
     height: "90%", // 80% of the screen height

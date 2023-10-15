@@ -403,28 +403,28 @@ useEffect(()=>{
   const pieData = [
     {
       name: 'Fruits & Vegetables',
-      population: categorySum['Fruits & Vegetables'],
+      population: categorySum['Fruits & Vegetables']?categorySum['Fruits & Vegetables']:0,
       color: "rgba(131, 167, 234, 1)",
       legendFontColor: "#7F7F7F",
       legendFontSize: 12,
     },
     {
       name: "Snacks",
-      population: categorySum['Snacks'],
+      population: categorySum['Snacks']?categorySum['Snacks']:0,
       color: "green",
       legendFontColor: "#7F7F7F",
       legendFontSize: 12,
     },
     {
       name: 'Dairy & Bakery',
-      population: categorySum['Dairy & Bakery'],
+      population: categorySum['Dairy & Bakery']?categorySum['Dairy & Bakery']:0,
       color: "red",
       legendFontColor: "#7F7F7F",
       legendFontSize: 12,
     },
     {
       name: 'Beverages',
-      population: categorySum['Beverages'],
+      population: categorySum['Beverages']? categorySum['Beverages']:0,
       color: "#ffffff",
       legendFontColor: "#7F7F7F",
       legendFontSize: 12,
