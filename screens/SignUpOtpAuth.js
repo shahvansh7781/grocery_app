@@ -40,7 +40,7 @@ const OtpAuth = ({navigation}) => {
         const payload = {
       email,
       Name,
-      phoneNumber,
+      phone:phoneNumber,
       role: "User",
       walletCoins:0
     };

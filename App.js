@@ -126,7 +126,7 @@ export default function App() {
       setUser(user);
       console.log("User- App.js",user)
       if (user) {
-        const q = query(dbRef, where("phoneNumber", "==", `${user.phoneNumber}`));
+        const q = query(dbRef, where("phone", "==", `${user.phoneNumber}`));
         getDocs(q)
           .then((d) => {
             d.forEach((doc) => {

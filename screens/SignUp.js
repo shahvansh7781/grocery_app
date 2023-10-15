@@ -60,7 +60,7 @@ const SignUp = ({ navigation }) => {
     // };
      // try {
       
-      const q = query(dbRef, where("phoneNumber", "==", `${phone}`));
+      const q = query(dbRef, where("phone", "==", `${phone}`));
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
