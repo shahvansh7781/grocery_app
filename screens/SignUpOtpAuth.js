@@ -6,6 +6,7 @@ import { auth, db, firebaseConfig } from '../Admin/config';
 import firebase from 'firebase/compat/app';
 import { useRoute } from '@react-navigation/native';
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import * as Notifications from 'expo-notifications';
 import Timer from '../components/Timer';
 if (!firebase.apps.length){
     firebase.initializeApp(firebaseConfig);
@@ -22,12 +23,28 @@ const OtpAuth = ({navigation}) => {
     const phoneNumber=route.params.data.phone;
     const Name = route.params.data.Name;
     const email = route.params.data.email;
-    
+    const [expoPushToken, setExpoPushToken] = useState('');
 
-    useEffect(() => {
-      sendVerification();
-    }, [])
+    // useEffect(() => {
+    //   sendVerification();
+    // }, [])
     
+    useEffect(() => {
+        // Request permission for notifications
+        (async () => {
+          const { status } = await Notifications.requestPermissionsAsync();
+          if (status !== 'granted') {
+            alert('Permission to send notifications was denied');
+            return;
+          }
+    
+          // Get the device's Expo push token
+          const token = (await Notifications.getExpoPushTokenAsync({ projectId: 'dad94796-4b29-4812-9adf-fca37769e4c0' })).data;
+          setExpoPushToken(token);
+          console.log('token - signup',expoPushToken)
+        //   setTokenObtained(true); // Set the state to indicate that the token is obtained
+        })();
+      }, []);
     // console.log(data);
     const sendVerification = () => {
         setTimeOut(!timeOut)
@@ -46,7 +63,8 @@ const OtpAuth = ({navigation}) => {
       Name,
       phone:phoneNumber,
       role: "User",
-      walletCoins:0
+      walletCoins:0,
+      token:expoPushToken
     };
         const credential = firebase.auth.PhoneAuthProvider.credential(
             verificationId,
@@ -85,7 +103,7 @@ const OtpAuth = ({navigation}) => {
                 </Text>
             </TouchableOpacity> */}
              <View style={{alignSelf:"flex-start",gap:10}}>
-            <Text style={{fontFamily:"Poppins-Bold",fontSize:responsiveFontSize(4)}}>Verification</Text>
+            <Text style={{fontFamily:"Poppins-Bold",fontSize:responsiveFontSize(4)}}>Verification{expoPushToken}</Text>
             <Text style={{fontFamily:"Poppins-SemiBold",fontSize:responsiveFontSize(2.5)}}>Enter the OTP just sent to you at {phoneNumber}</Text>
            </View>
             <TextInput

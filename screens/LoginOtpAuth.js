@@ -30,6 +30,8 @@ const LoginOtpAuth = ({navigation}) => {
         phoneProvider
             .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
             .then(setverificationId).catch((error)=>{
+                alert(error);
+                console.log(error)
                 navigation.navigate("Login")
             });
 
