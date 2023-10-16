@@ -16,7 +16,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,10 +27,19 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.anonymous.groceryappreactnative"
+      "package": "com.anonymous.groceryappreactnative",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "dad94796-4b29-4812-9adf-fca37769e4c0"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/dad94796-4b29-4812-9adf-fca37769e4c0"
     }
   }
 }
