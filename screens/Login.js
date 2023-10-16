@@ -19,8 +19,9 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { api_url } from "../utils/api_url";
-import { auth } from "../Admin/config";
+import { auth, db } from "../Admin/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 const loginFormSchema = Yup.object().shape({
   phone: Yup.string()
@@ -30,9 +31,26 @@ const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const onSignIn = async (values) => {
     const { phone } = values;
-    navigation.navigate("LoginOTPAuth",{
-      phoneNumber:phone
-    })
+    const dbRef = collection(db, "Users");
+    let userExists = null;
+
+    const q = query(dbRef, where("phone", "==", `${phone}`));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+        userExists = { ...doc.data() };
+        // setUserD(doc.data())
+      });
+      if (userExists !== null) {
+        navigation.navigate("LoginOTPAuth",{
+          phoneNumber:phone
+        })
+      } else {
+        alert("User doesn't exists. Kindly SignUp")
+        navigation.navigate("SignUp")
+      }
+    
     // const payload = {
     //   email,
     //   password,
@@ -217,29 +235,31 @@ const styles = StyleSheet.create({
   },
   createAccountText: {
     fontSize: responsiveFontSize(3.5),
-    fontWeight: "900",
+    fontFamily:"Poppins-Bold"
   },
   labelFont: {
     fontSize: responsiveFontSize(2.5),
-    fontWeight: "900",
+    fontFamily:"Poppins-Bold"
   },
   input: {
-    width: responsiveWidth(80),
-    height: responsiveHeight(6),
+    width: responsiveWidth(85),
+    height: responsiveHeight(6.5),
     borderRadius: 10,
     backgroundColor: "#EDEDED",
     paddingHorizontal: 10,
     paddingVertical: 12,
+    fontFamily:"Poppins-SemiBold"
   },
   inputNotValid: {
-    width: responsiveWidth(80),
-    height: responsiveHeight(6),
+    width: responsiveWidth(85),
+    height: responsiveHeight(6.5),
     borderRadius: 10,
     backgroundColor: "#EDEDED",
     paddingHorizontal: 10,
     paddingVertical: 12,
     borderColor: "red",
     borderWidth: 1,
+    fontFamily:"Poppins-SemiBold"
   },
   createAccountBtn: {
     backgroundColor: "#2DDC4A",
@@ -251,7 +271,7 @@ const styles = StyleSheet.create({
   },
   createAccountBtnText: {
     color: "white",
-    fontWeight: "900",
+    fontFamily:"Poppins-Bold",
     fontSize: responsiveFontSize(2.3),
   },
   ORText: {
@@ -268,12 +288,13 @@ const styles = StyleSheet.create({
   },
   alreadyAccountText: {
     color: "gray",
-    fontWeight: "bold",
     fontSize: responsiveFontSize(2.3),
+    fontFamily:"Poppins-SemiBold"
   },
   loginText: {
     color: "#2DDC4A",
     fontSize: responsiveFontSize(2.3),
+    fontFamily:"Poppins-Bold"
   },
   googleBtn: {
     backgroundColor: "#EDEDED",

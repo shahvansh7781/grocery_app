@@ -6,6 +6,7 @@ import { auth, db, firebaseConfig } from '../Admin/config';
 import firebase from 'firebase/compat/app';
 import { useRoute } from '@react-navigation/native';
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import Timer from '../components/Timer';
 if (!firebase.apps.length){
     firebase.initializeApp(firebaseConfig);
     
@@ -15,13 +16,13 @@ const OtpAuth = ({navigation}) => {
     const [code, setCode] = useState('');
     const [verificationId, setverificationId] = useState(null);
     const recaptchaVerifier = useRef(null);
-    
+    const [timeOut, setTimeOut] = useState(false);
     const route = useRoute();
     const data = route.params.data;
     const phoneNumber=route.params.data.phone;
     const Name = route.params.data.Name;
     const email = route.params.data.email;
-    const password = route.params.data.password;
+    
 
     useEffect(() => {
       sendVerification();
@@ -29,10 +30,13 @@ const OtpAuth = ({navigation}) => {
     
     // console.log(data);
     const sendVerification = () => {
+        setTimeOut(!timeOut)
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         phoneProvider
             .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
-            .then(setverificationId);
+            .then(setverificationId).catch((error)=>{
+                navigation.navigate("SignUp")
+            });
 
     };
     const confirmCode = async() => {
@@ -44,27 +48,6 @@ const OtpAuth = ({navigation}) => {
       role: "User",
       walletCoins:0
     };
-    // try {
-        
-    //        const q = query(dbRef, where("email", "==", `${email}`));
-    //   const querySnapshot = await getDocs(q);
-    //   querySnapshot.forEach((doc) => {
-    //     // doc.data() is never undefined for query doc snapshots
-    //     // console.log(doc.id, " => ", doc.data());
-    //     userExists = { ...doc.data() };
-    //     // setUserD(doc.data())
-    //   });
-    //   if (userExists !== null) {
-    //     alert("SignUp Failed! User Already exists")
-    //     navigation.navigate("Login");
-    //   } else {
-    //     await createUserWithEmailAndPassword(auth, email, password);
-    //     await addDoc(dbRef, payload);
-    //     ToastAndroid.show("SignUp successfull", ToastAndroid.LONG);
-    //   }
-    // } catch (error) {
-        
-    // }
         const credential = firebase.auth.PhoneAuthProvider.credential(
             verificationId,
             code
@@ -101,6 +84,10 @@ const OtpAuth = ({navigation}) => {
                     send Verification
                 </Text>
             </TouchableOpacity> */}
+             <View style={{alignSelf:"flex-start",gap:10}}>
+            <Text style={{fontFamily:"Poppins-Bold",fontSize:responsiveFontSize(4)}}>Verification</Text>
+            <Text style={{fontFamily:"Poppins-SemiBold",fontSize:responsiveFontSize(2.5)}}>Enter the OTP just sent to you at {phoneNumber}</Text>
+           </View>
             <TextInput
                 placeholder='Enter OTP'
                 onChangeText={setCode}
@@ -108,11 +95,17 @@ const OtpAuth = ({navigation}) => {
                 style={styles.textInput}
             />
             <TouchableOpacity style={styles.uploadBtn} onPress={confirmCode}>
-                <Text style={{color:"white",fontFamily:"Poppins-Bold",fontSize:responsiveFontSize(2.5)}}>
+                <Text style={{color:"white",fontFamily:"Poppins-SemiBold",fontSize:responsiveFontSize(2.2)}}>
                     Verify Phone Number
                 </Text>
             </TouchableOpacity>
-
+            <View style={{flexDirection:"row",gap:4,alignSelf:"flex-start"}}>
+                <Text style={{fontFamily:"Poppins-SemiBold"}}>Didn't receive SMS?</Text> 
+            <TouchableOpacity onPress={sendVerification}><Text style={{color:timeOut ? "#2DDC4A":"gray",fontFamily:"Poppins-SemiBold"}}>Resend Code</Text></TouchableOpacity> 
+            {
+                timeOut ? <></> : <><Text style={{fontFamily:"Poppins-SemiBold"}}><Timer setTimeOut={setTimeOut}/> seconds</Text></>
+            }
+            </View>
         </View>
     )
 
@@ -125,12 +118,13 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor: '#fff',
         alignItems:'center',
-        justifyContent:'center'
-        
+        // justifyContent:'center',
+        gap:20,
+        paddingHorizontal:20
     },
     textInput:{
         fontSize:responsiveFontSize(2.5),
-        marginBottom:20,
+     
         textAlign:'center',
         color:'black',
         // elevation:2,
@@ -167,7 +161,7 @@ const styles = StyleSheet.create({
         width: "90%",
         display:"flex",
         // height: responsiveHeight(8),
-        paddingVertical:10,
+        paddingVertical:15,
         borderRadius: 10,
         // borderWidth: 0.5,
         elevation:2,

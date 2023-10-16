@@ -51,10 +51,10 @@ const AdminInsideStack = createNativeStackNavigator();
 const AdminStack = createNativeStackNavigator();
 function Authentication() {
   return (
-    <UnregisteredStack.Navigator initialRouteName="Login">
+    <UnregisteredStack.Navigator initialRouteName="SignUp">
       <UnregisteredStack.Screen name="Login" component={Login} />
-      <UnregisteredStack.Screen name="OTPAuth" component={OtpAuth} />
-      <UnregisteredStack.Screen name="LoginOTPAuth" component={LoginOtpAuth} />
+      <UnregisteredStack.Screen name="OTPAuth" component={OtpAuth} options={{headerTitle:"OTP Verification"}} />
+      <UnregisteredStack.Screen name="LoginOTPAuth" component={LoginOtpAuth} options={{headerTitle:"OTP Verification"}} />
       <UnregisteredStack.Screen
         name="SignUp"
         component={SignUp}

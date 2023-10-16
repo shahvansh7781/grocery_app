@@ -29,9 +29,6 @@ const signUpFormSchema = Yup.object().shape({
     .max(30, "Name should be less than 30 chars")
     .required("Name should not be empty"),
   email: Yup.string().email().required("Email should not be empty"),
-  password: Yup.string()
-    .min(8, "Password should be of 8 chars")
-    .required("Password should not be empty"),
   phone: Yup.string()
     .required("Enter Phone No. with Country Code(+91)"),
 });
@@ -45,7 +42,7 @@ const SignUp = ({ navigation }) => {
   // }, [])
 
   const onSignUp = async (values) => {
-    const { email, password, Name, phone } = values;
+    const { email, Name, phone } = values;
     
     //Imp - S
     // setPhoneNo(phone);
@@ -100,7 +97,7 @@ const SignUp = ({ navigation }) => {
     <View style={styles.container}>
       {/* <Text style={styles.createAccountText}>Create an Account</Text> */}
       <Formik
-        initialValues={{ Name: "", email: "", password: "", phone: "" }}
+        initialValues={{ Name: "", email: "", phone: "" }}
         onSubmit={onSignUp}
         validationSchema={signUpFormSchema}
         validateOnMount={true}
@@ -146,23 +143,6 @@ const SignUp = ({ navigation }) => {
                   value={values.email}
                   placeholder={`${
                     errors.email && errors.email ? errors.email : ""
-                  }`}
-                />
-              </View>
-              <View style={{ gap: responsiveHeight(1.3) }}>
-                <Text style={styles.labelFont}>Password</Text>
-                <TextInput
-                  style={
-                    errors.password && errors.password
-                      ? styles.inputNotValid
-                      : styles.input
-                  }
-                  secureTextEntry={true}
-                  onChangeText={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  value={values.password}
-                  placeholder={`${
-                    errors.password && errors.password ? errors.password : ""
                   }`}
                 />
               </View>
@@ -236,25 +216,27 @@ const styles = StyleSheet.create({
   },
   labelFont: {
     fontSize: responsiveFontSize(2),
-    fontWeight: "900",
+    fontFamily:"Poppins-SemiBold"
   },
   input: {
-    width: responsiveWidth(80),
-    height: responsiveHeight(6),
+    width: responsiveWidth(85),
+    height: responsiveHeight(6.5),
     borderRadius: 10,
     backgroundColor: "#EDEDED",
     paddingHorizontal: 10,
     paddingVertical: 12,
+    fontFamily:"Poppins-SemiBold"
   },
   inputNotValid: {
-    width: responsiveWidth(80),
-    height: responsiveHeight(6),
+    width: responsiveWidth(85),
+    height: responsiveHeight(6.5),
     borderRadius: 10,
     backgroundColor: "#EDEDED",
     paddingHorizontal: 10,
     paddingVertical: 12,
     borderColor: "red",
     borderWidth: 1,
+    fontFamily:"Poppins-SemiBold"
   },
   createAccountBtn: {
     backgroundColor: "#2DDC4A",
@@ -266,14 +248,14 @@ const styles = StyleSheet.create({
   },
   createAccountBtnText: {
     color: "white",
-    fontWeight: "900",
     fontSize: responsiveFontSize(2.3),
+    fontFamily:"Poppins-Bold"
   },
   ORText: {
     width: 50,
     textAlign: "center",
-    fontWeight: "bold",
     color: "gray",
+    fontFamily:"Poppins-SemiBold"
   },
   alreadyAccountContainer: {
     flex: 1,
@@ -283,12 +265,13 @@ const styles = StyleSheet.create({
   },
   alreadyAccountText: {
     color: "gray",
-    fontWeight: "bold",
     fontSize: responsiveFontSize(2.3),
+    fontFamily:"Poppins-SemiBold"
   },
   loginText: {
     color: "#2DDC4A",
     fontSize: responsiveFontSize(2.3),
+    fontFamily:"Poppins-Bold"
   },
   googleBtn: {
     backgroundColor: "#EDEDED",
