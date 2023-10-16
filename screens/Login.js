@@ -19,30 +19,51 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { api_url } from "../utils/api_url";
-import { auth } from "../Admin/config";
+import { auth, db } from "../Admin/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 const loginFormSchema = Yup.object().shape({
-  email: Yup.string().required("Email should not be empty"),
-  password: Yup.string().required("Password should not be empty"),
+  phone: Yup.string()
+  .required("Enter Phone No. with Country Code(+91)"),
 });
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const onSignIn = async (values) => {
-    const { email, password } = values;
-    const payload = {
-      email,
-      password,
-    };
-    setLoading(true);
-    try {
-      const resp = await signInWithEmailAndPassword(auth, email, password);
-      // console.log(resp);
-    } catch (error) {
-      alert("Invalid Credentials");
-    } finally {
-      setLoading(false);
-    }
+    const { phone } = values;
+    const dbRef = collection(db, "Users");
+    let userExists = null;
+
+    const q = query(dbRef, where("phone", "==", `${phone}`));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+        userExists = { ...doc.data() };
+        // setUserD(doc.data())
+      });
+      if (userExists !== null) {
+        navigation.navigate("LoginOTPAuth",{
+          phoneNumber:phone
+        })
+      } else {
+        alert("User doesn't exists. Kindly SignUp")
+        navigation.navigate("SignUp")
+      }
+    
+    // const payload = {
+    //   email,
+    //   password,
+    // };
+    // setLoading(true);
+    // try {
+    //   const resp = await signInWithEmailAndPassword(auth, email, password);
+    //   // console.log(resp);
+    // } catch (error) {
+    //   alert("Invalid Credentials");
+    // } finally {
+    //   setLoading(false);
+    // }
     // try {
     //   const data = await fetch(`${api_url}:8082/myapp/login`, {
     //     method: "POST",
@@ -87,20 +108,12 @@ const Login = ({ navigation }) => {
     //   ]);
     // }
   };
-  const googleSignUp = async () => {
-    // try {
-    //   await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    //   const { idToken } = await GoogleSignin.signIn();
-    //   // console.log(userInfo);
-    // } catch (error) {
-    // }
-  };
   return (
     <View style={styles.container}>
       {/* <Text style={styles.createAccountText}>Login</Text> */}
       <Text style={styles.createAccountText}>Hello, Welcome Back</Text>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ phone:"" }}
         onSubmit={onSignIn}
         validationSchema={loginFormSchema}
         validateOnMount={true}
@@ -115,8 +128,8 @@ const Login = ({ navigation }) => {
           /* and other goodies */
         }) => (
           <>
-            <View style={{ gap: responsiveHeight(4.5) }}>
-              <View style={{ gap: responsiveHeight(1.3) }}>
+            <View>
+              {/* <View style={{ gap: responsiveHeight(1.3) }}>
                 <Text style={styles.labelFont}>Email</Text>
                 <TextInput
                   style={
@@ -149,8 +162,24 @@ const Login = ({ navigation }) => {
                     errors.password && errors.password ? errors.password : ""
                   }`}
                 />
+              </View> */}
+                 <View style={{ gap: responsiveHeight(1.3) }}>
+                <Text style={styles.labelFont}>Phone</Text>
+                <TextInput
+                  style={
+                    errors.phone && errors.phone
+                      ? styles.inputNotValid
+                      : styles.input
+                  }
+                  keyboardType="phone-pad"
+                  onChangeText={handleChange("phone")}
+                  onBlur={handleBlur("phone")}
+                  value={values.phone}
+                  placeholder={`${
+                    errors.phone && errors.phone ? errors.phone : ""
+                  }`}
+                />
               </View>
-
               <View style={{ marginTop: responsiveHeight(2) }}>
                 <TouchableOpacity
                   style={styles.createAccountBtn}
@@ -165,22 +194,22 @@ const Login = ({ navigation }) => {
           </>
         )}
       </Formik>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
             <View>
               <Text style={styles.ORText}>OR LOGIN WITH</Text>
             </View>
             <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
-          </View>
-          <View style={{ flexDirection: "row", gap: responsiveWidth(3) }}>
+          </View> */}
+          {/* <View style={{ flexDirection: "row", gap: responsiveWidth(3) }}>
             <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
               <Text style={styles.googleTxt}>Google</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.googleBtn} onPress={googleSignUp}>
               <Text style={styles.googleTxt}>Phone</Text>
             </TouchableOpacity>
-            {/* <GoogleSigninButton size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={googleSignUp}/> */}
-          </View>
+         
+          </View> */}
           <View style={styles.alreadyAccountContainer}>
             <Text style={styles.alreadyAccountText}>
               Don't Have an Account?
@@ -206,29 +235,31 @@ const styles = StyleSheet.create({
   },
   createAccountText: {
     fontSize: responsiveFontSize(3.5),
-    fontWeight: "900",
+    fontFamily:"Poppins-Bold"
   },
   labelFont: {
     fontSize: responsiveFontSize(2.5),
-    fontWeight: "900",
+    fontFamily:"Poppins-Bold"
   },
   input: {
-    width: responsiveWidth(80),
-    height: responsiveHeight(6),
+    width: responsiveWidth(85),
+    height: responsiveHeight(6.5),
     borderRadius: 10,
     backgroundColor: "#EDEDED",
     paddingHorizontal: 10,
     paddingVertical: 12,
+    fontFamily:"Poppins-SemiBold"
   },
   inputNotValid: {
-    width: responsiveWidth(80),
-    height: responsiveHeight(6),
+    width: responsiveWidth(85),
+    height: responsiveHeight(6.5),
     borderRadius: 10,
     backgroundColor: "#EDEDED",
     paddingHorizontal: 10,
     paddingVertical: 12,
     borderColor: "red",
     borderWidth: 1,
+    fontFamily:"Poppins-SemiBold"
   },
   createAccountBtn: {
     backgroundColor: "#2DDC4A",
@@ -240,7 +271,7 @@ const styles = StyleSheet.create({
   },
   createAccountBtnText: {
     color: "white",
-    fontWeight: "900",
+    fontFamily:"Poppins-Bold",
     fontSize: responsiveFontSize(2.3),
   },
   ORText: {
@@ -257,12 +288,13 @@ const styles = StyleSheet.create({
   },
   alreadyAccountText: {
     color: "gray",
-    fontWeight: "bold",
     fontSize: responsiveFontSize(2.3),
+    fontFamily:"Poppins-SemiBold"
   },
   loginText: {
     color: "#2DDC4A",
     fontSize: responsiveFontSize(2.3),
+    fontFamily:"Poppins-Bold"
   },
   googleBtn: {
     backgroundColor: "#EDEDED",

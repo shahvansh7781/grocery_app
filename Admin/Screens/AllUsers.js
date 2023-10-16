@@ -14,7 +14,7 @@ export default function AllUsers() {
 
     const dispatch=useDispatch()
     const users=useSelector((state)=>state.users.data)
-    console.log(users)
+    // console.log(users)
     const [isLoading, setIsLoading] = useState(true);
    
     useEffect(() => {
