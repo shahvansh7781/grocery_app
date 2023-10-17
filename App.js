@@ -164,7 +164,7 @@ export default function App() {
                 {/* <NInsideStack.Screen name="EditGrocery" component={EditGrocery} /> */}
                 <UserInsideStack.Screen name="Checkout" component={CheckOut} />
                 <UserInsideStack.Screen name="Map" component={ChangeAddress} />
-                <UserInsideStack.Screen name="MyOrders" component={MyOrders} />
+                <UserInsideStack.Screen name="MyOrders" component={MyOrders} options={{headerTitle:"Orders"}}/>
                 <UserInsideStack.Screen name="MyOrdersDetail" component={MyOrdersDetail} />
                 <UserInsideStack.Screen name="UserDetails" component={ProfileScreen} />
               </UserInsideStack.Navigator>
@@ -179,7 +179,7 @@ export default function App() {
                 <AdminInsideStack.Screen name="Checkout" component={CheckOut} />
                 <AdminInsideStack.Screen name="Map" component={ChangeAddress} />
                 <AdminInsideStack.Screen name="AdminOrderDetail" component={AllOrdersDetail} />
-                <AdminInsideStack.Screen name="MyOrders" component={MyOrders}/>
+                <AdminInsideStack.Screen name="MyOrders" component={MyOrders} options={{headerTitle:"Orders"}}/>
                 <AdminInsideStack.Screen name="UserDetails" component={ProfileScreen} />
                 <AdminInsideStack.Screen name="MyOrdersDetail" component={MyOrdersDetail}/>
                 {/* <AdminInsideStack.Screen name="Charts" component={Charts}/> */}

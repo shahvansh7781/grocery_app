@@ -501,7 +501,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.topContainer}>
 
           <Text
-            style={{ fontSize: responsiveFontSize(3.5),marginLeft:responsiveWidth(3.5),fontFamily:"Poppins-Bold" }}
+            style={{ fontSize: responsiveFontSize(3),marginLeft:responsiveWidth(3.5),fontFamily:"Poppins-Bold" }}
           >
             {" "}
             Welcome! {user ? user.userData.Name : ""}

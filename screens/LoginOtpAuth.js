@@ -24,8 +24,8 @@ const LoginOtpAuth = ({navigation}) => {
     }, [])
     
     // console.log(data);
+    //ExponentPushToken[8KK8WRLsWf5bvTz960Gof0]
     const sendVerification = () => {
-        setTimeOut(!timeOut)
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         phoneProvider
             .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
@@ -90,7 +90,8 @@ const LoginOtpAuth = ({navigation}) => {
             </TouchableOpacity>
             <View style={{flexDirection:"row",gap:4,alignSelf:"flex-start"}}>
                 <Text style={{fontFamily:"Poppins-SemiBold"}}>Didn't receive SMS?</Text> 
-            <TouchableOpacity onPress={sendVerification} disabled={!timeOut}>
+            <TouchableOpacity onPress={()=>{setTimeOut(!timeOut);
+            sendVerification();}} disabled={!timeOut}>
                 <Text style={{color:timeOut ? "#2DDC4A":"gray",fontFamily:"Poppins-SemiBold"}}>Resend Code</Text>
             </TouchableOpacity> 
             {

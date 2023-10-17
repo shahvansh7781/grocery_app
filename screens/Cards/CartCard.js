@@ -74,7 +74,7 @@ export function CartCard({ itemData }) {
               <Text style={styles.cardInfo}>{count}</Text>
               <TouchableOpacity
                 onPress={() => {
-                  incCount();
+                  decCount();
                 }}
                 style={{elevation:4,borderRadius:360,backgroundColor:"white",display:"flex",justifyContent:"center",alignItems:"center"}}
               >
