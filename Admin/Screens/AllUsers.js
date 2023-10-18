@@ -38,7 +38,6 @@ export default function AllUsers() {
         }
       })
       if (response.data.success) {
-        
         alert("Report Generated Successfully")
       }
     } catch (error) {

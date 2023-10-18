@@ -274,10 +274,10 @@ export function AddGrocery() {
             premit();
           }}
         >
-          <Text>Pick Image From Gallery</Text>
+          <Text style={{color:"white",fontFamily:"Poppins-Bold"}}>Select Image From Gallery</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.uploadBtn} onPress={dataAddOn}>
-          <Text>Upload Grocery</Text>
+          <Text style={{color:"white",fontFamily:"Poppins-Bold"}}>Upload Grocery</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -347,23 +347,23 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 50,
     borderRadius: 10,
-    borderWidth: 0.5,
+    // borderWidth: 0.5,
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
-    backgroundColor: "#06FF00",
+    backgroundColor: "#2DDC4A",
   },
   uploadBtn: {
     width: "90%",
     height: 50,
     borderRadius: 10,
-    borderWidth: 0.5,
+    // borderWidth: 0.5,
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
-    backgroundColor: "#06FF00",
+    backgroundColor: "#2DDC4A",
 
     marginBottom: 75,
   },
@@ -374,4 +374,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 20,
   },
+  
 });

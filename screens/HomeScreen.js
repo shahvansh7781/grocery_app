@@ -487,9 +487,15 @@ export default function HomeScreen({ navigation }) {
     return () => clearTimeout(timerId);
   }, [activeCategory, searchQuery]);
   
+  const handleProductDetail = (item)=>{
+  // console.log("my item",item.name);
+  navigation.navigate("Product Details",{
+    item
+  })
+  }
 
   return (
-    <SafeAreaView style={{ marginTop: "10%",backgroundColor:"white" }}>
+    <SafeAreaView style={{ marginTop: "10%",backgroundColor:"white",flex:1 }}>
       {isLoading ? ( // Show a loading indicator while data is being fetched
         <ActivityIndicator size="large" color="#06FF00" />
       ) : (
@@ -582,6 +588,10 @@ export default function HomeScreen({ navigation }) {
 
 
         {filterData.map((item,index) => (
+          <TouchableOpacity onPress={()=>{
+handleProductDetail(item)
+          }}>
+
             <Card key={index} style={styles.card}>
             <Card.Cover source={{ uri: item.imageData }} style={{height:responsiveHeight(20)}} />
             <Card.Content style={styles.content}>
@@ -590,7 +600,7 @@ export default function HomeScreen({ navigation }) {
                 
                 </Title>
 
-              {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
+              
               <Title style={{color:'#2DDC4A',fontSize:responsiveFontSize(2.5),fontFamily:"Poppins-Bold"}}>₹{item.price}</Title>
 
               <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
@@ -598,6 +608,7 @@ export default function HomeScreen({ navigation }) {
               </TouchableOpacity>
             </Card.Content>
           </Card>
+          </TouchableOpacity>
           
 ))}
 
@@ -618,6 +629,10 @@ export default function HomeScreen({ navigation }) {
 
 
         {filterData.map((item,index) => (
+          <TouchableOpacity onPress={()=>{
+handleProductDetail(item)
+          }}>
+
             <Card key={index} style={styles.card}>
               <Card.Cover source={{ uri: item.imageData }} style={{height:responsiveHeight(20)}} />
               <Card.Content style={styles.content}>
@@ -626,7 +641,7 @@ export default function HomeScreen({ navigation }) {
                   
                   </Title>
 
-                {/* <Paragraph style={{fontSize:14,color:'gray'}}>{item.description}</Paragraph> */}
+               
                 <Title style={{color:'#2DDC4A',fontSize:responsiveFontSize(2.5),fontFamily:"Poppins-Bold"}}>₹{item.price}</Title>
 
                 <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
@@ -634,6 +649,7 @@ export default function HomeScreen({ navigation }) {
                 </TouchableOpacity>
               </Card.Content>
             </Card>
+          </TouchableOpacity>
           
 ))}
 
@@ -702,10 +718,10 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     height: "100%",
     marginBottom: responsiveHeight(10),
-   
   },
   scrollContainer: {
     height: "90%", // 80% of the screen height
+    backgroundColor:"white"
   },
   drawerButton: {
     // top: 0,
@@ -763,6 +779,7 @@ elevation:2,
     // flexDirection:"row",
 
     // paddingVertical: "5%",
+    backgroundColor:"white"
   },
 
   content: {
@@ -822,7 +839,7 @@ elevation:2,
   },
   buttonList: {
     padding: 10,
-    marginBottom:25
+    marginBottom:25,
   },
   button: {
     backgroundColor: "white",

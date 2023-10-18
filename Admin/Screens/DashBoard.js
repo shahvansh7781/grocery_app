@@ -79,7 +79,11 @@ export default function DashBoard () {
 
       
 
-          <View>
+          <View style={{backgroundColor:'#fff',
+    elevation:2,
+    marginBottom:7,
+    // gap:5,
+   }}>
             <FlatList
               data={iconList}
               renderItem={renderIcon}
@@ -100,6 +104,8 @@ export default function DashBoard () {
     container:{
         flex:1,
         // marginTop:25
+        backgroundColor:"white",
+  
     },
     bottom:{
         width:'100%',
@@ -143,7 +149,7 @@ export default function DashBoard () {
     activebuttonText: {
       fontSize: responsiveFontSize(1.8),
       fontWeight: "bold",
-      color: "green",
+      color: "#2DDC4A",
     },
     buttonList: {
      
