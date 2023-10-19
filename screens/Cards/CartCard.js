@@ -24,7 +24,6 @@ export function CartCard({ itemData }) {
       setCount(newCount);
       dispatch(updateCount({ id: itemData.id, count: newCount }));
     }
-
     // event.preventDefault()
     // console.log('count',count)
   };

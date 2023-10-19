@@ -49,7 +49,7 @@ export function AddGrocery() {
  
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [discount, setDiscount] = useState("");
+  const [stock, setStock] = useState(0);
   const [description, setDescription] = useState("");
 
   const getImageSize = async (uri) => {
@@ -68,6 +68,7 @@ export function AddGrocery() {
       description,
       category:value,
       imageData,
+      stock
     };
 
     dispatch(addGroceries(payload));
@@ -230,6 +231,12 @@ export function AddGrocery() {
           style={styles.input}
           value={price}
           onChangeText={(text) => setPrice(text)}
+        ></TextInput>
+        <TextInput
+          placeholder="Enter Stock"
+          style={styles.input}
+          value={stock}
+          onChangeText={(text) => setStock(parseInt(text))}
         ></TextInput>
         <View style={{paddingHorizontal:20,marginTop: 30,}}>
 

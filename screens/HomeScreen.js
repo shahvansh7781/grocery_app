@@ -306,12 +306,12 @@ export default function HomeScreen({ navigation }) {
     if (cartData && !cartData.some(cd => cd.id === item.id)) {
 
       
-      dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: 10, title: item.name }))
+      dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: item.stock, title: item.name }))
       console.log("Item added to the cart");
       // setAsynccart()
      
     } else if(!cartData){
-      dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: 10, title: item.name }))
+      dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: item.stock, title: item.name }))
       console.log("Item added to the cart");
       // setAsynccart()
   
@@ -601,7 +601,7 @@ handleProductDetail(item)
                 </Title>
 
               
-              <Title style={{color:'#2DDC4A',fontSize:responsiveFontSize(2.5),fontFamily:"Poppins-Bold"}}>₹{item.price}</Title>
+              <Title style={{color:'#2DDC4A',fontSize:responsiveFontSize(2.5),fontFamily:"Poppins-Bold"}}>₹{item.price}{item.stock}</Title>
 
               <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
                   <Text style={{color:"white",fontFamily:"Poppins-SemiBold"}}>Add to Cart</Text>
@@ -641,8 +641,12 @@ handleProductDetail(item)
                   
                   </Title>
 
-               
-                <Title style={{color:'#2DDC4A',fontSize:responsiveFontSize(2.5),fontFamily:"Poppins-Bold"}}>₹{item.price}</Title>
+               <View style={{flexDirection:'row',alignItems:"center",justifyContent:"space-between"}}>
+
+                <Title style={{color:'#2DDC4A',fontSize:responsiveFontSize(2.5),fontFamily:"Poppins-Bold"}}>₹{item.price}
+                </Title>
+                <Text style={{color:"black",fontSize:responsiveFontSize(2),fontFamily:"Poppins-Bold"}}>Stock: {item.stock}</Text>
+               </View>
 
                 <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.addToCartButton}>
                     <Text style={{color:"white",fontFamily:"Poppins-SemiBold"}}>Add to Cart</Text>

@@ -284,7 +284,7 @@ let isCoinsUsed = false;
                         <Text style={styles.totalPrice}>{subTotal}</Text>
                     </View>
                     <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
-                        <Text style={styles.totalText}>Delievery Charge : </Text>
+                        <Text style={styles.totalText}>Delivery Charge : </Text>
                         <Text style={styles.totalPrice}>{deliveryCharge}</Text>
                     </View>
 
@@ -300,8 +300,8 @@ let isCoinsUsed = false;
 
                 <View style={styles.cardAddress}>
 
-                  <Text style={{color:'#2DDC4A',marginBottom:responsiveHeight(1)}}>Order Will Be Deliver To : </Text>
-                  <Text>{addressData.address.addr}</Text>
+                  <Text style={{color:'#2DDC4A',marginBottom:responsiveHeight(1),fontFamily:"Poppins-SemiBold"}}>Order Will Be Deliver To : </Text>
+                  <Text style={{fontFamily:"Poppins-SemiBold"}}>{addressData.address.addr}</Text>
                   
                 </View>
 
@@ -315,14 +315,14 @@ let isCoinsUsed = false;
 
       <View>
         <TouchableOpacity style={styles.addreText}>
-            <Text style={{ borderBottomWidth: 1, borderColor: '#2DDC4A' ,color:'#2DDC4A',fontSize:responsiveFontSize(2.5)}} 
+            <Text style={{ color:'black',fontSize:responsiveFontSize(2.5),fontFamily:"Poppins-SemiBold"}} 
             onPress={handleChangeAddr}>Change Address</Text>
         </TouchableOpacity>
       </View>
 
       <View>
         <TouchableOpacity style={styles.uploadBtn} onPress={handlePayment}>
-          <Text>Pay ₹{subTotal+deliveryCharge}</Text>
+          <Text style={{fontFamily:"Poppins-SemiBold",color:"white"}}>Pay ₹{subTotal+deliveryCharge}</Text>
         </TouchableOpacity>
       </View>
 
@@ -372,12 +372,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     margin: "1%",
     marginLeft: 25,
+    fontFamily:"Poppins-SemiBold"
   },
   totalPrice: {
     fontSize: 16,
     margin: "1%",
     marginRight: 25,
     color: "gray",
+    fontFamily:"Poppins-SemiBold"
   },
   line: {
     borderBottomWidth: 1,
@@ -388,12 +390,11 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 50,
     borderRadius: 10,
-    borderWidth: 0.5,
+    // borderWidth: 0.5,
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: "4%",
-    backgroundColor: "#06FF00",
+    backgroundColor: "#2DDC4A",
   },
   // item: {
   //   flexDirection: "row", // Make items horizontally aligned
@@ -407,7 +408,7 @@ const styles = StyleSheet.create({
   //   width: '50%', // Allocate 25% width to each column
   // },
   cardAddress: {
-    flex: 0.15,
+    flex: 0.20,
   
     width: "90%",
     alignSelf: "center",
@@ -417,7 +418,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 10,
     marginBottom: 10,
-    padding:responsiveWidth(2)
+    padding:responsiveWidth(2),
+    
   },
   addreText:{
     
@@ -426,8 +428,8 @@ const styles = StyleSheet.create({
     alignItems: 'center' ,
     width: "94%",
     marginBottom:responsiveHeight(2),
-    marginTop:responsiveHeight(2)
+    marginTop:responsiveHeight(2),
 
-
+    fontFamily:"Poppins-SemiBold"
   }
 });

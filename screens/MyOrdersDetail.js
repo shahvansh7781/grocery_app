@@ -98,21 +98,19 @@ const renderItem=({item})=>{
                             <Text style={styles.totalText}>Delievery Charge : </Text>
                             <Text style={styles.totalPrice}>{data.deliveryCharge}</Text>
                         </View>
-                        {data.savings && <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
+                        {/* {data.savings && <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
                             <Text style={styles.totalText}>Savings : </Text>
-                            <Text style={styles.totalPrice}>{data.savings}</Text>
-                        </View>}
+                            <Text style={styles.totalPrice}>{data.savings?data.savings:0}</Text>
+                        </View>} */}
                         
-                        {/* Horizontal line */}
+                   
                         <View style={styles.line}></View>
                         <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
                             <Text style={styles.totalText}>Grand Total : </Text>
                             <Text style={styles.totalPrice}>{data.grandTotal}</Text>
                         </View>
                     </View>
-                <View>
-
-                </View>
+                
 
 
                 {role==='User' && orderStatus==='Delivered' ? (
