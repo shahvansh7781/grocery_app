@@ -24,7 +24,6 @@ export function CartCard({ itemData }) {
       setCount(newCount);
       dispatch(updateCount({ id: itemData.id, count: newCount }));
     }
-
     // event.preventDefault()
     // console.log('count',count)
   };
@@ -55,7 +54,7 @@ export function CartCard({ itemData }) {
             {/* <View style={{}}> */}
 
             <Text style={styles.cardTitle}>{itemData.title}</Text>
-            <Text style={styles.cardPrice}>Rs. {itemData.price}</Text>
+            <Text style={styles.cardPrice}>₹ {itemData.price}</Text>
             {/* </View> */}
 
             <View style={{ flexDirection: "row",alignItems:"center" }}>
@@ -74,7 +73,7 @@ export function CartCard({ itemData }) {
               <Text style={styles.cardInfo}>{count}</Text>
               <TouchableOpacity
                 onPress={() => {
-                  incCount();
+                  decCount();
                 }}
                 style={{elevation:4,borderRadius:360,backgroundColor:"white",display:"flex",justifyContent:"center",alignItems:"center"}}
               >
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     marginTop: responsiveHeight(3),
     borderRadius: 10,
-    height: responsiveHeight(15),
+    height: responsiveHeight(16),
     marginBottom: responsiveHeight(1),
   },
   cardImgWrapper: {
@@ -130,16 +129,18 @@ const styles = StyleSheet.create({
   },
   cardInfo: {
     margin: responsiveWidth(4),
+    fontFamily:"Poppins-SemiBold"
   },
   cardTitle: {
-    fontWeight: "bold",
+    
     // display:"flex",
     // flexDirection:"row",
     // flexWrap:"wrap",
     fontSize: responsiveFontSize(2),
+    fontFamily:"Poppins-Bold"
   },
   cardPrice: {
-    fontWeight: "200",
+    fontFamily:"Poppins-SemiBold",
     fontSize: responsiveFontSize(2),
     color: "gray",
   },

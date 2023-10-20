@@ -177,7 +177,7 @@ export function Cart({navigation}) {
       <View style={styles.cardTotal}>
         <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <Text style={styles.totalText}>Sub Total : </Text>
-          <Text style={styles.totalPrice}>{subTotal}</Text>
+          <Text style={styles.totalPrice}>₹{subTotal}</Text>
         </View>
         {/* <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <Text style={styles.totalText}>Delievery Charge : </Text>
@@ -185,7 +185,7 @@ export function Cart({navigation}) {
         </View> */}
 
         {/* Horizontal line */}
-        <View style={styles.line}></View>
+        {/* <View style={styles.line}></View> */}
         {/* <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
           <Text style={styles.totalText}>Grand Total : </Text>
           <Text style={styles.totalPrice}>{subTotal + 10}</Text>
@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: "2%",
+    backgroundColor:"white"
   },
   header: {
     height: 60,
@@ -262,12 +263,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     margin: "1%",
     marginLeft: 25,
+    fontFamily:"Poppins-Bold"
   },
   totalPrice: {
     fontSize: 16,
     margin: "1%",
     marginRight: 25,
     color: "gray",
+    fontFamily:"Poppins-SemiBold"
   },
   line: {
     borderBottomWidth: 1,

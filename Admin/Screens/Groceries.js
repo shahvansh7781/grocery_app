@@ -73,7 +73,7 @@ export function Groceries() {
         <ActivityIndicator size="large" color="#06FF00" />
       ) : (
         <>
-          <View>
+          <View style={{flex:1,backgroundColor:"white"}}>
             <FlatList
               style={styles.scrollableSection}
               data={data}

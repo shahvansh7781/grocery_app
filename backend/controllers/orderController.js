@@ -4,6 +4,8 @@ const {
   getDocs,
   query,
   where,
+  doc,
+  updateDoc,
 } = require("firebase/firestore");
 const { dbF } = require("../config/firebaseConfig");
 const { getAuth } = require("firebase/auth");
@@ -12,10 +14,12 @@ const auth = getAuth();
 const dbRef = collection(dbF, "Orders");
 
 let payload = null;
+let items=[];
 exports.createOrder = async (req, res) => {
   // const user = auth.currentUser;
   const { userName, userEmail } = req.body;
   payload = req.body;
+  items = req.body.items;
   // console.log(userName)
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -57,6 +61,9 @@ exports.myWebhook = async (req, res) => {
     console.log(`${event.data.object.metadata.userName} succeeded payment!`);
     // fulfilment
     const resp = await addDoc(dbRef, payload);
+    items.forEach(async(i)=>{
+await updateStock(i.id,i.count,i.stock)
+    })
     res.status(201).send({
       myResponse: {
         success: true,
@@ -65,7 +72,12 @@ exports.myWebhook = async (req, res) => {
     }).end();
   }
 };
-
+const updateStock = async(id,q,s)=>{
+  const groceryDocToUpdate = doc(dbF,'Groceries',id);
+  await updateDoc(groceryDocToUpdate,{
+    stock:s-q
+  })
+}
 exports.getAllOrders = async (req, res) => {
   try {
     const data = await getDocs(dbRef);

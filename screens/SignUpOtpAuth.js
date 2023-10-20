@@ -25,29 +25,28 @@ const OtpAuth = ({navigation}) => {
     const email = route.params.data.email;
     const [expoPushToken, setExpoPushToken] = useState('');
 
-    // useEffect(() => {
-    //   sendVerification();
-    // }, [])
-    
     useEffect(() => {
-        // Request permission for notifications
-        (async () => {
-          const { status } = await Notifications.requestPermissionsAsync();
-          if (status !== 'granted') {
-            alert('Permission to send notifications was denied');
-            return;
-          }
+      sendVerification();
+    }, [])
     
-          // Get the device's Expo push token
-          const token = (await Notifications.getExpoPushTokenAsync({ projectId: 'dad94796-4b29-4812-9adf-fca37769e4c0' })).data;
-          setExpoPushToken(token);
-          console.log('token - signup',expoPushToken)
-        //   setTokenObtained(true); // Set the state to indicate that the token is obtained
-        })();
-      }, []);
+    // useEffect(() => {
+    //     // Request permission for notifications
+    //     (async () => {
+    //       const { status } = await Notifications.requestPermissionsAsync();
+    //       if (status !== 'granted') {
+    //         alert('Permission to send notifications was denied');
+    //         return;
+    //       }
+    
+    //       // Get the device's Expo push token
+    //       const token = (await Notifications.getExpoPushTokenAsync({ projectId: 'dad94796-4b29-4812-9adf-fca37769e4c0' })).data;
+    //       setExpoPushToken(token);
+    //       console.log('token - signup',expoPushToken)
+    //     //   setTokenObtained(true); // Set the state to indicate that the token is obtained
+    //     })();
+    //   }, []);
     // console.log(data);
     const sendVerification = () => {
-        setTimeOut(!timeOut)
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         phoneProvider
             .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
@@ -64,7 +63,7 @@ const OtpAuth = ({navigation}) => {
       phone:phoneNumber,
       role: "User",
       walletCoins:0,
-      token:expoPushToken
+    //   token:expoPushToken
     };
         const credential = firebase.auth.PhoneAuthProvider.credential(
             verificationId,
@@ -103,7 +102,7 @@ const OtpAuth = ({navigation}) => {
                 </Text>
             </TouchableOpacity> */}
              <View style={{alignSelf:"flex-start",gap:10}}>
-            <Text style={{fontFamily:"Poppins-Bold",fontSize:responsiveFontSize(4)}}>Verification{expoPushToken}</Text>
+            <Text style={{fontFamily:"Poppins-Bold",fontSize:responsiveFontSize(4)}}>Verification</Text>
             <Text style={{fontFamily:"Poppins-SemiBold",fontSize:responsiveFontSize(2.5)}}>Enter the OTP just sent to you at {phoneNumber}</Text>
            </View>
             <TextInput
@@ -119,7 +118,8 @@ const OtpAuth = ({navigation}) => {
             </TouchableOpacity>
             <View style={{flexDirection:"row",gap:4,alignSelf:"flex-start"}}>
                 <Text style={{fontFamily:"Poppins-SemiBold"}}>Didn't receive SMS?</Text> 
-            <TouchableOpacity onPress={sendVerification}><Text style={{color:timeOut ? "#2DDC4A":"gray",fontFamily:"Poppins-SemiBold"}}>Resend Code</Text></TouchableOpacity> 
+            <TouchableOpacity onPress={()=>{setTimeOut(!timeOut);
+            sendVerification();}}><Text style={{color:timeOut ? "#2DDC4A":"gray",fontFamily:"Poppins-SemiBold"}}>Resend Code</Text></TouchableOpacity> 
             {
                 timeOut ? <></> : <><Text style={{fontFamily:"Poppins-SemiBold"}}><Timer setTimeOut={setTimeOut}/> seconds</Text></>
             }

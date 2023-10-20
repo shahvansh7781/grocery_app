@@ -41,6 +41,7 @@ import ProfileScreen from "./screens/UserProfile";
 import { useFonts } from "expo-font";
 import OtpAuth from "./screens/SignUpOtpAuth";
 import LoginOtpAuth from "./screens/LoginOtpAuth";
+import ProductDetail from "./screens/ProductDetail";
 
 
 LogBox.ignoreAllLogs();
@@ -147,11 +148,14 @@ export default function App() {
     'Inter-Medium': require('./assets/Inter-Medium.ttf'),
     'Poppins-Bold': require('./assets/Poppins-Bold.ttf'),
     'Poppins-SemiBold': require('./assets/Poppins-SemiBold.ttf'),
+    'Poppins-Light': require('./assets/Poppins-Light.ttf'),
   });
   if (!fontsLoaded) {
     return <ActivityIndicator size="large" color="#06FF00"/>
   }
   return (
+    
+
     <NavigationContainer>
       {user ? (
           userV && userV.role === "User" ? (
@@ -164,9 +168,10 @@ export default function App() {
                 {/* <NInsideStack.Screen name="EditGrocery" component={EditGrocery} /> */}
                 <UserInsideStack.Screen name="Checkout" component={CheckOut} />
                 <UserInsideStack.Screen name="Map" component={ChangeAddress} />
-                <UserInsideStack.Screen name="MyOrders" component={MyOrders} />
+                <UserInsideStack.Screen name="MyOrders" component={MyOrders} options={{headerTitle:"Orders"}}/>
                 <UserInsideStack.Screen name="MyOrdersDetail" component={MyOrdersDetail} />
                 <UserInsideStack.Screen name="UserDetails" component={ProfileScreen} />
+                <UserInsideStack.Screen name="Product Details" component={ProductDetail} />
               </UserInsideStack.Navigator>
             ) : (
               <AdminInsideStack.Navigator>
@@ -179,8 +184,9 @@ export default function App() {
                 <AdminInsideStack.Screen name="Checkout" component={CheckOut} />
                 <AdminInsideStack.Screen name="Map" component={ChangeAddress} />
                 <AdminInsideStack.Screen name="AdminOrderDetail" component={AllOrdersDetail} />
-                <AdminInsideStack.Screen name="MyOrders" component={MyOrders}/>
+                <AdminInsideStack.Screen name="MyOrders" component={MyOrders} options={{headerTitle:"Orders"}}/>
                 <AdminInsideStack.Screen name="UserDetails" component={ProfileScreen} />
+                <AdminInsideStack.Screen name="Product Details" component={ProductDetail} />
                 <AdminInsideStack.Screen name="MyOrdersDetail" component={MyOrdersDetail}/>
                 {/* <AdminInsideStack.Screen name="Charts" component={Charts}/> */}
               </AdminInsideStack.Navigator>
@@ -226,6 +232,7 @@ export default function App() {
         )}
       </Stack.Navigator> */}
     </NavigationContainer>
+   
     // {/* <AppNavigation></AppNavigation>  */}
   );
 }

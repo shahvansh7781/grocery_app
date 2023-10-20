@@ -73,8 +73,8 @@ const renderItem=({item})=>{
                 
                 <View style={styles.cardAddress}>
 
-                        <Text style={{marginBottom:responsiveHeight(1),fontSize:responsiveFontSize(2.4),fontWeight:'bold'}}>Shipping Address : </Text>
-                        <Text>{data.shippingAddress}</Text>
+                        <Text style={{marginBottom:responsiveHeight(1),fontSize:responsiveFontSize(2.4),fontFamily:"Poppins-SemiBold",}}>Shipping Address : </Text>
+                        <Text style={{fontFamily:"Poppins-SemiBold"}}>{data.shippingAddress}</Text>
 
                 </View>
                                 
@@ -98,21 +98,19 @@ const renderItem=({item})=>{
                             <Text style={styles.totalText}>Delievery Charge : </Text>
                             <Text style={styles.totalPrice}>{data.deliveryCharge}</Text>
                         </View>
-                        {data.savings && <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
+                        {/* {data.savings && <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
                             <Text style={styles.totalText}>Savings : </Text>
-                            <Text style={styles.totalPrice}>{data.savings}</Text>
-                        </View>}
+                            <Text style={styles.totalPrice}>{data.savings?data.savings:0}</Text>
+                        </View>} */}
                         
-                        {/* Horizontal line */}
+                   
                         <View style={styles.line}></View>
                         <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
                             <Text style={styles.totalText}>Grand Total : </Text>
                             <Text style={styles.totalPrice}>{data.grandTotal}</Text>
                         </View>
                     </View>
-                <View>
-
-                </View>
+                
 
 
                 {role==='User' && orderStatus==='Delivered' ? (
@@ -203,7 +201,7 @@ const styles = StyleSheet.create({
       elevation: 4,
     //   marginTop: responsiveHeight(3),
       borderRadius: 10,
-      height: responsiveHeight(12),
+      height: responsiveHeight(13.5),
       marginBottom: responsiveHeight(1),
     },
     cardImgWrapper: {
@@ -219,7 +217,8 @@ const styles = StyleSheet.create({
       margin: responsiveWidth(4),
     },
     cardTitle: {
-      fontWeight: "bold",
+      // fontWeight: "bold",
+      fontFamily:"Poppins-SemiBold",
       // display:"flex",
       // flexDirection:"row",
       // flexWrap:"wrap",
@@ -229,10 +228,12 @@ const styles = StyleSheet.create({
       fontWeight: "200",
       fontSize: responsiveFontSize(1.4),
       color: "gray",
+      fontFamily:"Poppins-SemiBold",
     },
     cardDetails: {
       fontSize: responsiveFontSize(5),
       color: "#444",
+      
     },
     icon: {
       width: responsiveWidth(7),
@@ -275,12 +276,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         margin: "1%",
         marginLeft: 25,
+        fontFamily:"Poppins-SemiBold",
       },
       totalPrice: {
         fontSize: 16,
         margin: "1%",
         marginRight: 25,
         color: "gray",
+        fontFamily:"Poppins-SemiBold",
       },
       line: {
         borderBottomWidth: 1,
@@ -288,7 +291,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
       },
       cardAddress: {
-        flex: 0.2,
+        flex: 0.25,
       
         width: "90%",
         alignSelf: "center",
@@ -298,7 +301,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 10,
         marginBottom: 10,
-        padding:responsiveWidth(2)
+        padding:responsiveWidth(3)
       },
       uploadBtn: {
         width: "90%",

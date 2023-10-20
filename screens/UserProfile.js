@@ -20,6 +20,7 @@ import { deleteAll } from "../Reducers/CartReducers";
 import { useNavigation } from "@react-navigation/native";
 import { loadUser } from "../Reducers/UserReducer";
 import { fetchOrders } from "../Reducers/OrderReducer";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 const ProfileScreen = () => {
   const user = useSelector((state) => state.users.user);
@@ -87,17 +88,11 @@ const ProfileScreen = () => {
                         size={80}
                     /> */}
               <View style={{ marginLeft: 20 }}>
-                <Title
-                  styles={[
-                    styles.title,
-                    {
-                      marginTop: 15,
-                      marginBottom: 5,
-                    },
-                  ]}
+                <Text
+                  style={{fontFamily:"Poppins-Bold",fontSize:responsiveFontSize(3.5)}}
                 >
                   {user.userData.Name}
-                </Title>
+                </Text>
                 {/* <Caption styles={styles.caption}>deshana02</Caption> */}
               </View>
             </View>
@@ -110,14 +105,14 @@ const ProfileScreen = () => {
               </Text>
             </View> */}
             <View style={styles.row}>
-              <Icon name="phone" color="#777777" size={20} />
-              <Text style={{ color: "#777777", marginLeft: 20 }}>
+              <Icon name="phone" color="#2DDC4A" size={20} />
+              <Text style={{ color: "black", marginLeft: 20,fontFamily:"Poppins-SemiBold" }}>
               {user.userData.phone}
               </Text>
             </View>
             <View style={styles.row}>
-              <Icon name="email" color="#777777" size={20} />
-              <Text style={{ color: "#777777", marginLeft: 20 }}>
+              <Icon name="email" color="#2DDC4A" size={20} />
+              <Text style={{ color: "black", marginLeft: 20,fontFamily:"Poppins-SemiBold"  }}>
               {user.userData.email}
               </Text>
             </View>
@@ -127,17 +122,17 @@ const ProfileScreen = () => {
               style={[
                 styles.infoBox,
                 {
-                  borderRightColor: "#dddddd",
+                  borderRightColor: "gray",
                   borderRightWidth: 1,
                 },
               ]}
             >
-              <Title>{userProfile&&userProfile.walletCoins} coins</Title>
-              <Caption>Wallet</Caption>
+              <Title style={{color:"black",fontFamily:"Poppins-Bold"}}>{userProfile&&userProfile.walletCoins} coins</Title>
+              <Caption style={{color:"black",fontFamily:"Poppins-SemiBold"}}>Wallet</Caption>
             </View>
             <View style={styles.infoBox}>
-              <Title>{filterData.length}</Title>
-              <Caption>Orders</Caption>
+              <Title style={{color:"black",fontFamily:"Poppins-Bold"}}>{filterData.length}</Title>
+              <Caption style={{color:"black",fontFamily:"Poppins-SemiBold"}}>Orders</Caption>
             </View>
           </View>
 
@@ -159,12 +154,12 @@ const ProfileScreen = () => {
                 <Text style={styles.menuItemText}>My Orders</Text>
               </View>
             </TouchableRipple>
-            <TouchableRipple onPress={() => {}}>
+            {/* <TouchableRipple onPress={() => {}}>
               <View style={styles.menuItem}>
                 <Icon name="account-edit" color="#38E54D" size={25} />
                 <Text style={styles.menuItemText}>Edit Profile</Text>
               </View>
-            </TouchableRipple>
+            </TouchableRipple> */}
 
             <TouchableRipple
               onPress={() => {
@@ -189,14 +184,14 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:"white"
   },
   userInfoSection: {
     paddingHorizontal: 30,
     marginBottom: 25,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: responsiveFontSize(2.5),
   },
   caption: {
     fontSize: 14,
@@ -208,9 +203,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   infoBoxWrapper: {
-    borderBottomColor: "#dddddd",
+    borderBottomColor: "gray",
     borderBottomWidth: 1,
-    borderTopColor: "#dddddd",
+    borderTopColor: "gray",
     borderTopWidth: 1,
     flexDirection: "row",
     height: 100,
@@ -229,9 +224,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   menuItemText: {
-    color: "#777777",
+    color: "black",
     marginLeft: 20,
-    fontWeight: "600",
+    fontFamily:"Poppins-SemiBold",
     fontSize: 16,
     lineHeight: 26,
   },

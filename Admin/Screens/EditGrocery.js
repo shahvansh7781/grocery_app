@@ -62,7 +62,7 @@ export function EditGrocery () {
 
     const [name,setName]=useState('')
     const [price,setPrice]=useState('')
-    const [discount,setDiscount]=useState('')
+    const [stock,setStock]=useState('')
     const [description,setDescription]=useState('')
 
 
@@ -71,7 +71,7 @@ export function EditGrocery () {
       setImageData(data.imageData)
       setName(data.name)
       setPrice(data.price)
-      setDiscount(data.discount)
+      setStock(data.stock)
       setDescription(data.description)
 
 
@@ -152,7 +152,7 @@ export function EditGrocery () {
         const newData={
             name:name,
             price:price,
-            discount:discount,
+            stock:stock,
             description:description,
             imageData:imageData
 
@@ -190,18 +190,18 @@ export function EditGrocery () {
         <TextInput placeholder="Enter Grocery Price" style={styles.input}
         value={price}
         onChangeText={text => setPrice(text)}></TextInput>
-        <TextInput placeholder="Enter Discount" style={styles.input}
-        value={discount}
-        onChangeText={text => setDiscount(text)}></TextInput>
+        <TextInput placeholder="Enter Stock" style={styles.input}
+        value={stock}
+        onChangeText={text => setStock(parseInt(text))}></TextInput>
         <TextInput placeholder="Enter Grocery Description" style={styles.input}
         value={description}
         onChangeText={text => setDescription(text)}></TextInput>
 
         <TouchableOpacity style={styles.pickImg} onPress={()=>{premit()}}>
-            <Text>Pick Image From Gallery</Text>
+            <Text style={{fontFamily:"Poppins-SemiBold",color:"white"}}>Pick Image From Gallery</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.uploadBtn} onPress={()=>{handleEdit()}}>
-            <Text>Edit Grocery</Text>
+            <Text style={{fontFamily:"Poppins-SemiBold",color:"white"}}>Edit Grocery</Text>
         </TouchableOpacity>
 
 
@@ -217,7 +217,7 @@ export function EditGrocery () {
 const styles=StyleSheet.create({
     container:{
         flex:1,
-        marginTop:15
+        backgroundColor:"white"
     },
     header:{
         height:60,
@@ -243,33 +243,30 @@ const styles=StyleSheet.create({
         alignSelf:'center'
     },
     pickImg:{
-        width:'90%',
-        height:50,
-        borderRadius:10,
-        borderWidth:0.5,
-        alignSelf:'center',
-        justifyContent:'center',
-        alignItems:'center',
-        marginTop:20,
-        backgroundColor:'#06FF00',
+      width: "90%",
+      height: 50,
+      borderRadius: 10,
+      // borderWidth: 0.5,
+      alignSelf: "center",
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 20,
+      backgroundColor: "#2DDC4A",
         
-
     },
-    uploadBtn:{
-      width:'90%',
-      height:50,
-      borderRadius:10,
-      borderWidth:0.5,
-      alignSelf:'center',
-      justifyContent:'center',
-      alignItems:'center',
-      marginTop:20,
-      backgroundColor:'#06FF00',
-
-      marginBottom:75
-      
-
-  },
+    uploadBtn: {
+      width: "90%",
+      height: 50,
+      borderRadius: 10,
+      // borderWidth: 0.5,
+      alignSelf: "center",
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 20,
+      backgroundColor: "#2DDC4A",
+  
+      marginBottom: 75,
+    },
     img:{
         width:'90%',
         height:200,

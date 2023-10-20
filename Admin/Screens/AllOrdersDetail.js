@@ -81,29 +81,29 @@ export default function AllOrdersDetail() {
           <Text style={styles.totalPrice}>{data.userEmail}</Text>
         </View>
       </View>
-      <View></View>
+     
 
       <View style={styles.cardAddress}>
         <Text
           style={{
-            marginBottom: responsiveHeight(1),
+            // marginBottom: responsiveHeight(1),
             fontSize: responsiveFontSize(2.4),
-            fontWeight: "bold",
+            fontFamily:"Poppins-Bold"
           }}
         >
           Shipping Address :{" "}
         </Text>
-        <Text>{data.shippingAddress}</Text>
+        <Text style={{fontFamily:"Poppins-SemiBold"}}>{data.shippingAddress}</Text>
         <Text
           style={{
-            marginBottom: responsiveHeight(1),
+            // marginBottom: responsiveHeight(1),
             fontSize: responsiveFontSize(2.4),
-            fontWeight: "bold",
+            fontFamily:"Poppins-SemiBold"
           }}
         >
           Order Status:{" "}
           <Text
-            style={{ fontSize: responsiveFontSize(2), fontWeight: "normal" }}
+            style={{ fontSize: responsiveFontSize(2), fontFamily:"Poppins-SemiBold" }}
           >
             {orderStatus}
           </Text>
@@ -169,7 +169,7 @@ export default function AllOrdersDetail() {
                     { cancelable: false }
                   );}}>
 
-                      <Text>Update Order Status</Text>
+                      <Text style={{fontFamily:"Poppins-SemiBold",color:"white"}}>Update Order Status</Text>
               </TouchableOpacity>
           </>):(<></>)
         }
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     //   marginTop: responsiveHeight(3),
     borderRadius: 10,
-    height: responsiveHeight(12),
+    height: responsiveHeight(13),
     marginBottom: responsiveHeight(1),
   },
   cardImgWrapper: {
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     margin: responsiveWidth(4),
   },
   cardTitle: {
-    fontWeight: "bold",
+    fontFamily:"Poppins-SemiBold",
     // display:"flex",
     // flexDirection:"row",
     // flexWrap:"wrap",
@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
     fontWeight: "200",
     fontSize: responsiveFontSize(1.4),
     color: "gray",
+    fontFamily:"Poppins-SemiBold"
   },
   cardDetails: {
     fontSize: responsiveFontSize(5),
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
   },
 
   cardTotal: {
-    flex: 0.4,
+    flex: 0.55,
     width: "90%",
     alignSelf: "center",
     justifyContent: "center",
@@ -247,7 +248,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cardUser: {
-    flex: 0.2,
+    flex: 0.3,
     width: "90%",
     alignSelf: "center",
     justifyContent: "center",
@@ -263,12 +264,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     margin: "1%",
     marginLeft: 25,
+    fontFamily:"Poppins-SemiBold"
   },
   totalPrice: {
     fontSize: 16,
     margin: "1%",
     marginRight: 25,
     color: "gray",
+    fontFamily:"Poppins-SemiBold"
   },
   line: {
     borderBottomWidth: 1,
@@ -276,26 +279,31 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   cardAddress: {
-    flex: 0.3,
+    flex: 0.5,
     width: "90%",
     alignSelf: "center",
     justifyContent: "center",
     backgroundColor: "#fff",
     elevation: 4,
-    marginTop: 10,
+    // marginTop: 10,
     borderRadius: 10,
     marginBottom: 10,
-    padding: responsiveWidth(2),
+    padding: responsiveWidth(4),
+    fontFamily:"Poppins-SemiBold"
   },
   uploadBtn: {
     width: "90%",
-    height: 50,
+    display:"flex",
+    // height: responsiveHeight(8),
+    paddingVertical:12,
     borderRadius: 10,
-    borderWidth: 0.5,
+    // borderWidth: 0.5,
+    elevation:2,
     alignSelf: "center",
     justifyContent: "center",
+    alignContent:"center",
     alignItems: "center",
-    marginBottom: "4%",
-    backgroundColor: "#06FF00",
+    marginBottom: "2%",
+    backgroundColor: "#2DDC4A",
   },
 });

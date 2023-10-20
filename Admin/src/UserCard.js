@@ -87,7 +87,7 @@ export default UserCard;
 const styles = StyleSheet.create({
 
   container:{
-    flex:1
+    flex:1,
   },
   card: {
     flexDirection:'row',
@@ -97,8 +97,9 @@ const styles = StyleSheet.create({
     elevation:4,
     marginTop:10,
     borderRadius:10,
-    height:130,
-    marginBottom:10
+    height:160,
+    marginBottom:10,
+    
   },
   cardImgWrapper: {
     flex: 1,
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     
   },
   cardTitle: {
-    fontWeight: 'bold',
+    fontFamily:"Poppins-SemiBold"
     
   },
   cardDetails: {

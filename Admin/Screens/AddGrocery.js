@@ -49,7 +49,7 @@ export function AddGrocery() {
  
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [discount, setDiscount] = useState("");
+  const [stock, setStock] = useState(0);
   const [description, setDescription] = useState("");
 
   const getImageSize = async (uri) => {
@@ -68,6 +68,7 @@ export function AddGrocery() {
       description,
       category:value,
       imageData,
+      stock
     };
 
     dispatch(addGroceries(payload));
@@ -231,6 +232,12 @@ export function AddGrocery() {
           value={price}
           onChangeText={(text) => setPrice(text)}
         ></TextInput>
+        <TextInput
+          placeholder="Enter Stock"
+          style={styles.input}
+          value={stock}
+          onChangeText={(text) => setStock(parseInt(text))}
+        ></TextInput>
         <View style={{paddingHorizontal:20,marginTop: 30,}}>
 
         <Dropdown
@@ -274,10 +281,10 @@ export function AddGrocery() {
             premit();
           }}
         >
-          <Text>Pick Image From Gallery</Text>
+          <Text style={{color:"white",fontFamily:"Poppins-Bold"}}>Select Image From Gallery</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.uploadBtn} onPress={dataAddOn}>
-          <Text>Upload Grocery</Text>
+          <Text style={{color:"white",fontFamily:"Poppins-Bold"}}>Upload Grocery</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -347,23 +354,23 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 50,
     borderRadius: 10,
-    borderWidth: 0.5,
+    // borderWidth: 0.5,
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
-    backgroundColor: "#06FF00",
+    backgroundColor: "#2DDC4A",
   },
   uploadBtn: {
     width: "90%",
     height: 50,
     borderRadius: 10,
-    borderWidth: 0.5,
+    // borderWidth: 0.5,
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
-    backgroundColor: "#06FF00",
+    backgroundColor: "#2DDC4A",
 
     marginBottom: 75,
   },
@@ -374,4 +381,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 20,
   },
+  
 });

@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     elevation:4,
     marginTop:10,
     borderRadius:10,
-    height:130,
+    height:150,
     marginBottom:10
   },
   cardImgWrapper: {
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     
   },
   cardTitle: {
-    fontWeight: 'bold',
+    fontFamily:"Poppins-SemiBold"
     
   },
   cardDetails: {
@@ -113,8 +113,8 @@ const styles = StyleSheet.create({
 
     margin:responsiveWidth(1.1),
     fontSize:responsiveFontSize(2),
-    color:'green'
-
+    color:'green',
+    fontFamily:"Poppins-SemiBold"
 
   }
 });

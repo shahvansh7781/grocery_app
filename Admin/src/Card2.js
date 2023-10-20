@@ -96,10 +96,9 @@ const Card2 = ({itemData}) => {
         </View>
         <View style={styles.cardInfo}>
           <Text style={styles.cardTitle}>{itemData.name}</Text>
-          <Text style={styles.cardTitle}>{itemData.price}</Text>
-          <Text style={styles.cardTitle}>{itemData.discount}</Text>
+          <Text style={styles.cardTitle}>₹{itemData.price}</Text>
           {/* <StarRating ratings={itemData.ratings} reviews={itemData.reviews} /> */}
-          <Text numberOfLines={2} style={styles.cardDetails}>{itemData.description}</Text>
+          <Text numberOfLines={2} style={styles.cardDetails}>Stock: {itemData.stock}</Text>
 
           
         </View>
@@ -186,12 +185,13 @@ const styles = StyleSheet.create({
     
   },
   cardTitle: {
-    fontWeight: 'bold',
+    fontFamily:"Poppins-Bold"
     
   },
   cardDetails: {
     fontSize: 12,
     color: '#444',
+    fontFamily:"Poppins-SemiBold"
   },
   icon:{
     width:24,
