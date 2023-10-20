@@ -5,8 +5,10 @@ import { responsiveFontSize, responsiveHeight } from "react-native-responsive-di
 import { auth, db, firebaseConfig } from '../Admin/config';
 import firebase from 'firebase/compat/app';
 import { useRoute } from '@react-navigation/native';
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import Timer from '../components/Timer';
+import * as Notifications from 'expo-notifications';
+
 if (!firebase.apps.length){
     firebase.initializeApp(firebaseConfig);
     
@@ -19,12 +21,29 @@ const LoginOtpAuth = ({navigation}) => {
     const [timeOut, setTimeOut] = useState(false);
     const route = useRoute();
     const phoneNumber=route.params.phoneNumber;
+    const [expoPushToken, setExpoPushToken] = useState('');
     useEffect(() => {
       sendVerification();
     }, [])
     
     // console.log(data);
     //ExponentPushToken[8KK8WRLsWf5bvTz960Gof0]
+    useEffect(() => {
+        // Request permission for notifications
+        (async () => {
+          const { status } = await Notifications.requestPermissionsAsync();
+          if (status !== 'granted') {
+            alert('Permission to send notifications was denied');
+            return;
+          }
+    
+          // Get the device's Expo push token
+          const token = (await Notifications.getExpoPushTokenAsync({ projectId: 'dad94796-4b29-4812-9adf-fca37769e4c0' })).data;
+          setExpoPushToken(token);
+        //   setTokenObtained(true); // Set the state to indicate that the token is obtained
+        })();
+      }, []);
+
     const sendVerification = () => {
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         phoneProvider
@@ -37,6 +56,8 @@ const LoginOtpAuth = ({navigation}) => {
 
     };
     const confirmCode = async() => {
+        const dbRef = collection(db, "Users");
+        let v=null;
         const credential = firebase.auth.PhoneAuthProvider.credential(
             verificationId,
             code
@@ -44,6 +65,22 @@ const LoginOtpAuth = ({navigation}) => {
         firebase.auth().signInWithCredential(credential)
         .then(() => {
             setCode('');
+            const q = query(dbRef, where("phone", "==", `${phoneNumber}`));
+            getDocs(q)
+          .then((d) => {
+            d.forEach((doc) => {
+              // console.log("doc:",doc.data());
+              v = { ...doc.data(),id:doc.id };
+              // console.log("v:",v);
+            });
+          })
+          .then(() => {
+            const userDocToUpdate = doc(db,"Users",v.id);
+            updateDoc(userDocToUpdate,{
+                token:expoPushToken
+            })
+          })
+          .catch((e) => {});
         })
         .catch((error) => {
             alert(error);
