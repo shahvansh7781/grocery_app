@@ -164,7 +164,7 @@ const ProfileScreen = () => {
             <TouchableRipple
               onPress={() => {
                 auth.signOut();
-                // dispatch(deleteAll())
+                dispatch(deleteAll())
               }}
             >
               <View style={styles.menuItem}>

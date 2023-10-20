@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { Button } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -46,6 +46,8 @@ async function sendPushNotification(expoPushToken, title, body) {
 export default function Notification() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [tokenObtained, setTokenObtained] = useState(false);
+  const [title,setTitle] = useState();
+  const [message,setMessage] = useState();
   const usersToken=[];
   const dispatch=useDispatch()
   const users=useSelector((state)=>state.users.data)
@@ -110,15 +112,58 @@ console.log("Before return - Noti",usersToken)
   return (
     <View>
       <Text>Expo Push Token: {expoPushToken}</Text>
-      <Button
+      <TextInput
+       placeholder="Enter Title"
+          style={styles.input}
+          value={title}
+          onChangeText={(text) => setTitle(text)}>
+      </TextInput>
+      <TextInput
+       placeholder="Enter Message"
+          style={styles.input}
+          value={message}
+          onChangeText={(text) => setMessage(text)}>
+      </TextInput>
+      <TouchableOpacity
+      style={styles.uploadBtn}
         onPress={() => {
           console.log('Press');
           console.log("On Press Notif",usersToken)
-          sendPushNotification(['ExponentPushToken[ZHAcv_DHc_4j--G1KP2fX2]','ExponentPushToken[G0HFmRFq9p8fHLzhIFTcgJ]','ExponentPushToken[_EspNQNyHvX8EiwaNz_Tzn]'], 'Hello', 'This is a test notification');
+          sendPushNotification(usersToken, title, message);
+          setTitle('');
+          setMessage('');
         }}
       >
-        Rushit
-      </Button>
+       <Text style={{color:"white",fontFamily:"Poppins-SemiBold"}}> Send Notification</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  input: {
+    width: "90%",
+    height: 50,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginTop: 30,
+    alignSelf: "center",
+  },
+  uploadBtn: {
+    width: "90%",
+    display:"flex",
+    // height: responsiveHeight(8),
+    paddingVertical:12,
+    borderRadius: 10,
+    // borderWidth: 0.5,
+    elevation:2,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignContent:"center",
+    alignItems: "center",
+    marginVertical: "4%",
+    backgroundColor: "#2DDC4A",
+  },
+})

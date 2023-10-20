@@ -29,22 +29,21 @@ const OtpAuth = ({navigation}) => {
       sendVerification();
     }, [])
     
-    // useEffect(() => {
-    //     // Request permission for notifications
-    //     (async () => {
-    //       const { status } = await Notifications.requestPermissionsAsync();
-    //       if (status !== 'granted') {
-    //         alert('Permission to send notifications was denied');
-    //         return;
-    //       }
+    useEffect(() => {
+        // Request permission for notifications
+        (async () => {
+          const { status } = await Notifications.requestPermissionsAsync();
+          if (status !== 'granted') {
+            alert('Permission to send notifications was denied');
+            return;
+          }
     
-    //       // Get the device's Expo push token
-    //       const token = (await Notifications.getExpoPushTokenAsync({ projectId: 'dad94796-4b29-4812-9adf-fca37769e4c0' })).data;
-    //       setExpoPushToken(token);
-    //       console.log('token - signup',expoPushToken)
-    //     //   setTokenObtained(true); // Set the state to indicate that the token is obtained
-    //     })();
-    //   }, []);
+          // Get the device's Expo push token
+          const token = (await Notifications.getExpoPushTokenAsync({ projectId: 'dad94796-4b29-4812-9adf-fca37769e4c0' })).data;
+          setExpoPushToken(token);
+        //   setTokenObtained(true); // Set the state to indicate that the token is obtained
+        })();
+      }, []);
     // console.log(data);
     const sendVerification = () => {
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
@@ -63,7 +62,7 @@ const OtpAuth = ({navigation}) => {
       phone:phoneNumber,
       role: "User",
       walletCoins:0,
-    //   token:expoPushToken
+      token:expoPushToken
     };
         const credential = firebase.auth.PhoneAuthProvider.credential(
             verificationId,

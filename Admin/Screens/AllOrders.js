@@ -1,4 +1,6 @@
+
 import { View, Text,StyleSheet,SafeAreaView ,FlatList,ActivityIndicator,TouchableOpacity} from 'react-native'
+
 import React, { useState } from 'react'
 import { responsiveFontSize,responsiveHeight ,responsiveWidth} from "react-native-responsive-dimensions";
 import OrderCard from '../src/OrderCard';
@@ -6,11 +8,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchOrders } from '../../Reducers/OrderReducer';
 
+import axios from 'axios';
+import { api_url } from '../../utils/api_url';
+
+
 import Papa from 'papaparse';
 import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing';
 
 import { FontAwesome5 } from 'react-native-vector-icons';
+
 
 export default function AllOrders() {
 
@@ -28,6 +35,21 @@ export default function AllOrders() {
     });
   }, [dispatch]);
 
+  const handleReport = async()=>{
+    const payload = data;
+    try {
+      const response = await axios.post(`${api_url}:8082/myapp/orderReport`,JSON.stringify(payload),{
+        headers:{
+          'Content-Type':"application/json"
+        }
+      })
+      if (response.data.success) {
+        alert("Report Generated Successfully")
+      }
+    } catch (error) {
+      alert(error)
+    }
+   }
   const renderItem=({item})=>{
     console.log(item)
         return(
@@ -166,6 +188,7 @@ async function convertJSONToCSV() {
         
         
         <>
+
        
           <FlatList
                   style={styles.scrollableSection}
@@ -174,18 +197,30 @@ async function convertJSONToCSV() {
                   keyExtractor={item=>item.id}>
             </FlatList> 
 
-            <View style={{backgroundColor:"white"}}>
+           <View style={{backgroundColor:"white"}}>
 
 
                     <TouchableOpacity style={styles.floatingButton} onPress={() => convertJSONToCSV()}>
                       <FontAwesome5 name="share" size={24} color="white" />
                     </TouchableOpacity>
+                    <TouchableOpacity style={styles.uploadBtn} onPress={handleReport}>
+                          <Text style={{color:"white",fontFamily:"Poppins-SemiBold",fontSize:responsiveFontSize(2)}}>
+                               Generate Report
+                           </Text>
+                    </TouchableOpacity>
 
             </View>
+
+            
+                    </>
+
+
+            
             
 
         </>
       
+
    )}
 
         
@@ -231,6 +266,7 @@ const styles= StyleSheet.create({
         marginVertical: "4%",
         backgroundColor: "#2DDC4A",
       },
+
       floatingButton: {
         position: 'absolute',
         bottom: responsiveHeight(10), // Adjust the vertical position as needed
@@ -243,4 +279,5 @@ const styles= StyleSheet.create({
         alignItems: "center",
         elevation: 5,
       }
+
   })

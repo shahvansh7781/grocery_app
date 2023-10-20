@@ -6,6 +6,11 @@ import { ImageBackground } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGroceries } from "../../Reducers/GroceryReducer";
 import Card2 from "../src/Card2";
+
+
+import axios from "axios";
+import { api_url } from "../../utils/api_url";
+
 import { responsiveFontSize,responsiveHeight,responsiveWidth } from "react-native-responsive-dimensions";
 
 import Papa from 'papaparse';
@@ -15,6 +20,7 @@ import * as Sharing from 'expo-sharing';
 import { FontAwesome5 } from 'react-native-vector-icons';
 
 
+
 export function Groceries() {
   // const [data, setData] = useState();
 
@@ -22,7 +28,7 @@ export function Groceries() {
     const dispatch = useDispatch()
     const data = useSelector((state) => state.groceries.data);
    
-    console.log(data)
+    // console.log(data)
     
   
     useEffect(() => {
@@ -34,6 +40,21 @@ export function Groceries() {
       });
     }, [dispatch]);
 
+    const handleReport = async()=>{
+      const payload = data;
+      try {
+        const response = await axios.post(`${api_url}:8082/myapp/groceryReport`,JSON.stringify(payload),{
+          headers:{
+            'Content-Type':"application/json"
+          }
+        })
+        if (response.data.success) {
+          alert("Report Generated Successfully")
+        }
+      } catch (error) {
+        alert(error)
+      }
+     }
   // const fetchGroceries = async() => {
     
   //   try {
@@ -177,15 +198,22 @@ export function Groceries() {
                 </Image>
               </View>
             ))} */}
-
                   <View style={{backgroundColor:"white"}}>
 
 
                         <TouchableOpacity style={styles.floatingButton} onPress={() => convertJSONToCSV()}>
                             <FontAwesome5 name="share" size={24} color="white" />
                         </TouchableOpacity>
+                          <TouchableOpacity style={styles.uploadBtn} onPress={handleReport}>
+                              <Text style={{color:"white",fontFamily:"Poppins-SemiBold",fontSize:responsiveFontSize(2)}}>
+                                 Generate Report
+                              </Text>
+                          </TouchableOpacity>
 
                   </View>
+
+            
+
           </View>
 
          
@@ -225,6 +253,7 @@ const styles = StyleSheet.create({
     marginVertical: "4%",
     backgroundColor: "#2DDC4A",
   },
+
   floatingButton: {
     position: 'absolute',
     bottom: responsiveHeight(10), // Adjust the vertical position as needed
@@ -237,4 +266,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     elevation: 5,
   }
+
 });
