@@ -11,7 +11,7 @@ export default function GroceryCard({item}) {
         if (!cartData.some(cd => cd.id === item.id)) {
     
           
-          dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: 10, title: item.name }))
+          dispatch(add({ id: item.id, image: item.imageData, price: item.price, count: 1, stock: item.s, title: item.name }))
           console.log("Item added to the cart");
         } else {
           console.log('Item is already in the cart.');

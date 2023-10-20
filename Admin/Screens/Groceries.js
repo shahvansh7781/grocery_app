@@ -6,9 +6,21 @@ import { ImageBackground } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGroceries } from "../../Reducers/GroceryReducer";
 import Card2 from "../src/Card2";
-import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
+
+
 import axios from "axios";
 import { api_url } from "../../utils/api_url";
+
+import { responsiveFontSize,responsiveHeight,responsiveWidth } from "react-native-responsive-dimensions";
+
+import Papa from 'papaparse';
+import * as FileSystem from 'expo-file-system'
+import * as Sharing from 'expo-sharing';
+
+import { FontAwesome5 } from 'react-native-vector-icons';
+
+
+
 export function Groceries() {
   // const [data, setData] = useState();
 
@@ -84,6 +96,83 @@ export function Groceries() {
     return <Card2 itemData={item}></Card2>;
   };
 
+
+  async function convertJSONToCSV() {
+    const csv = Papa.unparse(data);
+    console.log('dir',FileSystem.documentDirectory)
+    const path = FileSystem.documentDirectory + 'data.csv';
+   
+  
+    await FileSystem.writeAsStringAsync(path, csv, { encoding: FileSystem.EncodingType.UTF8 });
+    console.log('path',path)
+    openAndReadFile(path)
+    return path;
+  }
+  async function openAndReadFile(filePath) {
+  
+   
+    try {
+  
+      // filePath='file:///data/user/0/host.exp.exponent/files/data.csv'
+      // Read the contents of the file
+      const fileInfo = await FileSystem.getInfoAsync(filePath);
+  
+      if (fileInfo.exists) {
+        // File exists, proceed to read its contents
+        const content = await FileSystem.readAsStringAsync(filePath);
+        console.log('File content:', content);
+        saveFileToStorage(content,'groceries.csv')
+        // downloadFile(content,'data.csv','text/csv')
+  
+      } else {
+        console.log('File does not exist.');
+      }
+    } catch (error) {
+      console.error('Error reading the file:', error);
+    }
+  }
+  
+  async function saveFileToStorage(content, fileName) {
+    try {
+      const fileUri = FileSystem.documentDirectory + fileName;
+  
+      // Write the file to the document directory
+      await FileSystem.writeAsStringAsync(fileUri, content, { encoding: FileSystem.EncodingType.UTF8 });
+  
+      console.log(`File saved at ${fileUri}`);
+      
+      shareFile(fileUri,'x.csv')
+    } catch (error) {
+      console.error('Error saving the file:', error);
+    }
+  }
+  
+  
+  
+  async function shareFile(fileUri, fileName) {
+    try {
+      const result = await Sharing.shareAsync(fileUri, {
+        mimeType: 'application/octet-stream',
+        dialogTitle: `Download ${fileName}`,
+        UTI: 'public.data',
+      });
+  
+      if (result.action === Sharing.SharedAction.PREVIEW) {
+        console.log('File previewed');
+      } else if (result.action === Sharing.SharedAction.OPEN) {
+        console.log('File opened');
+      } else if (result.action === Sharing.SharedAction.SHARE) {
+        console.log('File shared');
+      } else if (result.action === Sharing.SharedAction.CANCEL) {
+        console.log('Sharing canceled');
+      }
+    } catch (error) {
+      console.error('Error sharing the file:', error);
+    }
+  }
+  
+  
+  
   return (
     <>
       {isLoading ? (
@@ -109,12 +198,25 @@ export function Groceries() {
                 </Image>
               </View>
             ))} */}
-            <TouchableOpacity style={styles.uploadBtn} onPress={handleReport}>
-                <Text style={{color:"white",fontFamily:"Poppins-SemiBold",fontSize:responsiveFontSize(2)}}>
-                   Generate Report
-                </Text>
-            </TouchableOpacity>
+                  <View style={{backgroundColor:"white"}}>
+
+
+                        <TouchableOpacity style={styles.floatingButton} onPress={() => convertJSONToCSV()}>
+                            <FontAwesome5 name="share" size={24} color="white" />
+                        </TouchableOpacity>
+                          <TouchableOpacity style={styles.uploadBtn} onPress={handleReport}>
+                              <Text style={{color:"white",fontFamily:"Poppins-SemiBold",fontSize:responsiveFontSize(2)}}>
+                                 Generate Report
+                              </Text>
+                          </TouchableOpacity>
+
+                  </View>
+
+            
+
           </View>
+
+         
         </>
       )}
     </>
@@ -151,4 +253,18 @@ const styles = StyleSheet.create({
     marginVertical: "4%",
     backgroundColor: "#2DDC4A",
   },
+
+  floatingButton: {
+    position: 'absolute',
+    bottom: responsiveHeight(10), // Adjust the vertical position as needed
+    right: responsiveWidth(5), // Adjust the horizontal position as needed
+    width: responsiveWidth(10), // Adjust the button size as needed
+    height: responsiveHeight(5), // Adjust the button size as needed
+    borderRadius: 25, // Half of the width and height to create a circle
+    backgroundColor: "#2DDC4A",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+  }
+
 });
