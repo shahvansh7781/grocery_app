@@ -3,6 +3,8 @@ const path = require("path");
 const PDFDocument = require("pdfkit");
 const PDFTable = require("pdfkit-table");
 const fs = require("fs");
+const { ref, getDownloadURL, uploadBytes } = require('firebase/storage');
+const { storage } = require("../config/firebaseConfig");
 exports.getUserReport = async (req, res) => {
   const data = req.body;
   const worksheet = xlsx.utils.json_to_sheet(data);
@@ -112,10 +114,12 @@ exports.generateInvoice = async (req, res) => {
   const doc = new PDFDocument();
   const height = doc.page.height;
   const width = doc.page.width;
+
   doc.pipe(
     fs.createWriteStream(
-      path.join(process.env.HOME, "Downloads", "Invoice.pdf")
+      path.join(process.env.HOME, "Downloads", `${req.body.Name} - Invoice.pdf`)
     )
+  
   );
   doc.fontSize(28).text("Invoice", width / 2 - 30, 50);
   doc.fontSize(15).text(`Name: ${req.body.Name}`, 20, 100, { align: "left" });

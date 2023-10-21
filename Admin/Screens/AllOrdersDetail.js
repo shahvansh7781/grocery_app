@@ -38,9 +38,6 @@ export default function AllOrdersDetail() {
           },
         }
       );
-      // if (response.data.success) {
-      //   alert("Report Generated Successfully")
-      // }
     } catch (error) {
       alert(error);
     }
@@ -199,11 +196,11 @@ export default function AllOrdersDetail() {
                           year: currentYear,
                         };
                         console.log("Confirm Yes pressed");
-                        // const orderDocToUpdate = doc(db,'Orders',orderId);
+                        const orderDocToUpdate = doc(db,'Orders',orderId);
 
-                        // await updateDoc(orderDocToUpdate,{
-                        //   status:"Delivered"
-                        // })
+                        await updateDoc(orderDocToUpdate,{
+                          status:"Delivered"
+                        })
                         alert(`Order status changed to Delivered successfully`);
 
                         handleInvoice(payload);
