@@ -1,10 +1,10 @@
 const xlsx = require("xlsx");
 const path = require("path");
 const PDFDocument = require("pdfkit");
-const PDFTable = require("pdfkit-table");
 const fs = require("fs");
 const { ref, getDownloadURL, uploadBytes } = require('firebase/storage');
 const { storage } = require("../config/firebaseConfig");
+const nodemailer = require("nodemailer");
 exports.getUserReport = async (req, res) => {
   const data = req.body;
   const worksheet = xlsx.utils.json_to_sheet(data);
@@ -89,8 +89,10 @@ exports.orderReport = async (req, res) => {
   });
 };
 
+let user={}
 exports.generateInvoice = async (req, res) => {
   const headers = ["Item Name", "Quantity", "Price Per Unit", "Amount"];
+  user=req.body
   const tableData = [
     // ['Name', 'Age', 'Country'],
     // ['Alice', '25', 'USA'],
@@ -176,5 +178,38 @@ exports.generateInvoice = async (req, res) => {
     .text(`Grand Total: Rs. ${req.body.GrandTotal}`, 10, doc.y + 20, {
       align: "right",
     });
+  
+  doc.on('end',()=>{
+    sendEmail();
+  })
   doc.end();
+  // sendEmail();
 };
+
+const sendEmail = async()=>{
+
+  // connecting with smtp server
+  const transporter = nodemailer.createTransport({
+    service:'gmail',
+    secure:false,
+    auth: {
+        user: 'rentit7.com@gmail.com',
+        pass: 'jourpxqtrtvwsdyu'
+    }
+});
+
+let info = await transporter.sendMail({
+  from:"GrocerExpress <rentit7.com@gmail.com>",
+  to:['rushitpsoni2002@gmail.com','parikhdeshana@gmail.com',`${user.Email}`],
+  subject:"Invoice for Shopping!",
+  text:"Thank you for buying Grocery from us! Here is your Invoice attached. Happy Shopping!",
+  html:`
+  <h2>Thank you for buying Grocery from us! Here is your Invoice attached. Happy Shopping!</h2>
+  `,
+  attachments:[{
+    filename:`Invoice.pdf`,
+    path:path.join(process.env.HOME, "Downloads", `${user.Name} - Invoice.pdf`)
+  }]
+})
+console.log("Message Id:- ",info.messageId)
+}
