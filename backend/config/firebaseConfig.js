@@ -19,6 +19,7 @@
 const firebase = require("firebase/compat/app");
 const { getDatabase } = require("firebase/database");
 const { getFirestore } = require("firebase/firestore");
+const {getStorage} = require('firebase/storage')
 
 const firebaseConfig = {
   apiKey: "AIzaSyAjPgs8TWlv8g76ahyCn9IJIRn748_WRPE",
@@ -36,4 +37,5 @@ const app = firebase.initializeApp(firebaseConfig);
 
 exports.db = getDatabase();
 exports.dbF = getFirestore(app);
+exports.storage = getStorage(app);
 
