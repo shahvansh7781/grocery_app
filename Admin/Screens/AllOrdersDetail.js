@@ -16,6 +16,8 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { db } from "../config";
 import { doc, updateDoc } from "firebase/firestore";
+import axios from "axios";
+import { api_url } from "../../utils/api_url";
 
 export default function AllOrdersDetail() {
   const route = useRoute();
@@ -25,6 +27,21 @@ export default function AllOrdersDetail() {
   // console.log(data);
   const navigation = useNavigation();
 
+  const handleInvoice = async (payload) => {
+    try {
+      const response = await axios.post(
+        `${api_url}:8082/myapp/generateInvoice`,
+        JSON.stringify(payload),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      alert(error);
+    }
+  };
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity>
@@ -77,33 +94,37 @@ export default function AllOrdersDetail() {
           <Text style={styles.totalPrice}>{data.userName}</Text>
         </View>
         <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
-          <Text style={styles.totalText}>Emai ID : </Text>
+          <Text style={styles.totalText}>Email ID : </Text>
           <Text style={styles.totalPrice}>{data.userEmail}</Text>
         </View>
       </View>
-     
 
       <View style={styles.cardAddress}>
         <Text
           style={{
             // marginBottom: responsiveHeight(1),
             fontSize: responsiveFontSize(2.4),
-            fontFamily:"Poppins-Bold"
+            fontFamily: "Poppins-Bold",
           }}
         >
           Shipping Address :{" "}
         </Text>
-        <Text style={{fontFamily:"Poppins-SemiBold"}}>{data.shippingAddress}</Text>
+        <Text style={{ fontFamily: "Poppins-SemiBold" }}>
+          {data.shippingAddress}
+        </Text>
         <Text
           style={{
             // marginBottom: responsiveHeight(1),
             fontSize: responsiveFontSize(2.4),
-            fontFamily:"Poppins-SemiBold"
+            fontFamily: "Poppins-SemiBold",
           }}
         >
           Order Status:{" "}
           <Text
-            style={{ fontSize: responsiveFontSize(2), fontFamily:"Poppins-SemiBold" }}
+            style={{
+              fontSize: responsiveFontSize(2),
+              fontFamily: "Poppins-SemiBold",
+            }}
           >
             {orderStatus}
           </Text>
@@ -123,7 +144,7 @@ export default function AllOrdersDetail() {
           <Text style={styles.totalPrice}>{data.subTotal}</Text>
         </View>
         <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
-          <Text style={styles.totalText}>Delievery Charge : </Text>
+          <Text style={styles.totalText}>Delivery Charge : </Text>
           <Text style={styles.totalPrice}>{data.deliveryCharge}</Text>
         </View>
 
@@ -135,44 +156,70 @@ export default function AllOrdersDetail() {
         </View>
       </View>
       <View>
-        {
-          orderStatus==='Dispatched' ? (<>
-          <TouchableOpacity style={styles.uploadBtn} onPress={()=>{Alert.alert(
-                    'Confirmation',
-                    'Update Order Status to Delivered?',
-                    [
-                      {
-                        text: 'No',
-                        onPress: () => {
-                          // Handle Cancel button press
-                          console.log('Confirm No pressed');
-                          alert("Order Status not Changed")
-                        },
-                        style: 'cancel',
+        {orderStatus === "Dispatched" ? (
+          <>
+            <TouchableOpacity
+              style={styles.uploadBtn}
+              onPress={() => {
+                Alert.alert(
+                  "Confirmation",
+                  "Update Order Status to Delivered?",
+                  [
+                    {
+                      text: "No",
+                      onPress: () => {
+                        // Handle Cancel button press
+                        console.log("Confirm No pressed");
+                        alert("Order Status not Changed");
                       },
-                      {
-                        text: 'Yes',
-                        onPress: async() => {
-                          // Handle OK button press
-                          
-                          console.log('Confirm Yes pressed');
-                          const orderDocToUpdate = doc(db,'Orders',orderId);
-                          
-                          await updateDoc(orderDocToUpdate,{
-                            status:"Delivered"
-                          })
-                          alert(`Order status changed to Delivered successfully`)
-                          navigation.navigate("Home")
-                        },
-                      },
-                    ],
-                    { cancelable: false }
-                  );}}>
+                      style: "cancel",
+                    },
+                    {
+                      text: "Yes",
+                      onPress: async () => {
+                        // Handle OK button press
+                        const currentDate = new Date();
 
-                      <Text style={{fontFamily:"Poppins-SemiBold",color:"white"}}>Update Order Status</Text>
-              </TouchableOpacity>
-          </>):(<></>)
-        }
+                        const currentDay = currentDate.getDate(); // Get the day of the month (1-31)
+                        const currentMonth = currentDate.getMonth() + 1; // Get the month (1-12)
+                        const currentYear = currentDate.getFullYear(); // Get the year (e.g., 2023)
+                        const payload = {
+                          Name: data.userName,
+                          Email: data.userEmail,
+                          items: data.items,
+                          Address: data.shippingAddress,
+                          SubTotal: data.subTotal,
+                          Delivery: data.deliveryCharge,
+                          GrandTotal: data.grandTotal,
+                          day: currentDay,
+                          month: currentMonth,
+                          year: currentYear,
+                        };
+                        console.log("Confirm Yes pressed");
+                        const orderDocToUpdate = doc(db,'Orders',orderId);
+
+                        await updateDoc(orderDocToUpdate,{
+                          status:"Delivered"
+                        })
+                        alert(`Order status changed to Delivered successfully`);
+
+                        handleInvoice(payload);
+                        navigation.navigate("Home");
+                      },
+                    },
+                  ],
+                  { cancelable: false }
+                );
+              }}
+            >
+              <Text style={{ fontFamily: "Poppins-SemiBold", color: "white" }}>
+                Update Order Status
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <></>
+        )}
       </View>
     </View>
   );
@@ -207,7 +254,7 @@ const styles = StyleSheet.create({
     margin: responsiveWidth(4),
   },
   cardTitle: {
-    fontFamily:"Poppins-SemiBold",
+    fontFamily: "Poppins-SemiBold",
     // display:"flex",
     // flexDirection:"row",
     // flexWrap:"wrap",
@@ -217,7 +264,7 @@ const styles = StyleSheet.create({
     fontWeight: "200",
     fontSize: responsiveFontSize(1.4),
     color: "gray",
-    fontFamily:"Poppins-SemiBold"
+    fontFamily: "Poppins-SemiBold",
   },
   cardDetails: {
     fontSize: responsiveFontSize(5),
@@ -264,14 +311,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     margin: "1%",
     marginLeft: 25,
-    fontFamily:"Poppins-SemiBold"
+    fontFamily: "Poppins-SemiBold",
   },
   totalPrice: {
     fontSize: 16,
     margin: "1%",
     marginRight: 25,
     color: "gray",
-    fontFamily:"Poppins-SemiBold"
+    fontFamily: "Poppins-SemiBold",
   },
   line: {
     borderBottomWidth: 1,
@@ -289,19 +336,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     padding: responsiveWidth(4),
-    fontFamily:"Poppins-SemiBold"
+    fontFamily: "Poppins-SemiBold",
   },
   uploadBtn: {
     width: "90%",
-    display:"flex",
+    display: "flex",
     // height: responsiveHeight(8),
-    paddingVertical:12,
+    paddingVertical: 12,
     borderRadius: 10,
     // borderWidth: 0.5,
-    elevation:2,
+    elevation: 2,
     alignSelf: "center",
     justifyContent: "center",
-    alignContent:"center",
+    alignContent: "center",
     alignItems: "center",
     marginBottom: "2%",
     backgroundColor: "#2DDC4A",
