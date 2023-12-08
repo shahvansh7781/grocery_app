@@ -236,8 +236,9 @@ export default function HomeScreen({ navigation }) {
 
       if (response.data && response.data.display_name) {
         // setAddress(response.data.display_name);
-
-        const temp_addr=response.data.address.city+','+response.data.address.state +','+response.data.address.country//+','+response.data.address.postcode
+        const city=response.data.address.county.split(" ");
+        console.log(city[0])
+        const temp_addr=city[0]+','+response.data.address.state+','+response.data.address.country//+','+response.data.address.postcode
         setAddress(temp_addr)
         const addr=response.data.display_name
         dispatch(updateAddress({address:{addr}}))

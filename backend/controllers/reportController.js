@@ -2,9 +2,10 @@ const xlsx = require("xlsx");
 const path = require("path");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
-const { ref, getDownloadURL, uploadBytes } = require('firebase/storage');
+const { ref, getDownloadURL, uploadBytes} = require('firebase/storage');
 const { storage } = require("../config/firebaseConfig");
 const nodemailer = require("nodemailer");
+const QRCode = require('qrcode');
 exports.getUserReport = async (req, res) => {
   const data = req.body;
   const worksheet = xlsx.utils.json_to_sheet(data);
@@ -178,12 +179,14 @@ exports.generateInvoice = async (req, res) => {
     .text(`Grand Total: Rs. ${req.body.GrandTotal}`, 10, doc.y + 20, {
       align: "right",
     });
-  
-  doc.on('end',()=>{
+  doc.on('end',async()=>{
+    QRCode.toFile(path.join(process.env.HOME, "Downloads", `${user.Name} - qr-code.png`), `Email:- ${user.Email}, Name:- ${user.Name}, Invoice Date: ${user.day}/${user.month}/${user.year}`, (err) => {
+      if (err) throw err;
+      console.log('QR code image generated');
+    });
     sendEmail();
   })
   doc.end();
-  // sendEmail();
 };
 
 const sendEmail = async()=>{
@@ -204,11 +207,14 @@ let info = await transporter.sendMail({
   subject:"Invoice for Shopping!",
   text:"Thank you for buying Grocery from us! Here is your Invoice attached. Happy Shopping!",
   html:`
-  <h2>Thank you for buying Grocery from us! Here is your Invoice attached. Happy Shopping!</h2>
+  <h3>Thank you for buying Grocery from us! Here is your Invoice attached. Happy Shopping!</h3>
   `,
   attachments:[{
     filename:`Invoice.pdf`,
     path:path.join(process.env.HOME, "Downloads", `${user.Name} - Invoice.pdf`)
+  },{
+    filename:'QRCode-Invoice.png',
+    path:path.join(process.env.HOME, "Downloads", `${user.Name} - qr-code.png`)
   }]
 })
 console.log("Message Id:- ",info.messageId)
