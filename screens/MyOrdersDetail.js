@@ -171,7 +171,7 @@ const renderItem=({item})=>{
                   );}}>
 
 
-                      <Text>Return</Text>
+                      <Text style={{color:"white",fontFamily:"Poppins-Bold"}}>Return</Text>
               </TouchableOpacity>
                 ):(<></>)}
 
@@ -307,12 +307,12 @@ const styles = StyleSheet.create({
         width: "90%",
         height: 50,
         borderRadius: 10,
-        borderWidth: 0.5,
+        // borderWidth: 0.5,
         alignSelf: "center",
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: "4%",
-        backgroundColor: "#06FF00",
+        backgroundColor: "#2DDC4A",
+        marginBottom: 20,
       },
   });
   

@@ -161,6 +161,8 @@ exports.logout = async (req, res) => {
 };
 
 exports.getAllUsers = async(req,res)=>{
+  console.log("Req: ",req)
+  console.log("Req User: ",req.user)
 try {
   const data = await getDocs(dbRef);
   const items = data.docs.map((item) => {

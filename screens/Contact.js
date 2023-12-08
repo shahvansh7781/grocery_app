@@ -1,179 +1,158 @@
 import {
-  StyleSheet,
-  Text,
   View,
-  TextInput,
+  Text,
+  ScrollView,
+  StyleSheet,
   TouchableOpacity,
-  Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from "react-native-responsive-dimensions";
+import { useNavigation } from "@react-navigation/native";
 
-const Contact = ({ navigation }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
-  const [agree, setAgree] = useState(false);
-
-  const submit = () => {
-    if (!name && !email && !phone && !message) {
-      Alert.alert("Plzz fill all the fields");
-    } else {
-      Alert.alert(`Thank You ${name}`);
-      
-      console.log(message)
-      // navigation.navigate("Home");
-    }
-  };
-
+export default function Contact() {
+  const navigation = useNavigation();
   return (
-    <View style={styles.mainContainer}>
-      <Text style={styles.mainHeader}> Level up your knowledge </Text>
-
-      <Text style={styles.description}>
-        You can reach us anytime via Gstore@gmail.com
-      </Text>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.labels}> Enter your name </Text>
-        <TextInput
-          style={styles.inputStyle}
-          placeholder={"User Name "}
-          value={name}
-          onChangeText={(userdata) => setName(userdata)}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.labels}> Enter your Email </Text>
-        <TextInput
-          style={styles.inputStyle}
-          placeholder={"user@gmail.com"}
-          value={email}
-          onChangeText={(email) => setEmail(email)}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.labels}> Enter your mobile </Text>
-        <TextInput
-          style={styles.inputStyle}
-          placeholder={"123456789"}
-          value={phone}
-          onChangeText={(phone) => setPhone(phone)}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.labels}> How can we help you? </Text>
-        <TextInput
-          style={[styles.inputStyle, styles.multiineStyle]}
-          placeholder={"Tell us about your self"}
-          value={message}
-          onChangeText={(msg) => setMessage(msg)}
-          numberOfLines={5}
-          multiline={true}
-        />
-      </View>
-
-      {/* checkbox  */}
-
-      {/* <View style={styles.wrapper}>
-        <Checkbox
-          value={agree}
-          onValueChange={() => setAgree(!agree)}
-          color={agree ? "#4630EB" : undefined}
-        />
-        <Text style={styles.wrapperText}>
-          I have read and agreed with the TC
+    <ScrollView style={styles.container}>
+      <View style={styles.card}>
+        <Text
+          style={{
+            fontFamily: "Poppins-Bold",
+            fontSize: responsiveFontSize(3.5),
+            marginTop: 15,
+            marginLeft: responsiveWidth(25),
+            color: "#2DDC4A",
+          }}
+        >
+          About Us
         </Text>
-      </View> */}
+        <Text
+          style={{
+            fontFamily: "Poppins-Light",
+            fontSize: responsiveFontSize(2),
+            marginLeft: 10,
+          }}
+        >
+          The mobile grocery application revolutionizes the traditional shopping
+          experience.Our objective is to create a user-friendly, efficient, and
+          feature-rich mobile application that simplifies the grocery shopping
+          experience. The application is designed to cater to the evolving needs
+          of modern consumers, offering a comprehensive solution for managing
+          shopping lists, making purchases, and receiving personalized
+          recommendations.{"\n"}{"\n"}
+          The application boasts an intuitive user interface,
+          allowing users to effortlessly browse through an extensive product
+          catalog, add items to their shopping cart, and complete transactions
+          securely. Real-time inventory updates and an intelligent search
+          algorithm further enhance the user experience. The mobile grocery
+          application holds the potential to redefine how consumers engage with
+          grocery shopping, offering a convenient and tailored solution that
+          aligns with contemporary lifestyles.
+        </Text>
 
-      {/* submit button  */}
-
-      <TouchableOpacity
-        style={[
-          styles.buttonStyle,
-          {
-            backgroundColor: "#4630EB" 
-          },
-        ]}
-        // disabled={!agree}
-        onPress={submit}
-      >
-        <Text style={styles.buttonText}> Contact Us </Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity
+          style={styles.uploadBtn}
+          onPress={() => {
+            navigation.navigate("Home");
+          }}
+        >
+          <Text
+            style={{
+              color: "white",
+              fontFamily: "Poppins-Bold",
+              fontSize: responsiveFontSize(2.5),
+            }}
+          >
+            Shop Now !
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.cardContact}>
+        <Text
+          style={{
+            fontFamily: "Poppins-Bold",
+            fontSize: responsiveFontSize(3.5),
+            marginTop: 15,
+            color: "#2DDC4A",
+            alignSelf:"center"
+          }}
+        >
+          Contact Us
+        </Text>
+        <Text
+          style={{
+            fontFamily: "Poppins-Light",
+            fontSize: responsiveFontSize(2.2),
+            marginLeft: 10,
+          }}
+        >
+        Email : grocerExpress@gmail.com
+        {/* <Text style={{fontFamily:"Poppins-Bold"}}>  </Text> */}
+        
+        </Text>
+        <Text
+          style={{
+            fontFamily: "Poppins-Light",
+            fontSize: responsiveFontSize(2.2),
+            marginLeft: 10,
+          }}
+        >
+          HelpLine : 1800 890 1222
+        </Text>
+      </View>
+    </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    height: "100%",
-    paddingHorizontal: 30,
-    backgroundColor: "#fff",
-  },
-  mainHeader: {
-    fontSize: 20,
-    color: "#344055",
-    fontWeight: "500",
-    paddingTop: 20,
-    paddingBottom: 15,
-    // fontFamily: "JosefinSans_500Medium",
-    textTransform: "capitalize",
-  },
-  description: {
-    fontSize: 20,
-    color: "#7d7d7d",
-    paddingBottom: 20,
-    // fontFamily: "JosefinSans_400Light",
-    lineHeight: 25,
+  container: {
+    flex: 1,
+    backgroundColor: "white",
   },
 
-  inputContainer: {
-    marginTop: 20,
+  card: {
+    flex: 0.7,
+    width: "90%",
+    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    elevation: 4,
+    // marginTop: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+    marginTop: responsiveHeight(1),
+    padding: responsiveWidth(4),
+    fontFamily: "Poppins-SemiBold",
   },
-  labels: {
-    fontWeight: "bold",
-    // fontSize: 15,
-    color: "#7d7d7d",
-    paddingBottom: 5,
-    // fontFamily: "JosefinSans_300Light",
-    lineHeight: 25,
+  cardContact: {
+    flex: 0.3,
+    width: "90%",
+    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    elevation: 4,
+    // marginTop: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+    marginTop: responsiveHeight(1),
+    padding: responsiveWidth(4),
+    fontFamily: "Poppins-SemiBold",
   },
-  inputStyle: {
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.3)",
-    paddingHorizontal: 15,
-    paddingVertical: 6,
-    borderRadius: 2,
-  },
-  multiineStyle: {
-    paddingVertical: 4,
-  },
-  buttonStyle: {
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    display: "flex",
+
+  uploadBtn: {
+    width: "90%",
+    height: 50,
+    borderRadius: 10,
+    // borderWidth: 0.5,
+    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 30,
-  },
-  buttonText: {
-    color: "#eee",
-  },
-  wrapper: {
-    display: "flex",
-    flexDirection: "row",
     marginTop: 20,
-    // fontFamily: "JosefinSans_300Light",
-  },
-  wrapperText: {
-    marginLeft: 10,
-    color: "#7d7d7d",
-    // fontFamily: "JosefinSans_300Light",
+    backgroundColor: "#2DDC4A",
+
+    marginBottom: 20,
   },
 });
-
-export default Contact;
